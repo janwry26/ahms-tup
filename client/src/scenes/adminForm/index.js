@@ -30,10 +30,6 @@ const AdminForm = () => {
   </div> // Render the loader while loading
   }
 
-  // const handleFormSubmit = (values) => {
-  //   console.log(values);
-  // };
-
   const handleFormSubmit = (values, { resetForm }) => {
     console.log(values);
     http
