@@ -158,7 +158,7 @@ const AdminForm = () => {
              
                 <div className="d-grid gap-2" style={{marginTop:"-20px", marginBottom: "20px"}}>
                     <Button type="submit" className="btnDashBoard"   >
-                       Create User
+                       Create Admin
                     </Button>
                 </div>
             </Box>
