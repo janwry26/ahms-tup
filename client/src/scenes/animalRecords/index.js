@@ -42,19 +42,33 @@ const AnimalRecords = () => {
 
   const handleAddRecord = (event) => {
     event.preventDefault();
-    const record = {
-      id: Date.now(),
-      species: event.target.species.value,
-      age: event.target.age.value,
-      gender: event.target.gender.value,
-      animalID: event.target.animalID.value,
-      breedType: event.target.breedType.value,
-      weight: event.target.weight.value,
-      birthDate: event.target.birthDate.value,
-    };
-    setRecords([...records, record]);
+    http
+      .post('/animal/add', {
+        species: event.target.species.value,
+        age: event.target.age.value,
+        gender: event.target.gender.value,
+        animalID: event.target.animalID.value,
+        breedType: event.target.breedType.value,
+        weight: event.target.weight.value,
+        birthDate: event.target.birthDate.value,
+      })
+      .then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Product added to inventory',
+          icon: 'success',
+          timer: 700, // Show the alert for 2 seconds
+          showConfirmButton: false
+        });
+        getAnimalRecord(); // Refresh the products list
+      })
+      .catch((err) => console.log(err));
     event.target.reset();
   };
+
+
+
 
   const handleDeleteRecord = (index) => {
     Swal.fire({
@@ -77,6 +91,46 @@ const AnimalRecords = () => {
     });
   };
 
+  // const handleEditRecord = (params, event) => {
+  //   const { id, field, props } = params;
+  //   const { value } = event.target;
+  //   const newRecords = records.map((record) => {
+  //     if (record.id === id) {
+  //       return { ...record, [field]: value };
+  //     }
+  //     return record;
+  //   });
+  //   setRecords(newRecords);
+  // };
+
+  // const handleEditDialogOpen = (record) => {
+  //   setEditRecord(record);
+  //   setEditDialogOpen(true);
+  // };
+
+  // const handleEditDialogClose = () => {
+  //   setEditDialogOpen(false);
+  // };
+
+  // const handleEditDialogSave = () => {
+  //   const newRecords = records.map((record) => {
+  //     if (record.id === editRecord.id) {
+  //       return {
+  //         ...record,
+  //         species: document.getElementById("editSpecies").value,
+  //         age: document.getElementById("editAge").value,
+  //         gender: document.getElementById("editGender").value,
+  //         animalID: document.getElementById("editAnimalID").value,
+  //         breedType: document.getElementById("editBreedType").value,
+  //         weight: document.getElementById("editWeight").value,
+  //         birthDate: document.getElementById("editBirthDate").value,
+  //       };
+  //     }
+  //     return record;
+  //   });
+  //   setRecords(newRecords);
+  //   setEditDialogOpen(false);
+  // };
   const handleEditRecord = (params, event) => {
     const { id, field, props } = params;
     const { value } = event.target;
@@ -89,6 +143,7 @@ const AnimalRecords = () => {
     setRecords(newRecords);
   };
 
+
   const handleEditDialogOpen = (record) => {
     setEditRecord(record);
     setEditDialogOpen(true);
@@ -98,11 +153,10 @@ const AnimalRecords = () => {
     setEditDialogOpen(false);
   };
 
+ 
+
   const handleEditDialogSave = () => {
-    const newRecords = records.map((record) => {
-      if (record.id === editRecord.id) {
-        return {
-          ...record,
+    const editedRecord = {
           species: document.getElementById("editSpecies").value,
           age: document.getElementById("editAge").value,
           gender: document.getElementById("editGender").value,
@@ -110,12 +164,20 @@ const AnimalRecords = () => {
           breedType: document.getElementById("editBreedType").value,
           weight: document.getElementById("editWeight").value,
           birthDate: document.getElementById("editBirthDate").value,
-        };
-      }
-      return record;
-    });
-    setRecords(newRecords);
-    setEditDialogOpen(false);
+    };
+  
+    http
+      .put(`/animal/edit/${editRecord._id}`, editedRecord)
+      .then((res) => {
+        console.log(res);
+        const updatedRecords = records.map((record) =>
+          record._id === editRecord._id ? { ...record, ...editedRecord } : record
+        );
+        setRecords(updatedRecords);
+        setEditDialogOpen(false);
+        Swal.fire('Success', 'Product updated successfully!', 'success');
+      })
+      .catch((err) => console.log(err));
   };
 
   const theme = useTheme();
@@ -271,6 +333,7 @@ const AnimalRecords = () => {
         }}
       >
         <DataGrid
+
           rows={records}
           columns={[
             { field: "species", headerName: "Species", flex: 1 },
@@ -282,19 +345,23 @@ const AnimalRecords = () => {
             { field: "birthDate", headerName: "Birth Date", flex: 1 },
             {
               field: "actions",
-              headerName: "",
+              headerName: "Actions",
               sortable: false,
               filterable: false,
+              align: "center",
               renderCell: (params) => (
-                <div style={{ marginTop: "5px auto" }}>
+                <div>
                   <Button
+                    className="mx-1"
                     variant="danger"
-                    onClick={() => handleDeleteRecord(params.rowIndex)}
+                    size="sm"
+                    onClick={() => handleDeleteRecord(params.row._id)}
                     style={{ padding: "6px 12px" }}
                   >
                     <FaTrash />
                   </Button>
                   <Button
+                    size="sm"
                     variant="primary"
                     onClick={() => handleEditDialogOpen(params.row)}
                     style={{ padding: "6px 12px" }}
