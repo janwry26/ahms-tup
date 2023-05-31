@@ -352,16 +352,14 @@ const AnimalRecords = () => {
               renderCell: (params) => (
                 <div>
                   <Button
-                    className="mx-1"
-                    variant="danger"
-                    size="sm"
+                    className="mx-1 btn-danger btn-sm"
                     onClick={() => handleDeleteRecord(params.row._id)}
                     style={{ padding: "6px 12px" }}
                   >
                     <FaTrash />
                   </Button>
                   <Button
-                    size="sm"
+                  size="sm"
                     variant="primary"
                     onClick={() => handleEditDialogOpen(params.row)}
                     style={{ padding: "6px 12px" }}
