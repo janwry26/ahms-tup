@@ -1,0 +1,233 @@
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(24, 20, 20, 0.987);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+}
+
+.login-container {
+  width: 100%;
+  padding-top: 50px;
+  height: 100vh;
+  overflow-x: hidden;
+  background:url("../assets/images/bg/bg.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center center;
+
+}
+
+h2 {
+  color: #5cc0af;
+  font-size: 24px;
+  text-align: center;
+  padding-bottom: 20px;
+  
+  
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: rgb(119,213,203);
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.login-box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color:rgb(110, 180, 110) ;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #fff;
+  font-size: 12px;
+}
+
+
+.btnSignin {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #5cc0af; 
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.5s;
+  margin-top: 40px;
+  letter-spacing: 4px;
+  border-radius: 20px;
+  font-weight: bolder;
+}
+
+.btnSignin:hover{
+  background-color: rgb(107, 201, 172);
+}
+
+.password-toggle {
+  color: white;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+Button.btnDashBoard{
+  width: 200px;
+  margin-top: 2rem;
+  padding: 10px 20px;
+  border-radius:10px;
+  background: #2e7c67;
+  border: none;
+}
+Button.btnDashBoard:hover{
+  background: #3a9182;
+  transition: all 0.3s;
+  
+}
+
+.loader-overlayLogin {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #3e3f44ea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loaderLogin{
+  font-size: 48px;
+  color: #FFF;
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  position: relative;
+}
+.loaderLogin:after{
+  content: 'Logging in...';
+  position: relative;
+  z-index: 5;
+}
+.loaderLogin:before{
+  content: '';
+  height: 6px;
+  border: 1px solid;
+  border-radius: 10px;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  background: linear-gradient(#5cc0af 100%, transparent 0) no-repeat;
+  background-size: 0% auto;
+  animation: 10s lineGrow linear infinite;
+}
+
+@keyframes lineGrow {to {  background-size: 100% auto}}
+
+.loader-overlayLogout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #3e3f44ea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loaderLogout{
+  font-size: 48px;
+  color: #FFF;
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  position: relative;
+}
+.loaderLogout:after{
+  content: 'Logging out...';
+  position: relative;
+  z-index: 5;
+}
+.loaderLogout:before{
+  content: '';
+  height: 6px;
+  border: 1px solid;
+  border-radius: 10px;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  background: linear-gradient(#5cc0af 100%, transparent 0) no-repeat;
+  background-size: 0% auto;
+  animation: 10s lineGrow linear infinite;
+}
+
+@keyframes lineGrow {to {  background-size: 100% auto}}
+.login-box a span:nth-child(1) {
+  bottom: 2px;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03f40f);
+  animation: btn-anim1 2s linear infinite
+}
+.login-box a span:nth-child(2) {
+bottom: -2px;
+right: -100%;
+width: 100%;
+height: 2px;
+background: linear-gradient(270deg, transparent, #03f40f);
+animation: btn-anim2 2s linear infinite;
+}
+
+
+@media screen and (max-width: 1024px) {
+  .login-container{
+    background: #d9ece8;
+
+  }
+  div.login-box{
+    width: 300px;
+    padding: 25px;
+  }
+  h2{
+    font-size: 20px;
+  }
+  Button.btnDashBoard{
+    width: 100%;
+  }
+  div.tryTable{
+    width: 100%;
+  }
+  
+}
