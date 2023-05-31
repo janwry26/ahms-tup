@@ -23,7 +23,7 @@ function TaskList() {
             id: key+1,
             _id: task._id,
             taskID: task.taskID,
-            userID: task.userID,
+            staffID: task.staffID,
             taskName: task.taskName,
             dueDate: task.dueDate,
             taskStatus: task.taskStatus,
@@ -219,7 +219,7 @@ function TaskList() {
               >
                 <div>
                   <h4 style={{color:"rgb(119,213,203)"}}>{task.taskName}</h4>
-                  <p>Assigned to Staff ID {task.userID}</p>
+                  <p>Assigned to Staff ID {task.staffID}</p>
                   <p>Status: {task.taskStatus}</p>
                   <p>Due Date {task.dueDate} </p>
                   {task.taskAccomplishDate && (
