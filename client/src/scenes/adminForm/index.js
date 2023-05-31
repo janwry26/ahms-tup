@@ -7,6 +7,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
+import http from "../../utils/http";
+import Swal from "sweetalert2";
+
 
 const AdminForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -27,10 +30,33 @@ const AdminForm = () => {
   </div> // Render the loader while loading
   }
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
-  };
+  // const handleFormSubmit = (values) => {
+  //   console.log(values);
+  // };
 
+  const handleFormSubmit = (values, { resetForm }) => {
+    console.log(values);
+    http
+      .post("/admin/register", values)
+      .then((res) => {
+        if (res.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: "User Created",
+            text: "The user has been successfully created.",
+          });
+          resetForm(); // Reset the form after successful submission
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: err.response.data,
+        });
+      });
+  };
   const phoneRegExp = /^09\d{9}$/;
 
   const checkoutSchema = yup.object().shape({

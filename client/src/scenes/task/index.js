@@ -5,6 +5,9 @@ import { Box,TextField } from "@mui/material";
 import { Select, MenuItem,InputLabel } from "@mui/material";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
+import http from "../../utils/http";
+
+
 function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -12,6 +15,27 @@ function TaskList() {
   const [taskID, setTaskID] = useState("");
   const [taskDueDate, setTaskDueDate] = useState("");
   const [taskStatus, setTaskStatus] = useState("Not Complete"); // Set initial task status
+
+  const getTask = () => {
+    http.get('/task/view')
+        .then((res) => {
+          const tasks = res.data.map((task, key) => ({
+            id: key+1,
+            _id: task._id,
+            taskID: task.taskID,
+            staffID: task.staffID,
+            taskName: task.taskName,
+            dueDate: task.dueDate,
+            taskStatus: task.taskStatus,
+          }));
+          setTasks(tasks);
+        })
+        .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getTask();
+  },[])
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -195,9 +219,9 @@ function TaskList() {
               >
                 <div>
                   <h4 style={{color:"rgb(119,213,203)"}}>{task.taskName}</h4>
-                  <p>Assigned to Staff ID {task.userID}</p>
+                  <p>Assigned to Staff ID {task.staffID}</p>
                   <p>Status: {task.taskStatus}</p>
-                  <p>Due Date {task.taskDueDate} </p>
+                  <p>Due Date {task.dueDate} </p>
                   {task.taskAccomplishDate && (
                     <p>Completed on: {task.taskAccomplishDate}</p>
                   )}
