@@ -14,6 +14,8 @@ const inventoryRoutes = require("./routes/inventory");
 const taskRoutes = require("./routes/task");
 const healthReportRoutes = require("./routes/healthReport");
 const reportRoutes = require("./routes/report");
+const mortalityReportRoutes = require("./routes/mortalityReport");
+const observationReportRoutes = require("./routes/observationReport");
 
 app.use(express.json());
 app.use(cors());
@@ -27,6 +29,8 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/health-report", healthReportRoutes);
 app.use("/api/report", reportRoutes);
+app.use("/api/mortality-report", mortalityReportRoutes);
+app.use("/api/observation-report", observationReportRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);

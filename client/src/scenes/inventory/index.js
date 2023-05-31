@@ -134,7 +134,6 @@ const Inventory = () => {
     http
       .put(`/inventory/edit/${editProduct._id}`, editedProduct)
       .then((res) => {
-        console.log(res);
         const updatedProducts = products.map((product) =>
           product._id === editProduct._id ? { ...product, ...editedProduct } : product
         );
