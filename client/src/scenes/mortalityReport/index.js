@@ -1,7 +1,7 @@
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
@@ -171,6 +171,7 @@ const MortalityReport = () => {
               variant="filled"
               fullWidth
               required
+              type="number"
             />
       </Box>
 
@@ -182,6 +183,8 @@ const MortalityReport = () => {
               variant="filled"
               fullWidth
               required
+              type="number"
+
             />
 
         </Box>
@@ -275,8 +278,8 @@ const MortalityReport = () => {
         <DataGrid
           rows={reports}
           columns={[
-            { field: "animalID", headerName: "Animal ID", flex: 1 },
-            { field: "staffID", headerName: "Staff ID", flex: 1 },
+            { field: "animalID", headerName: "Animal Name", flex: 1 },
+            { field: "staffID", headerName: "Staff Name", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
             {
@@ -311,15 +314,15 @@ const MortalityReport = () => {
                 <div>
                   <Button
                   className="btn btn-sm mx-1"
-                    variant="danger"
+                    variant="primary"
                     onClick={() => handleDeleteReport(params.row._id)}
                     style={{ padding: "6px 12px" }}
                   >
-                    <FaTrash />
+                    <FaArchive />
                   </Button>
                   <Button
                     size="sm"
-                    variant="primary"
+                    variant="warning"
                     onClick={() => handleEditDialogOpen(params.row)}
                     style={{ padding: "6px 12px" }}
                   >
@@ -345,6 +348,8 @@ const MortalityReport = () => {
                 placeholder="Enter animal ID"
                 defaultValue={editReport ? editReport.animalID : ""}
                 required
+                type="number"
+              
               />
             </Form.Group>
 
@@ -354,6 +359,8 @@ const MortalityReport = () => {
                 placeholder="Enter staff ID"
                 defaultValue={editReport ? editReport.staffID : ""}
                 required
+                type="number"
+
               />
             </Form.Group>
 

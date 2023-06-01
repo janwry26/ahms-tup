@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { FaPlus, FaMinus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
@@ -305,15 +305,14 @@ const Inventory = () => {
                   <Button
                   className="mx-1"
                     size="sm"
-                    variant="danger"
+                    variant="primary"
                     onClick={() => handleDeleteProduct(params.row._id)}
                   >
-                    <FaTrash />
+                    <FaArchive />
                   </Button>
                   <Button
                     size="sm"
-                 
-                    variant="primary"
+                    variant="warning"
                     onClick={() => handleEditDialogOpen(params.row)}
                   >
                     <FaEdit />

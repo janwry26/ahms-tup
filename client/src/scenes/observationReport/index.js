@@ -1,7 +1,7 @@
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
@@ -162,6 +162,7 @@ const ObservationReport = () => {
               variant="filled"
               fullWidth
               required
+              type="number"
             />
     </Box>
 
@@ -241,9 +242,9 @@ const ObservationReport = () => {
     <DataGrid
       rows={reports}
       columns={[ 
-        { field: "animalID",headerName: "Animal ID", flex: 1 },
+        { field: "animalID",headerName: "Animal Name", flex: 1 },
 
-        { field: "staffID", headerName: "Staff ID", flex: 1 },  
+        { field: "staffID", headerName: "Staff Name", flex: 1 },  
         { field: "reportDescription", headerName: "Description", flex: 1 },
         { field: "dateReported", headerName: "Date Reported", flex: 1 },  
          { 
@@ -253,10 +254,10 @@ const ObservationReport = () => {
              filterable: false, 
               renderCell: (params) => 
               (<div> 
-               <Button  className="btn btn-sm mx-1" variant="danger" onClick={() => handleDeleteReport(params.row._id)}>
-                 <FaTrash />
+               <Button  className="btn btn-sm mx-1" variant="primary" onClick={() => handleDeleteReport(params.row._id)}>
+                 <FaArchive />
                   </Button> 
-                <Button  variant="primary" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
+                <Button  variant="warning" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
                 <FaEdit />
               </Button>
             </div>
@@ -276,6 +277,7 @@ const ObservationReport = () => {
         <Form.Group className="mb-3" controlId="editAnimalID">
           <Form.Label>Animal ID</Form.Label>
           <Form.Control
+            type="number"
             placeholder="Enter animal ID"
             defaultValue={editReport ? editReport.animalID : ""}
             required
