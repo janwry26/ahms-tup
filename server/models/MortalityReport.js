@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
 const mortalityReportSchema = new mongoose.Schema({
-    animalID: { type: String, required: true },
-    staffID: { type: String, required: true },
+    animalID: { type: Number, required: true },
+    staffID: { type: Number, required: true },
     casueOfDeath: { type: String, required: true },
     deathDate: { type: Date, required: true },
     deathTime: { type: String, required: true },

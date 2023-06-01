@@ -1,5 +1,5 @@
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -15,25 +15,65 @@ const ObservationReport = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editReport, setEditReport] = useState(null);
+  const [animalList, setAnimalList] = useState([]);
+  const [staffList, setStaffList] = useState([]);
 
-  const getObservationReport = () => {
+   const getObservationReport = () => {
     http.get('/observation-report/view')
-        .then((res) => {
-          const reports = res.data.map((report, key) => ({
-            id: key+1,
-            _id: report._id,
-            animalID: report.animalID,
-            staffID: report.staffID,
-            reportDescription: report.reportDescription,
-            dateReported: report.dateReported,
-          }));
+    .then((res) => {
+      const reportPromises = res.data.map((report, key) => {
+        const animalRequest = http.get(`/animal/view/${report.animalID}`);
+        const staffRequest = http.get(`/user/view/${report.staffID}`);
+
+        return Promise.all([animalRequest, staffRequest])
+          .then(([animalRes, staffRes]) => {
+            const animalName = animalRes.data.animalName;
+            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+            return {
+               id: key+1,
+              _id: report._id,
+              animalID: report.animalID,
+              staffID: report.staffID,
+              animalName: animalName,
+              staffName: staffName,
+              reportDescription: report.reportDescription,
+              dateReported: report.dateReported,
+            };
+          });
+      });
+
+      Promise.all(reportPromises)
+        .then((reports) => {
           setReports(reports);
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+  }
+
+  const getAnimals = () => {
+    
+    http.get('/animal/view')
+        .then((res) => {
+          setAnimalList(res.data);
         })
         .catch((err) => console.log(err));
   }
 
+  const getStaffs = () => {
+    
+    http.get('/user/view')
+        .then((res) => {
+          setStaffList(res.data);
+        })
+        .catch((err) => console.log(err));
+  }
+  
   useEffect(() => {
     getObservationReport();
+    getAnimals();
+    getStaffs();
   },[])
 
   const handleAddReport = (event) => {
@@ -154,28 +194,40 @@ const ObservationReport = () => {
       />
   <Form onSubmit={handleAddReport}>
     <Box marginBottom="10px">
-        <InputLabel >Animal ID</InputLabel>
-          <TextField
-              placeholder="Input animal ID..."
-              name="animalID"
-              variant="filled"
-              fullWidth
-              required
-              type="number"
-            />
+        <InputLabel >Animal</InputLabel>
+        <Select
+            name="animalID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" >Select an Animal</option>
+            {animalList.map((val) => {
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
+          </Select>
     </Box>
 
 
     <Box marginBottom="10px">
-        <InputLabel >Staff ID</InputLabel>
-          <TextField
-              placeholder="Input staff ID..."
-              name="staffID"
-              variant="filled"
-              fullWidth
-              required
-              type="number"
-            />
+    <InputLabel>Staff</InputLabel>
+          <Select
+            name="staffID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" >Select a Staff</option>
+            {staffList.map((val) => {
+                return (
+                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                )
+            })}          
+          </Select>
     </Box>
 
     <Box marginBottom="10px">
@@ -241,9 +293,9 @@ const ObservationReport = () => {
     <DataGrid
       rows={reports}
       columns={[ 
-        { field: "animalID",headerName: "Animal Name", flex: 1 },
+        { field: "animalName",headerName: "Animal Name", flex: 1 },
 
-        { field: "staffID", headerName: "Staff Name", flex: 1 },  
+        { field: "staffName", headerName: "Staff Name", flex: 1 },  
         { field: "reportDescription", headerName: "Description", flex: 1 },
         { field: "dateReported", headerName: "Date Reported", flex: 1 },  
          { 
@@ -276,7 +328,6 @@ const ObservationReport = () => {
         <Form.Group className="mb-3" controlId="editAnimalID">
           <Form.Label>Animal ID</Form.Label>
           <Form.Control
-            type="number"
             placeholder="Enter animal ID"
             defaultValue={editReport ? editReport.animalID : ""}
             required
@@ -287,7 +338,6 @@ const ObservationReport = () => {
         <Form.Group className="mb-3" controlId="editStaffID">
           <Form.Label>Staff ID</Form.Label>
           <Form.Control
-            type="number"
             placeholder="Enter staff ID"
             defaultValue={editReport ? editReport.staffID : ""}
             required
