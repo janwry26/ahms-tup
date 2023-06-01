@@ -18,23 +18,66 @@ const MedicalHistory = () => {
   const [staffList, setStaffList] = useState([]);
 
   const getHealthReport = () => {
-    
     http.get('/health-report/view')
-        .then((res) => {
-          const reports = res.data.map((report, key) => ({
-            id: key+1,
-            _id: report._id,
-            animalID: report.animalID,
-            staffID: report.staffID,
-            healthDescription: report.healthDescription,
-            nextCheckupDate: report.nextCheckupDate,
-            medication: report.medication,
-            vaccineStatus: report.vaccineStatus,
-          }));
+    .then((res) => {
+      const reportPromises = res.data.map((report, key) => {
+        const animalRequest = http.get(`/animal/view/${report.animalID}`);
+        const staffRequest = http.get(`/user/view/${report.staffID}`);
+
+        return Promise.all([animalRequest, staffRequest])
+          .then(([animalRes, staffRes]) => {
+            const animalName = animalRes.data.animalName;
+            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+            return {
+              id: key + 1,
+              _id: report._id,
+              animalID: report.animalID,
+              staffID: report.staffID,
+              animalName: animalName,
+              staffName: staffName,
+              healthDescription: report.healthDescription,
+              nextCheckupDate: report.nextCheckupDate,
+              medication: report.medication,
+              vaccineStatus: report.vaccineStatus,
+            };
+          });
+      });
+
+      Promise.all(reportPromises)
+        .then((reports) => {
           setReports(reports);
         })
         .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
   }
+
+  // const getHealthReport = () => {
+    
+  //   http.get('/health-report/view')
+  //       .then((res) => {
+  //         const reports = res.data.map((report, key) => {
+  //           return http.get(`/animal/view/${report.animalID}`)
+  //           .then ((animalRes) => {
+  //             const animalName = animalRes.data.animalName;
+  //             return {
+  //               id: key+1,
+  //               _id: report._id,
+  //               animalID: report.animalID,
+  //               staffID: report.staffID,
+  //               animalName: animalName,
+  //               healthDescription: report.healthDescription,
+  //               nextCheckupDate: report.nextCheckupDate,
+  //               medication: report.medication,
+  //               vaccineStatus: report.vaccineStatus,
+  //             }
+  //           })
+  //         });
+  //         setReports(reports);
+  //       })
+  //       .catch((err) => console.log(err));
+  // }
 
   const getAnimals = () => {
     
@@ -286,7 +329,7 @@ const MedicalHistory = () => {
             required
             variant="filled"
           >
-            <option value="" disabled>Select vaccination status</option>
+            <option value="" >Select vaccination status</option>
             <option value="Vaccinated">Vaccinated</option>
             <option value="Not Vaccinated">Not Vaccinated</option>
           </Select>
@@ -333,8 +376,8 @@ const MedicalHistory = () => {
         <DataGrid
           rows={reports}
           columns={[
-            { field: "animalID", headerName: "Animal ID", flex: 1 },
-            { field: "staffID", headerName: "Staff ID", flex: 1 },
+            { field: "animalName", headerName: "Animal Name", flex: 1 },
+            { field: "staffName", headerName: "Staff Name", flex: 1 },
             { field: "healthDescription", headerName: "Health Description", flex: 1 },
             { field: "nextCheckupDate", headerName: "Next Checkup Date", flex: 1 },
             { field: "medication", headerName: "Medication", flex: 1 },
@@ -379,7 +422,7 @@ const MedicalHistory = () => {
         <DialogContent>
           <Form onSubmit={handleEditReport}>
             <Form.Group className="mb-3" controlId="editAnimalId">
-              <Form.Label>Animal ID</Form.Label>
+              <Form.Label>Animal</Form.Label>
               <Form.Control
                 placeholder="Enter animal ID"
                 defaultValue={editReport ? editReport.animalID : ""}
@@ -388,7 +431,7 @@ const MedicalHistory = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="editStaffId">
-              <Form.Label>Staff ID</Form.Label>
+              <Form.Label>Staff</Form.Label>
               <Form.Control
                 placeholder="Enter staff ID"
                 defaultValue={editReport ? editReport.staffID : ""}

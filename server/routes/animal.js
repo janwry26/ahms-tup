@@ -9,6 +9,18 @@ router.get("/view", async (req, res) => {
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/view/:animalID", async (req, res) => {
+    const { animalID } = req.params;
+    Animal.findOne({ animalID })
+        .then((animal) => {
+            if (!animal) {
+                return res.status(404).json({ error: "Animal not found" });
+            }
+            res.json(animal);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
+
 router.post("/add", async (req, res) => {
     const { animalName, breedType, species, weight, gender, age, birthDate} = req.body;
     

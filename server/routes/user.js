@@ -53,6 +53,19 @@ router.get("/view", async (req, res) => {
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
+
+router.get("/view/:staffId", async (req, res) => {
+    const { staffId } = req.params;
+    User.findOne({ staffId })
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json(user);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
+
 router.put("/edit/:id", async (req, res) => {
     User.findByIdAndUpdate({ _id: req.params.id }, {
         lastName: req.body.lastName, 
