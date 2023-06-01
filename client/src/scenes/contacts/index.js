@@ -52,11 +52,7 @@ const Contacts = () => {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "username",
-      headerName: "Username",
-      flex: 1,
-    },
+   
   ];
 
   return (

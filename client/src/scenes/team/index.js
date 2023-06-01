@@ -59,16 +59,6 @@ const Team = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
       field: "username",
       headerName: "Username",
       flex: 1,

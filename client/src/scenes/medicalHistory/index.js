@@ -1,7 +1,7 @@
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
+import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
@@ -388,22 +388,23 @@ const MedicalHistory = () => {
             },
             {
               field: "actions",
-              headerName: "",
+              headerName: "Actions",
               sortable: false,
               filterable: false,
               renderCell: (params) => (
                 <div style={{ marginTop: "5px auto" }}>
                   <Button
-                    variant="danger"
+                    className="btn btn-primary btn-sm mx-1"
                     onClick={() => handleDeleteReport(params.row._id)}
-                    style={{ padding: "6px 12px" }}
+                  
                   >
-                    <FaTrash />
+                    <FaArchive />
                   </Button>
                   <Button
-                    variant="primary"
+                  size="sm"
+                    variant="warning"
                     onClick={() => handleEditDialogOpen(params.row)}
-                    style={{ padding: "6px 12px" }}
+                  
                   >
                     <FaEdit />
                   </Button>
