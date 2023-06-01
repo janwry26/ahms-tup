@@ -8,10 +8,36 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import "../../styles/loader.css"
+import http from "../../utils/http";
+
+
 const MortalityReport = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editReport, setEditReport] = useState(null);
+
+  const getMortalityReport = () => {
+    http.get('/mortality-report/view')
+        .then((res) => {
+          const reports = res.data.map((report, key) => ({
+            id: key+1,
+            _id: report._id,
+            animalID: report.animalID,
+            staffID: report.staffID,
+            casueOfDeath: report.casueOfDeath,
+            deathDate: report.deathDate,
+            deathTime: report.deathTime,
+            dateReported: report.dateReported,
+          }));
+          setReports(reports);
+        })
+        .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getMortalityReport();
+  },[])
+
 
   const handleAddReport = (event) => {
     event.preventDefault();
@@ -77,7 +103,7 @@ const MortalityReport = () => {
           ...report,
           animalID: document.getElementById("editAnimalID").value,
           staffID: document.getElementById("editStaffID").value,
-          causeOfDeath: document.getElementById("editCauseOfDeath").value,
+          casueOfDeath: document.getElementById("editCauseOfDeath").value,
           deathDate: document.getElementById("editDeathDate").value,
           deathTime: document.getElementById("editDeathTime").value,
           dateReported: document.getElementById("editDateReported").value,
@@ -144,7 +170,7 @@ const MortalityReport = () => {
           <InputLabel >Cause of Death</InputLabel>
           <TextField
               placeholder="Input cause of death..."
-              name="causeOfDeath"
+              name="casueOfDeath"
               variant="filled"
               fullWidth
               required
@@ -232,7 +258,7 @@ const MortalityReport = () => {
           columns={[
             { field: "animalID", headerName: "Animal ID", flex: 1 },
             { field: "staffID", headerName: "Staff ID", flex: 1 },
-            { field: "causeOfDeath", headerName: "Cause of Death", flex: 1 },
+            { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
             { field: "deathTime", headerName: "Death Time", flex: 1 },
             {
@@ -242,7 +268,7 @@ const MortalityReport = () => {
             },
             {
               field: "actions",
-              headerName: "",
+              headerName: "Actions",
               sortable: false,
               filterable: false,
               renderCell: (params) => (

@@ -8,17 +8,39 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
+import http from "../../utils/http";
+
+
 const ObservationReport = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editReport, setEditReport] = useState(null);
+
+  const getObservationReport = () => {
+    http.get('/observation-report/view')
+        .then((res) => {
+          const reports = res.data.map((report, key) => ({
+            id: key+1,
+            _id: report._id,
+            animalID: report.animalID,
+            staffID: report.staffID,
+            reportDescription: report.reportDescription,
+            dateReported: report.dateReported,
+          }));
+          setReports(reports);
+        })
+        .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getObservationReport();
+  },[])
 
   const handleAddReport = (event) => {
     event.preventDefault();
     const report = {
       id: Date.now(),
       animalID: event.target.animalID.value,
-      reportID: event.target.reportID.value,
       staffID: event.target.staffID.value,
       reportDescription: event.target.reportDescription.value,
       dateReported: event.target.dateReported.value,
@@ -75,7 +97,6 @@ const ObservationReport = () => {
         return {
           ...report,
           animalID: document.getElementById("editAnimalID").value,
-          reportID: document.getElementById("editReportID").value,
           staffID: document.getElementById("editStaffID").value,
           reportDescription: document.getElementById("editReportDescription").value,
           dateReported: document.getElementById("editDateReported").value,
@@ -126,17 +147,6 @@ const ObservationReport = () => {
             />
     </Box>
 
-    <Box marginBottom="10px">
-        <InputLabel >Report ID</InputLabel>
-          <TextField
-              placeholder="Input Report ID..."
-              name="reportID"
-              variant="filled"
-              fullWidth
-              required
-              type="number"
-            />
-    </Box>
 
     <Box marginBottom="10px">
         <InputLabel >Staff ID</InputLabel>
@@ -215,23 +225,21 @@ const ObservationReport = () => {
       columns={[ 
         { field: "animalID",headerName: "Animal ID", flex: 1 },
 
-        { field: "reportID", headerName: "Report ID", flex: 1 }, 
         { field: "staffID", headerName: "Staff ID", flex: 1 },  
         { field: "reportDescription", headerName: "Description", flex: 1 },
         { field: "dateReported", headerName: "Date Reported", flex: 1 },  
          { 
           field: "actions",
-           headerName: "", 
+           headerName: "Actions", 
             sortable: false, 
              filterable: false, 
               renderCell: (params) => 
               (<div style={{ margintop: '5px auto' }} > 
-               <Button   variant="danger" onClick={() => handleDeleteReport(params.rowIndex)} 
-               style={{ padding: "6px 12px" }}  >
+               <Button   variant="danger" onClick={() => handleDeleteReport(params.row._id)}>
                  <FaTrash />
                   </Button> 
-                <Button  variant="primary"  onClick={() => handleEditDialogOpen(params.row)} 
-                 style={{ padding: "6px 12px" }}              >                <FaEdit />
+                <Button  variant="primary"  onClick={() => handleEditDialogOpen(params.row)}>
+                <FaEdit />
               </Button>
             </div>
           ),
@@ -257,15 +265,6 @@ const ObservationReport = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="editReportID">
-          <Form.Label>Report ID</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter report ID"
-            defaultValue={editReport ? editReport.reportID : ""}
-            required
-          />
-        </Form.Group>
 
         <Form.Group className="mb-3" controlId="editStaffID">
           <Form.Label>Staff ID</Form.Label>
