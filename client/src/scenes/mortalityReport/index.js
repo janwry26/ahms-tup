@@ -269,7 +269,7 @@ const MortalityReport = () => {
           </Box>  
 
           <Box marginBottom="10px">
-          <InputLabel >Death Date</InputLabel>
+          <InputLabel >Date</InputLabel>
           <TextField
               placeholder="Input death date..."
               name="deathDate"
@@ -281,7 +281,7 @@ const MortalityReport = () => {
           </Box>
 
           <Box marginBottom="10px">
-          <InputLabel >Death Time</InputLabel>
+          <InputLabel >Time of Death</InputLabel>
           <TextField
               placeholder="Input death time..."
               name="deathTime"
