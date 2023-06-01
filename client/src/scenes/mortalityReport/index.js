@@ -150,7 +150,6 @@ const MortalityReport = () => {
 
   if (isLoading) {
     return <div className="loader-overlay1">
-    <h1>Loading...</h1>
     <div className="loader1"></div>
   </div> // Render the loader while loading
   }

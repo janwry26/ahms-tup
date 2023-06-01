@@ -1,4 +1,5 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { useState,useEffect } from "react";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -14,10 +15,26 @@ import PetsIcon from '@mui/icons-material/Pets';
 import PreviewIcon from '@mui/icons-material/Preview';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import "./style.css";
+import "../../styles/loader.css"
+
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [isLoading, setIsLoading] = useState(true); 
+  useEffect(() => {
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
 
+    return () => clearTimeout(timer); // Clean up the timer on unmount
+  }, []);
+
+  if (isLoading) {
+    return <div>
+    <div className="loader1"></div>
+  </div> // Render the loader while loading
+  }
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">

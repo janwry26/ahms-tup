@@ -2,27 +2,10 @@ import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { tokens } from "../theme";
 import { mockLineData as data } from "../data/mockData";
-import { useState,useEffect } from "react";
 import "../styles/loader.css"
 const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isLoading, setIsLoading] = useState(true); 
-  useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer); // Clean up the timer on unmount
-  }, []);
-
-  if (isLoading) {
-    return <div className="loader-overlay1">
-    <h1>Loading...</h1>
-    <div className="loader1"></div>
-  </div> // Render the loader while loading
-  }
   return (
     <ResponsiveLine
       data={data}

@@ -17,12 +17,11 @@ const Line = () => {
 
   if (isLoading) {
     return <div className="loader-overlay1">
-    <h1>Loading...</h1>
     <div className="loader1"></div>
   </div> // Render the loader while loading
   }
   return (
-    <Box m="20px" className="reload-animation">
+    <Box m="20px">
       <Header title="Line Chart" subtitle="Simple Line Chart" />
       <Box height="75vh">
         <LineChart />
