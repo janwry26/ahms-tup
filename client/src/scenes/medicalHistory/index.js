@@ -14,9 +14,11 @@ const MedicalHistory = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editReport, setEditReport] = useState(null);
-
+  const [animalList, setAnimalList] = useState([]);
+  const [staffList, setStaffList] = useState([]);
 
   const getHealthReport = () => {
+    
     http.get('/health-report/view')
         .then((res) => {
           const reports = res.data.map((report, key) => ({
@@ -34,8 +36,28 @@ const MedicalHistory = () => {
         .catch((err) => console.log(err));
   }
 
+  const getAnimals = () => {
+    
+    http.get('/animal/view')
+        .then((res) => {
+          setAnimalList(res.data);
+        })
+        .catch((err) => console.log(err));
+  }
+
+  const getStaffs = () => {
+    
+    http.get('/user/view')
+        .then((res) => {
+          setStaffList(res.data);
+        })
+        .catch((err) => console.log(err));
+  }
+  
   useEffect(() => {
     getHealthReport();
+    getAnimals();
+    getStaffs();
   },[])
 
   const handleAddReport = (event) => {
@@ -187,42 +209,53 @@ const MedicalHistory = () => {
         mt="20px"
       />
       <Form onSubmit={handleAddReport}>
-           <Box marginBottom="10px">
-            <InputLabel >Animal Id</InputLabel>
-                <TextField
-                    placeholder="Input animal ID..."
-                    name="animalID"
-                    variant="filled"
-                    fullWidth
-                    required
-                  />
-            </Box>
+        <Box marginBottom="10px">
+          <InputLabel>Animal</InputLabel>
+          <Select
+            name="animalID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" disabled>Select an Animal</option>
+            {animalList.map((val) => {
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
+          </Select>
+        </Box>     
 
-        
-
-            <Box marginBottom="10px">
-            <InputLabel >Staff ID</InputLabel>
-              <TextField
-                  placeholder="Input staff ID..."
-                  name="staffID"
-                  variant="filled"
-                  fullWidth
-                  required
-                />
-
-            </Box>
-
-            <Box marginBottom="10px">
-        <InputLabel >Health Description</InputLabel>
-          <TextField
-              placeholder="Input health description..."
-              name="healthDescription"
-              variant="filled"
-              fullWidth
-              required
-            />
-
+        <Box marginBottom="10px">
+          <InputLabel>Staff</InputLabel>
+          <Select
+            name="staffID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" disabled>Select a Staff</option>
+            {staffList.map((val) => {
+                return (
+                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                )
+            })}          
+          </Select>
         </Box>
+
+        <Box marginBottom="10px">
+          <InputLabel >Health Description</InputLabel>
+            <TextField
+                placeholder="Input health description..."
+                name="healthDescription"
+                variant="filled"
+                fullWidth
+                required
+              />
+        </Box>
+
         <Box marginBottom="10px">
         <InputLabel >Next Checkup Date</InputLabel>
           <TextField
@@ -245,23 +278,20 @@ const MedicalHistory = () => {
             />
         </Box>
         <Box marginBottom="10px">
-               <InputLabel>Vaccination Status</InputLabel>
-                  <Select
-                    name="vaccineStatus"
-                    native
-                    fullWidth
-                    required
-                    variant="filled"
-                  >
-                    <option value="">Select vaccination status</option>
-                    <option value="Vaccinated">Vaccinated</option>
-                    <option value="Not Vaccinated">Not Vaccinated</option>
-                  </Select>
-                </Box>
-
-       
-
-
+          <InputLabel>Vaccination Status</InputLabel>
+          <Select
+            name="vaccineStatus"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" disabled>Select vaccination status</option>
+            <option value="Vaccinated">Vaccinated</option>
+            <option value="Not Vaccinated">Not Vaccinated</option>
+          </Select>
+        </Box>
+   
         <div className="d-grid gap-2" style={{ marginTop: "-20px", marginBottom: "20px" }}>
           <Button className="btnDashBoard"type="submit" >
             <FaPlus /> Add Report
