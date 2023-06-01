@@ -38,34 +38,49 @@ const ObservationReport = () => {
 
   const handleAddReport = (event) => {
     event.preventDefault();
-    const report = {
-      id: Date.now(),
-      animalID: event.target.animalID.value,
-      staffID: event.target.staffID.value,
-      reportDescription: event.target.reportDescription.value,
-      dateReported: event.target.dateReported.value,
-    };
-    setReports([...reports, report]);
+    http
+      .post('/observation-report/add', {
+        animalID: event.target.animalID.value,
+        staffID: event.target.staffID.value,
+        reportDescription: event.target.reportDescription.value,
+        dateReported: event.target.dateReported.value,
+      })
+      .then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Product added to inventory',
+          icon: 'success',
+          timer: 700, // Show the alert for 2 seconds
+          showConfirmButton: false
+        });
+        getObservationReport(); // Refresh the products list
+      })
+      .catch((err) => console.log(err));
     event.target.reset();
   };
 
-  const handleDeleteReport = (index) => {
+  const handleDeleteReport = (_id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover this report!",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this product!',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        const newReports = [...reports];
-        newReports.splice(index, 1);
-        setReports(newReports);
-        Swal.fire("Deleted!", "Your report has been deleted.", "success");
+        http
+          .delete(`/observation-report/delete/${_id}`)
+          .then((res) => {
+            console.log(res);
+            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            getObservationReport(); // Refresh the products list
+          })
+          .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire("Cancelled", "Your report is safe :)", "error");
+        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
       }
     });
   };
@@ -82,6 +97,8 @@ const ObservationReport = () => {
     setReports(newReports);
   };
 
+
+
   const handleEditDialogOpen = (report) => {
     setEditReport(report);
     setEditDialogOpen(true);
@@ -92,21 +109,64 @@ const ObservationReport = () => {
   };
 
   const handleEditDialogSave = () => {
-    const newReports = reports.map((report) => {
-      if (report.id === editReport.id) {
-        return {
-          ...report,
-          animalID: document.getElementById("editAnimalID").value,
-          staffID: document.getElementById("editStaffID").value,
-          reportDescription: document.getElementById("editReportDescription").value,
-          dateReported: document.getElementById("editDateReported").value,
-        };
-      }
-      return report;
-    });
-    setReports(newReports);
-    setEditDialogOpen(false);
+    const editedReport = {
+      animalID: document.getElementById("editAnimalID").value,
+      staffID: document.getElementById("editStaffID").value,
+      reportDescription: document.getElementById("editReportDescription").value,
+      dateReported: document.getElementById("editDateReported").value,
+    };
+  
+    http
+      .put(`/observation-report/edit/${editReport._id}`, editedReport)
+      .then((res) => {
+        const updatedReports = reports.map((report) =>
+          report._id === editReport._id ? { ...report, ...editedReport } : report
+        );
+        setReports(updatedReports);
+        setEditDialogOpen(false);
+        Swal.fire('Success', 'Product updated successfully!', 'success');
+      })
+      .catch((err) => console.log(err));
   };
+  
+
+  // const handleEditReport = (params, event) => {
+  //   const { id, field, props } = params;
+  //   const { value } = event.target;
+  //   const newReports = reports.map((report) => {
+  //     if (report.id === id) {
+  //       return { ...report, [field]: value };
+  //     }
+  //     return report;
+  //   });
+  //   setReports(newReports);
+  // };
+
+  // const handleEditDialogOpen = (report) => {
+  //   setEditReport(report);
+  //   setEditDialogOpen(true);
+  // };
+
+  // const handleEditDialogClose = () => {
+  //   setEditDialogOpen(false);
+  // };
+
+  // const handleEditDialogSave = () => {
+  //   const newReports = reports.map((report) => {
+  //     if (report.id === editReport.id) {
+  //       return {
+  //         ...report,
+  //         animalID: document.getElementById("editAnimalID").value,
+  //         staffID: document.getElementById("editStaffID").value,
+  //         reportDescription: document.getElementById("editReportDescription").value,
+  //         dateReported: document.getElementById("editDateReported").value,
+  //       };
+  //     }
+  //     return report;
+  //   });
+  //   setReports(newReports);
+  //   setEditDialogOpen(false);
+  // };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -143,7 +203,6 @@ const ObservationReport = () => {
               variant="filled"
               fullWidth
               required
-              type="number"
             />
     </Box>
 
@@ -258,7 +317,6 @@ const ObservationReport = () => {
         <Form.Group className="mb-3" controlId="editAnimalID">
           <Form.Label>Animal ID</Form.Label>
           <Form.Control
-            type="number"
             placeholder="Enter animal ID"
             defaultValue={editReport ? editReport.animalID : ""}
             required
