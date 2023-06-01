@@ -345,7 +345,7 @@ const MedicalHistory = () => {
             },
             {
               field: "actions",
-              headerName: "",
+              headerName: "Actions",
               sortable: false,
               filterable: false,
               renderCell: (params) => (
