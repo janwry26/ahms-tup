@@ -23,10 +23,11 @@ const AnimalRecords = () => {
           const records = res.data.map((record, key) => ({
             id: key+1,
             _id: record._id,
+            animalName: record.animalName,
             species: record.species,
             age: record.age,
             gender: record.gender,
-           animalID: record.animalID,
+             animalID: record.animalID,
             breedType: record.breedType,
             weight: record.weight,
             birthDate: record.birthDate,
@@ -44,6 +45,7 @@ const AnimalRecords = () => {
     event.preventDefault();
     http
       .post('/animal/add', {
+        animalName: event.target.animalName.value,
         species: event.target.species.value,
         age: event.target.age.value,
         gender: event.target.gender.value,
@@ -67,9 +69,6 @@ const AnimalRecords = () => {
     event.target.reset();
   };
 
-
-
-
   const handleDeleteRecord = (index) => {
     Swal.fire({
       title: "Are you sure?",
@@ -91,46 +90,6 @@ const AnimalRecords = () => {
     });
   };
 
-  // const handleEditRecord = (params, event) => {
-  //   const { id, field, props } = params;
-  //   const { value } = event.target;
-  //   const newRecords = records.map((record) => {
-  //     if (record.id === id) {
-  //       return { ...record, [field]: value };
-  //     }
-  //     return record;
-  //   });
-  //   setRecords(newRecords);
-  // };
-
-  // const handleEditDialogOpen = (record) => {
-  //   setEditRecord(record);
-  //   setEditDialogOpen(true);
-  // };
-
-  // const handleEditDialogClose = () => {
-  //   setEditDialogOpen(false);
-  // };
-
-  // const handleEditDialogSave = () => {
-  //   const newRecords = records.map((record) => {
-  //     if (record.id === editRecord.id) {
-  //       return {
-  //         ...record,
-  //         species: document.getElementById("editSpecies").value,
-  //         age: document.getElementById("editAge").value,
-  //         gender: document.getElementById("editGender").value,
-  //         animalID: document.getElementById("editAnimalID").value,
-  //         breedType: document.getElementById("editBreedType").value,
-  //         weight: document.getElementById("editWeight").value,
-  //         birthDate: document.getElementById("editBirthDate").value,
-  //       };
-  //     }
-  //     return record;
-  //   });
-  //   setRecords(newRecords);
-  //   setEditDialogOpen(false);
-  // };
   const handleEditRecord = (params, event) => {
     const { id, field, props } = params;
     const { value } = event.target;
@@ -157,6 +116,7 @@ const AnimalRecords = () => {
 
   const handleEditDialogSave = () => {
     const editedRecord = {
+          animalName: document.getElementById("editAnimalName").value,
           species: document.getElementById("editSpecies").value,
           age: document.getElementById("editAge").value,
           gender: document.getElementById("editGender").value,
@@ -207,6 +167,16 @@ const AnimalRecords = () => {
         mt="20px"
       />
       <Form onSubmit={handleAddRecord}>
+      <Box marginBottom="10px">
+      <InputLabel >Name</InputLabel>
+          <TextField
+              placeholder="Input animal name..."
+              name="animalName"
+              variant="filled"
+              fullWidth
+              required
+            />
+      </Box>
       <Box marginBottom="10px">
       <InputLabel >Species</InputLabel>
           <TextField
@@ -336,12 +306,13 @@ const AnimalRecords = () => {
 
           rows={records}
           columns={[
+            { field: "animalName", headerName: "Animal name", flex: 1 },
             { field: "species", headerName: "Species", flex: 1 },
             { field: "age", headerName: "Age", flex: 1 },
             { field: "gender", headerName: "Gender", flex: 1 },
-            { field: "animalID", headerName: "Animal ID", flex: 1 },
+            // { field: "animalID", headerName: "Animal ID", flex: 1 },
             { field: "breedType", headerName: "Breed Type", flex: 1 },
-            { field: "weight", headerName: "Weight", flex: 1 },
+            { field: "weight", headerName: "Weight", flex: 0.6 },
             { field: "birthDate", headerName: "Birth Date", flex: 1 },
             {
               field: "actions",
@@ -380,6 +351,16 @@ const AnimalRecords = () => {
         <DialogTitle>Edit Record</DialogTitle>
         <DialogContent>
           <Form onSubmit={handleEditRecord}>
+
+          <Form.Group className="mb-3" controlId="editAnimalName">
+              <Form.Label>Animal Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter animal name"
+                defaultValue={editRecord ? editRecord.animalName : ""}
+                required
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="editSpecies">
               <Form.Label>Species</Form.Label>
               <Form.Control
