@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Animal = require("../models/Animal");
+const getNextCounterValue = require("./counterUtils");
 
 router.get("/view", async (req, res) => {
     Animal.find()
@@ -9,14 +10,20 @@ router.get("/view", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-    const { breedType, species, weight, gender, age, birthDate} = req.body;
-
-    let animal = new Animal({ breedType, species, weight, gender, age, birthDate });
-    await animal.save();
+    const { animalName, breedType, species, weight, gender, age, birthDate} = req.body;
     
-    animal = await Animal.find({animalID: animal.animalID}).sort({_id:-1}).limit(1);
-    const animalID = animal[0].animalID;
-    res.send("animalID #" + animalID + " has been recorded");
+    try {
+        const animalID = await getNextCounterValue("animals_collection", "count");
+
+        let animal = new Animal({ animalID, animalName, breedType, species, weight, gender, age, birthDate });
+        await animal.save();
+
+        res.send("animalID #" + animalID + " has been recorded");
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred during registration");
+    }
 })
 
 router.put("/edit/:id", async (req, res) => {

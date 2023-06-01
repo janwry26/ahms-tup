@@ -23,11 +23,11 @@ const AnimalRecords = () => {
           const records = res.data.map((record, key) => ({
             id: key+1,
             _id: record._id,
+            animalID: record.animalID,
             animalName: record.animalName,
             species: record.species,
             age: record.age,
-            gender: record.gender,
-             animalID: record.animalID,
+            gender: record.gender,             
             breedType: record.breedType,
             weight: record.weight,
             birthDate: record.birthDate,
@@ -49,7 +49,6 @@ const AnimalRecords = () => {
         species: event.target.species.value,
         age: event.target.age.value,
         gender: event.target.gender.value,
-        animalID: event.target.animalID.value,
         breedType: event.target.breedType.value,
         weight: event.target.weight.value,
         birthDate: event.target.birthDate.value,
@@ -58,7 +57,7 @@ const AnimalRecords = () => {
         console.log(res);
         Swal.fire({
           title: 'Success',
-          text: 'Product added to inventory',
+          text: 'Animal recorded successfully',
           icon: 'success',
           timer: 700, // Show the alert for 2 seconds
           showConfirmButton: false
@@ -120,7 +119,6 @@ const AnimalRecords = () => {
           species: document.getElementById("editSpecies").value,
           age: document.getElementById("editAge").value,
           gender: document.getElementById("editGender").value,
-          animalID: document.getElementById("editAnimalID").value,
           breedType: document.getElementById("editBreedType").value,
           weight: document.getElementById("editWeight").value,
           birthDate: document.getElementById("editBirthDate").value,
@@ -214,20 +212,7 @@ const AnimalRecords = () => {
                     <option value="female">Female</option>
                   </Select>
                 </Box>
-    
-            <Box marginBottom="10px">
-            <InputLabel >Animal Id</InputLabel>
-                <TextField
-                    placeholder="Input animal ID..."
-                    name="animalID"
-                    variant="filled"
-                    fullWidth
-                    required
-                    type="number"
-                  />
-            </Box>
-
-
+  
             <Box marginBottom="10px">
                <InputLabel>Breed Type</InputLabel>
                   <TextField

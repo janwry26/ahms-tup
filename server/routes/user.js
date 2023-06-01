@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const getNextCounterValue = require("./counterUtils");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 const bcrypt = require("bcryptjs");
@@ -13,25 +14,38 @@ router.get("/", auth, async (req, res) => {
 
 // Register User
 router.post("/register", async (req, res) => {
-
     const { lastName, firstName, email, contact, username } = req.body;
-    //Hash Password
     const password = bcrypt.hashSync(req.body.password, 10);
-    // Checking User
-    let user = await User.findOne({ email });
-    if (user) {
-        return res.status(400).send("User already exists with this email");
+
+    try {
+        const staffId = await getNextCounterValue("userAccounts", "count");
+
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).send("User already exists with this email");
+        }
+
+        user = new User({
+            staffId,
+            lastName,
+            firstName,
+            email,
+            contactNum: contact,
+            username,
+            password,
+        });
+        await user.save();
+
+        const jwtData = { _id: user.id, username: user.username, email: user.email };
+        const token = jwt.sign(jwtData, process.env.JWTSECRET, { expiresIn: "1h" });
+
+        res.send(token);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred during registration");
     }
-
-    // Save User Into Database
-    user = new User({  lastName, firstName, email, contactNum: contact, username, password });
-    await user.save();
-
-    const jwtData = {_id: user.id, username: user.username, email: user.email}
-    const token = jwt.sign(jwtData, process.env.JWTSECRET, { expiresIn: '1h' })
-
-    res.send(token);
 });
+
 
 router.get("/view", async (req, res) => {
     User.find()

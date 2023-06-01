@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
-const { setAnimalID } = require("../middleware/ainmal-middleware");
-
 const animalSchema = new mongoose.Schema({
     animalID: { type: Number, unique: true },
-    breedType: { type: String },
-    weight: { type: String}, 
-    gender: { type: String },
-    age: { type: String },
-    birthDate: { type: Date },
+    animalName: { type: String, required: true},
+    breedType: { type: String, required: true },
+    species: { type: String, required: true },
+    weight: { type: String, required: true}, 
+    gender: { type: String, required: true },
+    age: { type: String, required: true },
+    birthDate: { type: Date, required: true },
 });
-
-animalSchema.pre('save', setAnimalID);
 
 module.exports = mongoose.model("animals_collection", animalSchema);

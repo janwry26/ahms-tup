@@ -15,7 +15,6 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values, { resetForm }) => {
-    console.log(values);
     http
       .post("/user/register", values)
       .then((res) => {
