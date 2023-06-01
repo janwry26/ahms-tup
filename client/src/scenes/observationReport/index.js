@@ -97,8 +97,6 @@ const ObservationReport = () => {
     setReports(newReports);
   };
 
-
-
   const handleEditDialogOpen = (report) => {
     setEditReport(report);
     setEditDialogOpen(true);
@@ -129,45 +127,6 @@ const ObservationReport = () => {
       .catch((err) => console.log(err));
   };
   
-
-  // const handleEditReport = (params, event) => {
-  //   const { id, field, props } = params;
-  //   const { value } = event.target;
-  //   const newReports = reports.map((report) => {
-  //     if (report.id === id) {
-  //       return { ...report, [field]: value };
-  //     }
-  //     return report;
-  //   });
-  //   setReports(newReports);
-  // };
-
-  // const handleEditDialogOpen = (report) => {
-  //   setEditReport(report);
-  //   setEditDialogOpen(true);
-  // };
-
-  // const handleEditDialogClose = () => {
-  //   setEditDialogOpen(false);
-  // };
-
-  // const handleEditDialogSave = () => {
-  //   const newReports = reports.map((report) => {
-  //     if (report.id === editReport.id) {
-  //       return {
-  //         ...report,
-  //         animalID: document.getElementById("editAnimalID").value,
-  //         staffID: document.getElementById("editStaffID").value,
-  //         reportDescription: document.getElementById("editReportDescription").value,
-  //         dateReported: document.getElementById("editDateReported").value,
-  //       };
-  //     }
-  //     return report;
-  //   });
-  //   setReports(newReports);
-  //   setEditDialogOpen(false);
-  // };
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isLoading, setIsLoading] = useState(true); 
@@ -293,16 +252,16 @@ const ObservationReport = () => {
             sortable: false, 
              filterable: false, 
               renderCell: (params) => 
-              (<div style={{ margintop: '5px auto' }} > 
-               <Button   variant="danger" onClick={() => handleDeleteReport(params.row._id)}>
+              (<div> 
+               <Button  className="btn btn-sm mx-1" variant="danger" onClick={() => handleDeleteReport(params.row._id)}>
                  <FaTrash />
                   </Button> 
-                <Button  variant="primary"  onClick={() => handleEditDialogOpen(params.row)}>
+                <Button  variant="primary" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
                 <FaEdit />
               </Button>
             </div>
           ),
-          flex: 0.5,
+          flex: 0.3,
         },
       ]}
       components={{ Toolbar: GridToolbar }}

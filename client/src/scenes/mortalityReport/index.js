@@ -41,40 +41,57 @@ const MortalityReport = () => {
 
   const handleAddReport = (event) => {
     event.preventDefault();
-    const report = {
-      id: Date.now(),
+    http
+      .post('/mortality-report/add', {
       animalID: event.target.animalID.value,
       staffID: event.target.staffID.value,
-      causeOfDeath: event.target.causeOfDeath.value,
+      casueOfDeath: event.target.casueOfDeath.value,
       deathDate: event.target.deathDate.value,
       deathTime: event.target.deathTime.value,
       dateReported: event.target.dateReported.value,
-    };
-    setReports([...reports, report]);
+      })
+      .then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Product added to inventory',
+          icon: 'success',
+          timer: 700, // Show the alert for 2 seconds
+          showConfirmButton: false
+        });
+        getMortalityReport(); // Refresh the products list
+      })
+      .catch((err) => console.log(err));
     event.target.reset();
   };
 
-  const handleDeleteReport = (index) => {
+
+  const handleDeleteReport = (_id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover this report!",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this product!',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        const newReports = [...reports];
-        newReports.splice(index, 1);
-        setReports(newReports);
-        Swal.fire("Deleted!", "Your report has been deleted.", "success");
+        http
+          .delete(`/mortality-report/delete/${_id}`)
+          .then((res) => {
+            console.log(res);
+            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            getMortalityReport(); // Refresh the products list
+          })
+          .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire("Cancelled", "Your report is safe :)", "error");
+        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
       }
     });
   };
 
+  
   const handleEditReport = (params, event) => {
     const { id, field, props } = params;
     const { value } = event.target;
@@ -97,23 +114,28 @@ const MortalityReport = () => {
   };
 
   const handleEditDialogSave = () => {
-    const newReports = reports.map((report) => {
-      if (report.id === editReport.id) {
-        return {
-          ...report,
-          animalID: document.getElementById("editAnimalID").value,
-          staffID: document.getElementById("editStaffID").value,
-          casueOfDeath: document.getElementById("editCauseOfDeath").value,
-          deathDate: document.getElementById("editDeathDate").value,
-          deathTime: document.getElementById("editDeathTime").value,
-          dateReported: document.getElementById("editDateReported").value,
-        };
-      }
-      return report;
-    });
-    setReports(newReports);
-    setEditDialogOpen(false);
+    const editedReport = {
+      animalID: document.getElementById("editAnimalID").value,
+      staffID: document.getElementById("editStaffID").value,
+      casueOfDeath: document.getElementById("editCauseOfDeath").value,
+      deathDate: document.getElementById("editDeathDate").value,
+      deathTime: document.getElementById("editDeathTime").value,
+      dateReported: document.getElementById("editDateReported").value,
+    };
+  
+    http
+      .put(`/mortality-report/edit/${editReport._id}`, editedReport)
+      .then((res) => {
+        const updatedReports = reports.map((report) =>
+          report._id === editReport._id ? { ...report, ...editedReport } : report
+        );
+        setReports(updatedReports);
+        setEditDialogOpen(false);
+        Swal.fire('Success', 'Product updated successfully!', 'success');
+      })
+      .catch((err) => console.log(err));
   };
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -150,7 +172,6 @@ const MortalityReport = () => {
               variant="filled"
               fullWidth
               required
-              type="number"
             />
       </Box>
 
@@ -162,7 +183,6 @@ const MortalityReport = () => {
               variant="filled"
               fullWidth
               required
-              type="number"
             />
 
         </Box>
@@ -272,15 +292,17 @@ const MortalityReport = () => {
               sortable: false,
               filterable: false,
               renderCell: (params) => (
-                <div style={{ marginTop: "5px auto" }}>
+                <div>
                   <Button
+                  className="btn btn-sm mx-1"
                     variant="danger"
-                    onClick={() => handleDeleteReport(params.rowIndex)}
+                    onClick={() => handleDeleteReport(params.row._id)}
                     style={{ padding: "6px 12px" }}
                   >
                     <FaTrash />
                   </Button>
                   <Button
+                    size="sm"
                     variant="primary"
                     onClick={() => handleEditDialogOpen(params.row)}
                     style={{ padding: "6px 12px" }}
@@ -304,7 +326,6 @@ const MortalityReport = () => {
             <Form.Group className="mb-3" controlId="editAnimalID">
               <Form.Label>Animal ID</Form.Label>
               <Form.Control
-                type="number"
                 placeholder="Enter animal ID"
                 defaultValue={editReport ? editReport.animalID : ""}
                 required
@@ -314,7 +335,6 @@ const MortalityReport = () => {
             <Form.Group className="mb-3" controlId="editStaffID">
               <Form.Label>Staff ID</Form.Label>
               <Form.Control
-                type="number"
                 placeholder="Enter staff ID"
                 defaultValue={editReport ? editReport.staffID : ""}
                 required
@@ -326,7 +346,7 @@ const MortalityReport = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter cause of death"
-                defaultValue={editReport ? editReport.causeOfDeath : ""}
+                defaultValue={editReport ? editReport.casueOfDeath : ""}
                 required
               />
             </Form.Group>
