@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
 
-
 const MortalityReport = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -43,12 +42,12 @@ const MortalityReport = () => {
     event.preventDefault();
     http
       .post('/mortality-report/add', {
-      animalID: event.target.animalID.value,
-      staffID: event.target.staffID.value,
-      casueOfDeath: event.target.casueOfDeath.value,
-      deathDate: event.target.deathDate.value,
-      deathTime: event.target.deathTime.value,
-      dateReported: event.target.dateReported.value,
+        animalID: event.target.animalID.value,
+        staffID: event.target.staffID.value,
+        casueOfDeath: event.target.casueOfDeath.value,
+        deathDate: event.target.deathDate.value,
+        deathTime: event.target.deathTime.value,
+        dateReported: event.target.dateReported.value,
       })
       .then((res) => {
         console.log(res);
@@ -64,7 +63,7 @@ const MortalityReport = () => {
       .catch((err) => console.log(err));
     event.target.reset();
   };
-
+  
 
   const handleDeleteReport = (_id) => {
     Swal.fire({
@@ -280,7 +279,24 @@ const MortalityReport = () => {
             { field: "staffID", headerName: "Staff ID", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
-            { field: "deathTime", headerName: "Death Time", flex: 1 },
+            {
+              field: "deathTime",
+              headerName: "Death Time",
+              flex: 1,
+              valueFormatter: (params) => {
+                const timeParts = params.value.split(":");
+                const hours = parseInt(timeParts[0], 10);
+                const minutes = parseInt(timeParts[1], 10);
+            
+                const date = new Date();
+                date.setHours(hours);
+                date.setMinutes(minutes);
+            
+                const formattedTime = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                return formattedTime;
+              },
+            },
+            
             {
               field: "dateReported",
               headerName: "Date Reported",

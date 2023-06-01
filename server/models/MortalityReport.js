@@ -6,7 +6,7 @@ const mortalityReportSchema = new mongoose.Schema({
     staffID: { type: String, required: true },
     casueOfDeath: { type: String, required: true },
     deathDate: { type: Date, required: true },
-    deathTime: { type: Date, required: true },
+    deathTime: { type: String, required: true },
     dateReported: { type: Date, required: true },
 });
 

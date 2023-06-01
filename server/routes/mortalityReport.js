@@ -27,6 +27,7 @@ router.put("/edit/:id", async (req, res) => {
         animalID: req.body.animalID, 
         staffID: req.body.staffID, 
         casueOfDeath: req.body.casueOfDeath, 
+        deathTime: req.body.deathTime,
         deathDate: req.body.deathDate, 
         medicadeathTimetion: req.body.deathTime, 
         dateReported: req.body.dateReported
