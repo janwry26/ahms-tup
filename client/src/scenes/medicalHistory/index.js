@@ -218,7 +218,7 @@ const MedicalHistory = () => {
             required
             variant="filled"
           >
-            <option value="" disabled>Select an Animal</option>
+            <option value="" >Select an Animal</option>
             {animalList.map((val) => {
                 return (
                   <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
@@ -236,7 +236,7 @@ const MedicalHistory = () => {
             required
             variant="filled"
           >
-            <option value="" disabled>Select a Staff</option>
+            <option value="" >Select a Staff</option>
             {staffList.map((val) => {
                 return (
                   <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
