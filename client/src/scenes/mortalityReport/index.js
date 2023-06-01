@@ -444,7 +444,7 @@ const MortalityReport = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="editDeathDate">
-              <Form.Label>Death Date</Form.Label>
+              <Form.Label>Date</Form.Label>
               <Form.Control
                 type="date"
                 defaultValue={editReport ? editReport.deathDate : ""}
@@ -453,7 +453,7 @@ const MortalityReport = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="editDeathTime">
-              <Form.Label>Death Time</Form.Label>
+              <Form.Label>Time of Death</Form.Label>
               <Form.Control
                 type="time"
                 defaultValue={editReport ? editReport.deathTime : ""}
