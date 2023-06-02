@@ -61,6 +61,7 @@ const BarChart = () => {
 
   return (
     <ResponsiveBar
+    
       data={chartData}
       theme={{
         axis: {
@@ -93,8 +94,8 @@ const BarChart = () => {
       }}
       keys={['quantity']}
       indexBy="itemName"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.3}
+      margin={{ top: 50, right: 350, bottom: 50, left: 60 }}
+      padding={0.2}
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
       colors={['#5cc0af']}
@@ -152,15 +153,15 @@ const BarChart = () => {
               },
             },
           ],
-          anchor: "top-start",
-          direction: 'row',
+          anchor: "bottom-right",
+          direction: 'column',
           justify: false,
-          translateX: 200,
-          translateY: -50,
-          itemsSpacing: 2,
+          translateX: 310,
+          translateY: 0,
+          itemsSpacing: 10,
           itemWidth: 300,
           itemHeight: 20,
-          itemDirection: "top-to-bottom",
+          itemDirection: "left-to-right",
           itemOpacity: 1,
           symbolSize: 20,
           symbolShape: 'square',
@@ -174,9 +175,6 @@ const BarChart = () => {
               },
             },
           ],
-          textStyle: {
-            fill: '#97E3D5', // Change the font color here
-          },
         },
       ]}
       tooltip={({ id, value, data }) => (
