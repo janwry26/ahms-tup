@@ -12,6 +12,7 @@ class Navbar extends Component {
         const hideNavbar = 
         currentRoute === '/dashboard' ||
         currentRoute === '/dashboard/team' ||
+        currentRoute === '/dashboard/pie' ||
         currentRoute === '/dashboard/contacts' ||
         currentRoute === '/dashboard/invoices' ||
         currentRoute === '/dashboard/form' ||
@@ -19,7 +20,6 @@ class Navbar extends Component {
         currentRoute === '/dashboard/line' ||
         currentRoute === '/dashboard/calendar' ||
         currentRoute === '/dashboard/bar' ||
-        currentRoute === '/dashboard/geography' ||
         currentRoute === '/dashboard/task' ||
         currentRoute === '/dashboard/inventory1' ||
         currentRoute === '/dashboard/observation' ||
