@@ -191,7 +191,7 @@ const Sidebar = () => {
               Data
             </Typography>}
             {isAdmin && <Item
-              title="Manage Team"
+              title="Employee Information"
               to="/dashboard/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}

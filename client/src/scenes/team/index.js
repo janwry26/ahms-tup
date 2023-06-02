@@ -1,10 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import http from "../../utils/http";
 import { useEffect, useState } from "react";
@@ -13,16 +9,50 @@ import "../../styles/loader.css";
 const Team = () => {
   const [teamData, setTeamData] = useState({});
   const getTeam = () => {
-    http.get("/admin/view")
+    http.get("/user/view")
       // .then((res) => setTeamData(res.data));
       .then((res) => {
+        const teamData = res.data.map((team,key)=> ({
+          id: key+1,
+          _id: team._id,
+          firstName: team.firstName,
+          lastName: team.lastName,
+          username: team.username,
+          email: team.email,
+          contactNum: team.contactNum,
+          staffId: team.staffId,
+        }));
+        setTeamData(teamData)
         // Process the response data and set it in the state
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
     getTeam();
   }, []);
+
+  //   const getMortalityReport = () => {
+//     http.get('/mortality-report/view')
+//         .then((res) => {
+//           const reports = res.data.map((report, key) => ({
+//             id: key+1,
+//             _id: report._id,
+//             animalID: report.animalID,
+//             staffID: report.staffID,
+//             casueOfDeath: report.casueOfDeath,
+//             deathDate: report.deathDate,
+//             deathTime: report.deathTime,
+//             dateReported: report.dateReported,
+//           }));
+//           setReports(reports);
+//         })
+//         .catch((err) => console.log(err));
+//   }
+
+//   useEffect(() => {
+//     getMortalityReport();
+//   },[])
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -44,7 +74,12 @@ const Team = () => {
     ); // Render the loader while loading
   }
   const columns = [
-    { field: "id", headerName: "ID" },
+    {
+      field: "staffId",
+      headerName: "Staff ID",
+      flex: 0.4,
+      cellClassName: "name-column--cell",
+    },
     {
       field: "firstName",
       headerName: "First Name",
@@ -63,47 +98,20 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: "accessLevel",
-      headerName: "Access Level",
+      field: "email",
+      headerName: "Email",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-          >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography
-              color={colors.grey[100]}
-              sx={{
-                ml: { xs: "0", md: "5px" },
-                display: { xs: "none", md: "block" },
-              }}
-            >
-              {access}
-            </Typography>
-          </Box>
-        );
-      },
+    },
+    {
+      field: "contactNum",
+      headerName: "Contact Number",
+      flex: 1,
     },
   ];
 
   return (
     <Box width="80%" margin="0 auto" className="reload-animation">
-      <Header title="TEAM" subtitle="Managing the Team Members" />
+      <Header title="Details of Employee" subtitle="Viewing of Employee" />
       <Box
         m={{ xs: "20px 0 0 0", md: "40px 0 0 0" }}
         height={{ xs: "60vh", md: "75vh" }}
@@ -131,9 +139,12 @@ const Team = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
+          },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid  rows={teamData} columns={columns}   components={{ Toolbar: GridToolbar }} />
       </Box>
     </Box>
   );
