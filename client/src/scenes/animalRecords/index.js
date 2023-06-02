@@ -69,6 +69,8 @@ const AnimalRecords = () => {
           showConfirmButton: false
         });
         getAnimalRecord(); // Refresh the products list
+        setGender('');
+        setSpecies('');
       })
       .catch((err) => console.log(err));
     event.target.reset();
