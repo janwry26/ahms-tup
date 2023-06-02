@@ -1,194 +1,146 @@
 import { useEffect, useState } from 'react';
 import http from '../utils/http';
-import { ResponsiveBar } from '@nivo/bar';
-import moment from 'moment';
+import { ResponsivePie } from '@nivo/pie';
 import { useTheme } from '@mui/material';
 import { tokens } from "../theme";
 import '../styles/charts.css';
 
-const BarChart = () => {
-  const [products, setProducts] = useState([]);
+const PieChart = () => {
+  const [reports, setReports] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const getProducts = () => {
-    http
-      .get('/inventory/view')
+  const getHealthReports = () => {
+    http.get('/health-report/view')
       .then((res) => {
-        const products = res.data.map((product, key) => ({
-          id: key + 1,
-          _id: product._id,
-          expDate: product.expDate,
-          itemDescription: product.itemDescription,
-          itemName: product.itemName,
-          itemType: product.itemType,
-          quantity: product.quantity,
-          expired: moment(product.expDate).isBefore(moment()),
-        }));
-        setProducts(products);
+        const reportPromises = res.data.map((report, key) => {
+          return http.get(`/animal/view/${report.animalID}`)
+            .then((animalRes) => {
+              const animalName = animalRes.data.animalName;
+              return {
+                id: key + 1,
+                _id: report._id,
+                animalID: report.animalID,
+                staffID: report.staffID,
+                animalName: animalName,
+                healthDescription: report.healthDescription,
+                nextCheckupDate: report.nextCheckupDate,
+                medication: report.medication,
+                vaccineStatus: report.vaccineStatus,
+              };
+            });
+        });
+        Promise.all(reportPromises).then((completedReports) => {
+          setReports(completedReports);
+        });
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
-    getProducts();
+    getHealthReports();
   }, []);
 
-  const maxQuantityProduct = products.reduce((prevProduct, currentProduct) => {
-    return prevProduct.quantity > currentProduct.quantity ? prevProduct : currentProduct;
-  }, {});
+  const vaccinatedAnimals = reports.filter((report) => report.vaccineStatus === 'Vaccinated');
+  const notVaccinatedAnimals = reports.filter((report) => report.vaccineStatus === 'Not Vaccinated');
 
-  const today = moment();
-  const nonExpiredProducts = products.filter((product) => !product.expired);
-  const soonToExpireProduct = nonExpiredProducts.length > 0
-    ? nonExpiredProducts.reduce((prevProduct, currentProduct) => {
-        const prevExpirationDate = moment(prevProduct.expDate);
-        const currentExpirationDate = moment(currentProduct.expDate);
-        const prevDiff = prevExpirationDate.diff(today, 'days');
-        const currentDiff = currentExpirationDate.diff(today, 'days');
-        return prevDiff < currentDiff ? prevProduct : currentProduct;
-      })
-    : null;
+  const chartData = [
+    {
+      id: 'Vaccinated',
+      label: 'Vaccinated',
+      value: vaccinatedAnimals.length,
+    },
+    {
+      id: 'Not Vaccinated',
+      label: 'Not Vaccinated',
+      value: notVaccinatedAnimals.length,
+    },
+  ];
 
-  const expiredProducts = products.filter((product) => product.expired);
-
-  const chartData = products.map((product) => ({
-    itemName: product?.itemName || '',
-    quantity: product?.quantity || 0,
-    expDate: product?.expDate || '',
-    expired: product?.expired || false,
-  }));
+  // Define a new colors array with green and red
+  const visibleColors = ['#5cc0af', '#b42f2f'];
 
   return (
-    <ResponsiveBar
-    
+    <ResponsivePie
       data={chartData}
-      theme={{
-        axis: {
-          domain: {
-            line: {
-              stroke: colors.grey[100],
-            },
-          },
-          legend: {
-            text: {
-              fill: colors.grey[100],
-            },
-          },
-          ticks: {
-            line: {
-              stroke: colors.grey[100],
-              strokeWidth: 1,
-            },
-            text: {
-              fill: colors.grey[100],
-            },
-          },
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      innerRadius={0.5}
+      padAngle={0.7}
+      cornerRadius={3}
+      activeOuterRadiusOffset={8}
+      borderColor={{
+        from: "color",
+        modifiers: [["darker", 0.2]],
+      }}
+      arcLinkLabelsSkipAngle={10}
+      arcLinkLabelsTextColor={colors.grey[100]}
+      arcLinkLabelsThickness={2}
+      arcLinkLabelsColor={{ from: "color" }}
+      enableArcLabels={true}
+      arcLabelsRadiusOffset={0.4}
+      arcLabelsSkipAngle={7}
+      arcLabelsTextColor={{
+        from: "color",
+        modifiers: [["darker", 2]],
+      }}
+      defs={[
+        {
+          id: "dots",
+          type: "patternDots",
+          background: "inherit",
+          color: "#5cc0af",
+          size: 4,
+          padding: 1,
+          stagger: true,
         },
-        legends: {
-          text: {
-            fill: colors.grey[100],
-            fontSize: 14,
-          },
+        {
+          id: "lines",
+          type: "patternLines",
+          background: "inherit",
+          color: "rgba(255, 255, 255, 0.986)",
+          rotation: -45,
+          lineWidth: 6,
+          spacing: 10,
         },
-      }}
-      keys={['quantity']}
-      indexBy="itemName"
-      margin={{ top: 50, right: 350, bottom: 50, left: 60 }}
-      padding={0.2}
-      valueScale={{ type: 'linear' }}
-      indexScale={{ type: 'band', round: true }}
-      colors={['#5cc0af']}
-      borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-      axisTop={null}
-      axisRight={null}
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: 'Item',
-        legendPosition: 'middle',
-        legendOffset: 40,
-      }}
-      axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: 'Quantity',
-        legendPosition: 'middle',
-        legendOffset: -40,
-      }}
-      labelSkipWidth={12}
-      labelSkipHeight={12}
-      labelTextColor="white"
-      animate={true}
-      motionStiffness={90}
-      motionDamping={15}
+      ]}
       legends={[
         {
-          data: [
-            {
-              id: 'maxQuantityProduct',
-              label: `Most Quantity: ${maxQuantityProduct?.itemName || ''}`,
-              color: 'rgba(75, 192, 192, 1)',
-            },
-            {
-              id: 'soonToExpireProduct',
-              label: soonToExpireProduct
-                ? `Soon to Expire: ${soonToExpireProduct.itemName} (Exp Date: ${moment(
-                    soonToExpireProduct.expDate
-                  ).format('MM/DD/YYYY')})`
-                : '',
-              color: 'red',
-            },
-            {
-              id: 'expiredProduct',
-              label: expiredProducts.length > 0
-                ? `Expired: ${expiredProducts.map((product) => product.itemName).join(', ')}`
-                : '',
-              color: 'red',
-              fill: 'red',
-              style: {
-                textDecoration: 'line-through',
-              },
-            },
-          ],
-          anchor: "bottom-right",
-          direction: 'column',
+          anchor: "bottom",
+          direction: "row",
           justify: false,
-          translateX: 310,
-          translateY: 0,
-          itemsSpacing: 10,
-          itemWidth: 300,
-          itemHeight: 20,
+          translateX: 0,
+          translateY: 56,
+          itemsSpacing: 0,
+          itemWidth: 100,
+          itemHeight: 18,
+          itemTextColor: "#fff",
           itemDirection: "left-to-right",
           itemOpacity: 1,
-          symbolSize: 20,
-          symbolShape: 'square',
-
-      
+          symbolSize: 18,
+          symbolShape: "circle",
           effects: [
             {
-              on: 'hover',
+              on: "hover",
               style: {
-                color: 'black',
+                itemTextColor: "#999",
               },
             },
           ],
         },
       ]}
-      tooltip={({ id, value, data }) => (
+      colors={visibleColors} // Use the new colors array
+     
+      tooltip={({ datum }) => (
         <div className="chart-tooltip">
-          <div className="tooltip-header">PRODUCT INFORMATION</div>
+          <div className="tooltip-header">Vaccine Information</div>
           <div className="tooltip-content">
-            <div>Quantity: {value}</div>
-            <div>Expiration Date: {moment(data.expDate).format('MM/DD/YYYY')}</div>
-            {data.expired && <div className="expired-label">Expired</div>}
+            <div>{datum.label + ': ' + datum.value}</div>
           </div>
         </div>
       )}
+      
     />
   );
 };
 
-export default BarChart;
+export default PieChart;
