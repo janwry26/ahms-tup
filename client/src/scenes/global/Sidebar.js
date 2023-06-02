@@ -15,7 +15,6 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -264,13 +263,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Geography Chart"
-              to="/dashboard/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+          
              <Typography
               variant="h6"
               color={colors.grey[300]}
