@@ -140,7 +140,7 @@ const AdminForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
+                type="number"
                 label="Contact Number"
                 onBlur={handleBlur}
                 onChange={handleChange}
