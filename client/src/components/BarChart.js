@@ -1,17 +1,68 @@
-import { useTheme } from "@mui/material";
-import { ResponsiveBar } from "@nivo/bar";
+import { useEffect, useState } from 'react';
+import http from '../utils/http';
+import { ResponsivePie } from '@nivo/pie';
+import { useTheme } from '@mui/material';
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 
-const BarChart = ({ isDashboard = false }) => {
+const PieChart = () => {
+  const [reports, setReports] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const getHealthReports = () => {
+    http.get('/health-report/view')
+      .then((res) => {
+        const reportPromises = res.data.map((report, key) => {
+          return http.get(`/animal/view/${report.animalID}`)
+            .then((animalRes) => {
+              const animalName = animalRes.data.animalName;
+              return {
+                id: key + 1,
+                _id: report._id,
+                animalID: report.animalID,
+                staffID: report.staffID,
+                animalName: animalName,
+                healthDescription: report.healthDescription,
+                nextCheckupDate: report.nextCheckupDate,
+                medication: report.medication,
+                vaccineStatus: report.vaccineStatus,
+              };
+            });
+        });
+        Promise.all(reportPromises).then((completedReports) => {
+          setReports(completedReports);
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getHealthReports();
+  }, []);
+
+  const vaccinatedAnimals = reports.filter((report) => report.vaccineStatus === 'Vaccinated');
+  const notVaccinatedAnimals = reports.filter((report) => report.vaccineStatus === 'Not Vaccinated');
+
+  const chartData = [
+    {
+      id: 'Vaccinated',
+      label: 'Vaccinated',
+      value: vaccinatedAnimals.length,
+    },
+    {
+      id: 'Not Vaccinated',
+      label: 'Not Vaccinated',
+      value: notVaccinatedAnimals.length,
+    },
+  ];
+
+  // Define a new colors array with more visible colors
+  const visibleColors = ['#00b894', '#e74c3c'];
+
   return (
-    <ResponsiveBar
-      data={data}
+    <ResponsivePie
+      data={chartData}
       theme={{
-        // added
         axis: {
           domain: {
             line: {
@@ -36,95 +87,50 @@ const BarChart = ({ isDashboard = false }) => {
         legends: {
           text: {
             fill: colors.grey[100],
+            fontSize: 14,
           },
         },
       }}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.3}
-      valueScale={{ type: "linear" }}
-      indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      borderColor={{
-        from: "color",
-        modifiers: [["darker", "1.6"]],
-      }}
-      axisTop={null}
-      axisRight={null}
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : "country", // changed
-        legendPosition: "middle",
-        legendOffset: 32,
-      }}
-      axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : "food", // changed
-        legendPosition: "middle",
-        legendOffset: -40,
-      }}
-      enableLabel={false}
-      labelSkipWidth={12}
-      labelSkipHeight={12}
-      labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
-      }}
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      innerRadius={0.5}
+      padAngle={0.7}
+      cornerRadius={3}
+      colors={visibleColors}
+      borderColor={{ from: 'color', modifiers: [['darker', 0.6]] }}
+      enableRadialLabels={false}
+      radialLabel={(d) => `${d.label} (${d.value})`}
+      radialLabelsSkipAngle={10}
+      radialLabelsTextColor={colors.greenAccent[400]}
+      radialLabelsLinkColor={{ from: 'color' }}
+      sliceLabel={(d) => `${d.value}`}
+      sliceLabelsSkipAngle={10}
+      sliceLabelsTextColor={colors.text}
       legends={[
         {
-          dataFrom: "keys",
-          anchor: "bottom-right",
-          direction: "column",
+          anchor: 'bottom',
+          direction: 'row',
           justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
+          translateX: 0,
+          translateY: 56,
+          itemsSpacing: 0,
           itemWidth: 100,
-          itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 20,
+          itemHeight: 18,
+          itemTextColor: 'pink',
+          itemOpacity: 1,
+          symbolSize: 18,
+          symbolShape: 'circle',
           effects: [
             {
-              on: "hover",
+              on: 'hover',
               style: {
-                itemOpacity: 1,
+                itemTextColor: '#97E3D5',
               },
             },
           ],
         },
       ]}
-      role="application"
-      barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
-      }}
     />
   );
 };
 
-export default BarChart;
+export default PieChart;
