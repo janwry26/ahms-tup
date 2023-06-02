@@ -39,10 +39,16 @@ const BarChart = () => {
   }, {});
 
   const today = moment();
-  const soonToExpireProduct = products.find((product) => {
-    const expirationDate = moment(product.expDate);
-    return expirationDate.diff(today, 'days') <= 30;
-  });
+  const nonExpiredProducts = products.filter((product) => !product.expired);
+  const soonToExpireProduct = nonExpiredProducts.length > 0
+    ? nonExpiredProducts.reduce((prevProduct, currentProduct) => {
+        const prevExpirationDate = moment(prevProduct.expDate);
+        const currentExpirationDate = moment(currentProduct.expDate);
+        const prevDiff = prevExpirationDate.diff(today, 'days');
+        const currentDiff = currentExpirationDate.diff(today, 'days');
+        return prevDiff < currentDiff ? prevProduct : currentProduct;
+      })
+    : null;
 
   const expiredProducts = products.filter((product) => product.expired);
 
@@ -81,7 +87,7 @@ const BarChart = () => {
         legends: {
           text: {
             fill: colors.grey[100],
-            fontSize: 16,
+            fontSize: 14,
           },
         },
       }}
@@ -146,17 +152,20 @@ const BarChart = () => {
               },
             },
           ],
-          anchor: 'top-start',
+          anchor: "top-start",
           direction: 'row',
           justify: false,
           translateX: 200,
           translateY: -50,
+          itemsSpacing: 2,
           itemWidth: 300,
-          itemHeight: 30,
+          itemHeight: 20,
           itemDirection: "top-to-bottom",
           itemOpacity: 1,
           symbolSize: 20,
           symbolShape: 'square',
+
+      
           effects: [
             {
               on: 'hover',
@@ -172,7 +181,7 @@ const BarChart = () => {
       ]}
       tooltip={({ id, value, data }) => (
         <div className="chart-tooltip">
-          <div className="tooltip-header">{id}</div>
+          <div className="tooltip-header">PRODUCT INFORMATION</div>
           <div className="tooltip-content">
             <div>Quantity: {value}</div>
             <div>Expiration Date: {moment(data.expDate).format('MM/DD/YYYY')}</div>
