@@ -3,6 +3,7 @@ import http from '../utils/http';
 import { ResponsivePie } from '@nivo/pie';
 import { useTheme } from '@mui/material';
 import { tokens } from "../theme";
+import '../styles/charts.css';
 
 const PieChart = () => {
   const [reports, setReports] = useState([]);
@@ -56,79 +57,88 @@ const PieChart = () => {
     },
   ];
 
-  // Define a new colors array with more visible colors
-  const visibleColors = ['#00b894', '#e74c3c'];
+  // Define a new colors array with green and red
+  const visibleColors = ['#5cc0af', '#b42f2f'];
 
   return (
     <ResponsivePie
       data={chartData}
-      theme={{
-        axis: {
-          domain: {
-            line: {
-              stroke: colors.grey[100],
-            },
-          },
-          legend: {
-            text: {
-              fill: colors.grey[100],
-            },
-          },
-          ticks: {
-            line: {
-              stroke: colors.grey[100],
-              strokeWidth: 1,
-            },
-            text: {
-              fill: colors.grey[100],
-            },
-          },
-        },
-        legends: {
-          text: {
-            fill: colors.grey[100],
-            fontSize: 14,
-          },
-        },
-      }}
       margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
       innerRadius={0.5}
       padAngle={0.7}
       cornerRadius={3}
-      colors={visibleColors}
-      borderColor={{ from: 'color', modifiers: [['darker', 0.6]] }}
-      enableRadialLabels={false}
-      radialLabel={(d) => `${d.label} (${d.value})`}
-      radialLabelsSkipAngle={10}
-      radialLabelsTextColor={colors.greenAccent[400]}
-      radialLabelsLinkColor={{ from: 'color' }}
-      sliceLabel={(d) => `${d.value}`}
-      sliceLabelsSkipAngle={10}
-      sliceLabelsTextColor={colors.text}
+      activeOuterRadiusOffset={8}
+      borderColor={{
+        from: "color",
+        modifiers: [["darker", 0.2]],
+      }}
+      arcLinkLabelsSkipAngle={10}
+      arcLinkLabelsTextColor={colors.grey[100]}
+      arcLinkLabelsThickness={2}
+      arcLinkLabelsColor={{ from: "color" }}
+      enableArcLabels={true}
+      arcLabelsRadiusOffset={0.4}
+      arcLabelsSkipAngle={7}
+      arcLabelsTextColor={{
+        from: "color",
+        modifiers: [["darker", 2]],
+      }}
+      defs={[
+        {
+          id: "dots",
+          type: "patternDots",
+          background: "inherit",
+          color: "#5cc0af",
+          size: 4,
+          padding: 1,
+          stagger: true,
+        },
+        {
+          id: "lines",
+          type: "patternLines",
+          background: "inherit",
+          color: "rgba(255, 255, 255, 0.986)",
+          rotation: -45,
+          lineWidth: 6,
+          spacing: 10,
+        },
+      ]}
       legends={[
         {
-          anchor: 'bottom',
-          direction: 'row',
+          anchor: "bottom",
+          direction: "row",
           justify: false,
           translateX: 0,
           translateY: 56,
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 18,
-          itemTextColor: 'pink',
+          itemTextColor: "#fff",
+          itemDirection: "left-to-right",
           itemOpacity: 1,
           symbolSize: 18,
-          symbolShape: 'circle',
+          symbolShape: "circle",
           effects: [
             {
-              on: 'hover',
+              on: "hover",
               style: {
-                itemTextColor: '#97E3D5',
+                itemTextColor: "#999",
               },
             },
           ],
         },
       ]}
+      colors={visibleColors} // Use the new colors array
+     
+      tooltip={({ datum }) => (
+        <div className="chart-tooltip">
+          <div className="tooltip-header">Vaccine Information</div>
+          <div className="tooltip-content">
+            <div>{datum.label + ': ' + datum.value}</div>
+          </div>
+        </div>
+      )}
+      
     />
   );
 };
