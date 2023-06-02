@@ -1,68 +1,65 @@
-
 import { useEffect, useState } from 'react';
 import http from '../utils/http';
 import { ResponsiveBar } from '@nivo/bar';
-import moment from 'moment';
 import { useTheme } from '@mui/material';
 import { tokens } from "../theme";
 import '../styles/charts.css';
 
 const BarChart = () => {
-  const [products, setProducts] = useState([]);
+  const [reports, setReports] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const getProducts = () => {
+  const getMortalityReport = () => {
     http
-      .get('/inventory/view')
+      .get('/mortality-report/view')
       .then((res) => {
-        const products = res.data.map((product, key) => ({
+        const reports = res.data.map((report, key) => ({
           id: key + 1,
-          _id: product._id,
-          expDate: product.expDate,
-          itemDescription: product.itemDescription,
-          itemName: product.itemName,
-          itemType: product.itemType,
-          quantity: product.quantity,
-          expired: moment(product.expDate).isBefore(moment()),
+          _id: report._id,
+          animalID: report.animalID,
+          staffID: report.staffID,
+          casueOfDeath: report.casueOfDeath,
+          deathDate: report.deathDate,
+          deathTime: report.deathTime,
+          dateReported: report.dateReported,
         }));
-        setProducts(products);
+        setReports(reports);
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
-    getProducts();
+    getMortalityReport();
   }, []);
 
-  const maxQuantityProduct = products.reduce((prevProduct, currentProduct) => {
-    return prevProduct.quantity > currentProduct.quantity ? prevProduct : currentProduct;
+  const causeOfDeathCounts = reports.reduce((counts, report) => {
+    counts[report.casueOfDeath] = (counts[report.casueOfDeath] || 0) + 1;
+    return counts;
   }, {});
 
-  const today = moment();
-  const nonExpiredProducts = products.filter((product) => !product.expired);
-  const soonToExpireProduct = nonExpiredProducts.length > 0
-    ? nonExpiredProducts.reduce((prevProduct, currentProduct) => {
-        const prevExpirationDate = moment(prevProduct.expDate);
-        const currentExpirationDate = moment(currentProduct.expDate);
-        const prevDiff = prevExpirationDate.diff(today, 'days');
-        const currentDiff = currentExpirationDate.diff(today, 'days');
-        return prevDiff < currentDiff ? prevProduct : currentProduct;
-      })
-    : null;
+  const sortedCausesOfDeath = Object.keys(causeOfDeathCounts).sort(
+    (a, b) => causeOfDeathCounts[b] - causeOfDeathCounts[a]
+  );
 
-  const expiredProducts = products.filter((product) => product.expired);
+  const mostCommonCauseOfDeath =
+    sortedCausesOfDeath.length > 0 ? sortedCausesOfDeath[0] : '';
 
-  const chartData = products.map((product) => ({
-    itemName: product?.itemName || '',
-    quantity: product?.quantity || 0,
-    expDate: product?.expDate || '',
-    expired: product?.expired || false,
+  const chartData = Object.keys(causeOfDeathCounts).map((causeOfDeath) => ({
+    causeOfDeath,
+    count: causeOfDeathCounts[causeOfDeath],
   }));
+  const highestDeathCount = Math.max(...Object.values(causeOfDeathCounts));
+
+  const getTickValues = (count) => {
+    const tickValues = [];
+    for (let i = 0; i <= count; i++) {
+      tickValues.push(i);
+    }
+    return tickValues;
+  };
 
   return (
     <ResponsiveBar
-    
       data={chartData}
       theme={{
         axis: {
@@ -93,10 +90,10 @@ const BarChart = () => {
           },
         },
       }}
-      keys={['quantity']}
-      indexBy="itemName"
+      keys={['count']}
+      indexBy="causeOfDeath"
       margin={{ top: 50, right: 350, bottom: 50, left: 60 }}
-      padding={0.2}
+      padding={0.5}
       valueScale={{ type: 'linear' }}
       indexScale={{ type: 'band', round: true }}
       colors={['#5cc0af']}
@@ -107,7 +104,7 @@ const BarChart = () => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: 'Item',
+        legend: 'Cause of Death',
         legendPosition: 'middle',
         legendOffset: 40,
       }}
@@ -115,9 +112,13 @@ const BarChart = () => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: 'Quantity',
+        legend: 'Number of Deaths',
         legendPosition: 'middle',
         legendOffset: -40,
+        tickValues: getTickValues(highestDeathCount),
+        valueScale:'linear',
+      
+       
       }}
       labelSkipWidth={12}
       labelSkipHeight={12}
@@ -129,68 +130,34 @@ const BarChart = () => {
         {
           data: [
             {
-              id: 'maxQuantityProduct',
-              label: `Most Quantity: ${maxQuantityProduct?.itemName || ''}`,
-              color: 'rgba(75, 192, 192, 1)',
-            },
-            {
-              id: 'soonToExpireProduct',
-              label: soonToExpireProduct
-                ? `Soon to Expire: ${soonToExpireProduct.itemName} (Exp Date: ${moment(
-                    soonToExpireProduct.expDate
-                  ).format('MM/DD/YYYY')})`
-                : '',
+              id: 'mostCommonCauseOfDeath',
+              label: `Most Common Cause of Death: ${mostCommonCauseOfDeath}`,
               color: 'red',
-            },
-            {
-              id: 'expiredProduct',
-              label: expiredProducts.length > 0
-                ? `Expired: ${expiredProducts.map((product) => product.itemName).join(', ')}`
-                : '',
-              color: 'red',
-              fill: 'red',
-              style: {
-                textDecoration: 'line-through',
-              },
             },
           ],
-          anchor: "bottom-right",
+          anchor: 'bottom-right',
           direction: 'column',
           justify: false,
           translateX: 310,
           translateY: 0,
-          itemsSpacing: 10,
+          itemsSpacing: 2,
           itemWidth: 300,
           itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 1,
+          itemDirection: 'left-to-right',
+          itemTextColor: 'white',
           symbolSize: 20,
-          symbolShape: 'square',
-
-      
           effects: [
             {
               on: 'hover',
               style: {
-                color: 'black',
+                itemTextColor: 'red',
               },
             },
           ],
         },
       ]}
-      tooltip={({ id, value, data }) => (
-        <div className="chart-tooltip">
-          <div className="tooltip-header">PRODUCT INFORMATION</div>
-          <div className="tooltip-content">
-            <div>Quantity: {value}</div>
-            <div>Expiration Date: {moment(data.expDate).format('MM/DD/YYYY')}</div>
-            {data.expired && <div className="expired-label">Expired</div>}
-          </div>
-        </div>
-      )}
     />
   );
 };
 
 export default BarChart;
-
