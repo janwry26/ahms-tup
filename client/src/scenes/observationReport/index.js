@@ -1,5 +1,5 @@
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select,MenuItem } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -17,15 +17,7 @@ const ObservationReport = () => {
   const [editReport, setEditReport] = useState(null);
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
-  const [animal, setAnimal] = useState ('');
-  const [staff, setStaff] = useState ('');
 
-const handleAnimalChange = (event) => {
-  setAnimal(event.target.value);
-}; 
-const handleStaffChange = (event) => {
-  setStaff(event.target.value);
-}; 
    const getObservationReport = () => {
     http.get('/observation-report/view')
     .then((res) => {
@@ -103,8 +95,6 @@ const handleStaffChange = (event) => {
           showConfirmButton: false
         });
         getObservationReport(); // Refresh the products list
-        setAnimal(''); // Reset the selected animal
-        setStaff(''); // Reset the selected staff
       })
       .catch((err) => console.log(err));
     event.target.reset();
@@ -203,7 +193,7 @@ const handleStaffChange = (event) => {
         mt="20px"
       />
   <Form onSubmit={handleAddReport}>
-    {/* <Box marginBottom="10px">
+    <Box marginBottom="10px">
         <InputLabel >Animal</InputLabel>
         <Select
             name="animalID"
@@ -219,48 +209,25 @@ const handleStaffChange = (event) => {
                 )
             })}          
           </Select>
-    </Box> */}
-   <Box marginBottom="10px">
-  <InputLabel>Animal</InputLabel>
-  <TextField
-    value={animal} // Assuming 'animalID' is the selected animal ID
-    name="animalID"
-    variant="filled"
-    fullWidth
-    required
-    onChange={handleAnimalChange} // Assuming 'handleAnimalChange' is the onChange handler
-    select
-    SelectProps={{ displayEmpty: true }}
-  >
-    <MenuItem value="" disabled>Select an Animal</MenuItem>
-    {animalList.map((val) => (
-      <MenuItem value={val.animalID} key={val.animalID}>
-        {val.animalName}
-      </MenuItem>
-    ))}
-  </TextField>
-</Box>
+    </Box>
 
 
     <Box marginBottom="10px">
-      <InputLabel>Staff</InputLabel>
-      <TextField
-        value={staff} // Assuming 'staffID' is the selected staff ID
-        name="staffID"
-        variant="filled"
-        fullWidth
-        required
-        onChange={handleStaffChange} // Assuming 'handleStaffChange' is the onChange handler
-        select
-        SelectProps={{ displayEmpty: true }}
-      >
-        <MenuItem value="" disabled>Select Staff</MenuItem>
-        {staffList.map((val) => (
-          <MenuItem value={val.staffId} key={val.staffId}>
-            {val.lastName + ', ' + val.firstName}
-          </MenuItem>
-        ))}
-      </TextField>
+    <InputLabel>Staff</InputLabel>
+          <Select
+            name="staffID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" >Select a Staff</option>
+            {staffList.map((val) => {
+                return (
+                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                )
+            })}          
+          </Select>
     </Box>
 
     <Box marginBottom="10px">
@@ -366,7 +333,6 @@ const handleStaffChange = (event) => {
             required
           />
         </Form.Group>
-
 
 
         <Form.Group className="mb-3" controlId="editStaffID">
