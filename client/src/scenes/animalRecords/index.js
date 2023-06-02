@@ -1,6 +1,6 @@
 import { useState,useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select,MenuItem } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -14,9 +14,15 @@ const AnimalRecords = () => {
   const [records, setRecords] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
-  const genderOptions = ["Male", "Female"];
-  
-    
+  const [species, setSpecies] = useState('');
+  const [gender, setGender] = useState('');
+
+  const handleSpeciesChange = (event) => {
+    setSpecies(event.target.value);
+  };  
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  }; 
   const getAnimalRecord = () => {
     http.get('/animal/view')
         .then((res) => {
@@ -175,14 +181,59 @@ const AnimalRecords = () => {
             />
       </Box>
       <Box marginBottom="10px">
-      <InputLabel >Species</InputLabel>
-          <TextField
-              placeholder="Input animal species..."
-              name="species"
-              variant="filled"
-              fullWidth
-              required
-            />
+        <InputLabel>Species</InputLabel>
+        <TextField
+          select
+          value={species}
+          name="species"
+          variant="filled"
+          fullWidth
+          required
+          SelectProps={{ displayEmpty: true }}
+        InputLabelProps={{ shrink: true }}
+        onChange={handleSpeciesChange}
+        >
+          <MenuItem value="" disabled> Select species</MenuItem>  
+          <MenuItem value="lion">Lion</MenuItem>
+          <MenuItem value="tiger">Tiger</MenuItem>
+          <MenuItem value="giraffe">Giraffe</MenuItem>
+          <MenuItem value="elephant">Elephant</MenuItem>
+          <MenuItem value="zebra">Zebra</MenuItem>
+          <MenuItem value="crocodile">Crocodile</MenuItem>
+          <MenuItem value="orangutan">Orangutan</MenuItem>
+          <MenuItem value="chimpanzee">Chimpanzee</MenuItem>
+          <MenuItem value="gorilla">Gorilla</MenuItem>
+          <MenuItem value="penguin">Penguin</MenuItem>
+          <MenuItem value="flamingo">Flamingo</MenuItem>
+          <MenuItem value="kangaroo">Kangaroo</MenuItem>
+          <MenuItem value="hippopotamus">Hippopotamus</MenuItem>
+          <MenuItem value="snake">Snake</MenuItem>
+          <MenuItem value="owl">Owl</MenuItem>
+          <MenuItem value="parrot">Parrot</MenuItem>
+          <MenuItem value="macaw">Macaw</MenuItem>
+          <MenuItem value="monkey">Monkey</MenuItem>
+          <MenuItem value="bear">Bear</MenuItem>
+          <MenuItem value="turtle">Turtle</MenuItem>
+          <MenuItem value="cheetah">Cheetah</MenuItem>
+          <MenuItem value="rhinoceros">Rhinoceros</MenuItem>
+          <MenuItem value="leopard">Leopard</MenuItem>
+          <MenuItem value="koala">Koala</MenuItem>
+          <MenuItem value="meerkat">Meerkat</MenuItem>
+          <MenuItem value="ostrich">Ostrich</MenuItem>
+          <MenuItem value="peacock">Peacock</MenuItem>
+          <MenuItem value="hyena">Hyena</MenuItem>
+          <MenuItem value="red-panda">Red Panda</MenuItem>
+          <MenuItem value="squirrel-monkey">Squirrel Monkey</MenuItem>
+          <MenuItem value="gibbon">Gibbon</MenuItem>
+          <MenuItem value="toucan">Toucan</MenuItem>
+          <MenuItem value="camel">Camel</MenuItem>
+          <MenuItem value="llama">Llama</MenuItem>
+          <MenuItem value="wallaby">Wallaby</MenuItem>
+          <MenuItem value="otter">Otter</MenuItem>
+          <MenuItem value="seal">Seal</MenuItem>
+          <MenuItem value="wolf">Wolf</MenuItem>
+          <MenuItem value="reptiles">Reptiles</MenuItem>
+        </TextField>
       </Box>
 
       <Box marginBottom="10px">
@@ -196,7 +247,7 @@ const AnimalRecords = () => {
               type="number"
             />
       </Box>
-
+{/* 
       <Box marginBottom="10px">
                <InputLabel>Animal Gender</InputLabel>
                   <Select
@@ -210,7 +261,26 @@ const AnimalRecords = () => {
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </Select>
-                </Box>
+                </Box> */}
+
+        <Box marginBottom="10px">
+        <InputLabel>Species</InputLabel>
+        <TextField
+          select
+          value={gender}
+          name="gender"
+          variant="filled"
+          fullWidth
+          required
+          SelectProps={{ displayEmpty: true }}
+        InputLabelProps={{ shrink: true }}
+        onChange={handleGenderChange}
+        >
+          <MenuItem value="" disabled> Select Gender</MenuItem>  
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+          </TextField>
+          </Box>
   
             <Box marginBottom="10px">
                <InputLabel>Breed Type</InputLabel>
