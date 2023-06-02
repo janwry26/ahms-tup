@@ -258,15 +258,33 @@ const MortalityReport = () => {
 
         </Box>
         <Box marginBottom="10px">
-          <InputLabel >Cause of Death</InputLabel>
-          <TextField
-              placeholder="Input cause of death..."
-              name="casueOfDeath"
-              variant="filled"
-              fullWidth
-              required
-            />
-          </Box>  
+          <InputLabel>Cause of Death</InputLabel>
+          <Select
+            name="casueOfDeath"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="">Select cause of death</option>
+            <option value="Age-related conditions">Age-related conditions</option>
+            <option value="Disease">Disease</option>
+            <option value="Genetic conditions">Genetic conditions</option>
+            <option value="Trauma">Trauma</option>
+            <option value="Stress-related factors">Stress-related factors</option>
+            <option value="Reproductive problems">Reproductive problems</option>
+            <option value="Nutritional imbalances">Nutritional imbalances</option>
+            <option value="Parasitic infections">Parasitic infections</option>
+            <option value="Accidental poisonings">Accidental poisonings</option>
+            <option value="Anesthesia-related complications">Anesthesia-related complications</option>
+            <option value="Respiratory infections">Respiratory infections</option>
+            <option value="Gastrointestinal disorders">Gastrointestinal disorders</option>
+            <option value="Cardiovascular diseases">Cardiovascular diseases</option>
+            <option value="Renal (kidney) failure">Renal (kidney) failure</option>
+            <option value="Neurological disorders">Neurological disorders</option>
+          </Select>
+        </Box>
+
 
           <Box marginBottom="10px">
           <InputLabel >Date</InputLabel>
@@ -434,14 +452,31 @@ const MortalityReport = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="editCauseOfDeath">
-              <Form.Label>Cause of Death</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter cause of death"
-                defaultValue={editReport ? editReport.casueOfDeath : ""}
-                required
-              />
-            </Form.Group>
+            <Form.Label>Cause of Death</Form.Label>
+            <Form.Control
+              as="select"
+              defaultValue={editReport ? editReport.causeOfDeath : ""}
+              required
+            >
+              <option value="">Select cause of death</option>
+              <option value="Age-related conditions">Age-related conditions</option>
+              <option value="Disease">Disease</option>
+              <option value="Genetic conditions">Genetic conditions</option>
+              <option value="Trauma">Trauma</option>
+              <option value="Stress-related factors">Stress-related factors</option>
+              <option value="Reproductive problems">Reproductive problems</option>
+              <option value="Nutritional imbalances">Nutritional imbalances</option>
+              <option value="Parasitic infections">Parasitic infections</option>
+              <option value="Accidental poisonings">Accidental poisonings</option>
+              <option value="Anesthesia-related complications">Anesthesia-related complications</option>
+              <option value="Respiratory infections">Respiratory infections</option>
+              <option value="Gastrointestinal disorders">Gastrointestinal disorders</option>
+              <option value="Cardiovascular diseases">Cardiovascular diseases</option>
+              <option value="Renal (kidney) failure">Renal (kidney) failure</option>
+              <option value="Neurological disorders">Neurological disorders</option>
+            </Form.Control>
+          </Form.Group>
+
 
             <Form.Group className="mb-3" controlId="editDeathDate">
               <Form.Label>Date</Form.Label>
