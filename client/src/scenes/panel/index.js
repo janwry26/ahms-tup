@@ -1,14 +1,12 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useState,useEffect } from "react";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import Header from "../../components/Header";
 import PieChart from "../../components/PieChart";
 import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import LineChart from "../../components/LineChart";
-import ProgressCircle from "../../components/ProgressCircle";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import { Link } from 'react-router-dom';
 import PetsIcon from '@mui/icons-material/Pets';

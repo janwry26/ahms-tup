@@ -348,7 +348,7 @@ const Sidebar = () => {
           </ListItemButton>
           <Collapse in={medicalOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton component={Link} to="/dashboard/medical/view" style={{  marginLeft: '12px', }}>
+              <ListItemButton component={Link} to="/dashboard/view-medical-history" style={{  marginLeft: '12px', }}>
                 <ListItemIcon>
                   <MedicalInformationIcon />
                 </ListItemIcon>

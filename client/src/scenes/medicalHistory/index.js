@@ -53,31 +53,7 @@ const MedicalHistory = () => {
     .catch((err) => console.log(err));
   }
 
-  // const getHealthReport = () => {
-    
-  //   http.get('/health-report/view')
-  //       .then((res) => {
-  //         const reports = res.data.map((report, key) => {
-  //           return http.get(`/animal/view/${report.animalID}`)
-  //           .then ((animalRes) => {
-  //             const animalName = animalRes.data.animalName;
-  //             return {
-  //               id: key+1,
-  //               _id: report._id,
-  //               animalID: report.animalID,
-  //               staffID: report.staffID,
-  //               animalName: animalName,
-  //               healthDescription: report.healthDescription,
-  //               nextCheckupDate: report.nextCheckupDate,
-  //               medication: report.medication,
-  //               vaccineStatus: report.vaccineStatus,
-  //             }
-  //           })
-  //         });
-  //         setReports(reports);
-  //       })
-  //       .catch((err) => console.log(err));
-  // }
+
 
   const getAnimals = () => {
     
@@ -178,27 +154,7 @@ const MedicalHistory = () => {
       .catch((err) => console.log(err));
   };
 
-  
-  // const handleDeleteReport = (index) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You will not be able to recover this report!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes, delete it!",
-  //     cancelButtonText: "No, cancel!",
-  //     reverseButtons: true,
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       const newReports = [...reports];
-  //       newReports.splice(index, 1);
-  //       setReports(newReports);
-  //       Swal.fire("Deleted!", "Your report has been deleted.", "success");
-  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //       Swal.fire("Cancelled", "Your report is safe :)", "error");
-  //     }
-  //   });
-  // };
+
 
   const handleDeleteReport = (_id) => {
     Swal.fire({
