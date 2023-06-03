@@ -4,7 +4,6 @@ import { Menu, ProSidebar, MenuItem, } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -18,6 +17,9 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PreviewIcon from '@mui/icons-material/Preview';
+import { ListItemButton, ListItemIcon, ListItemText, Collapse, List } from "@mui/material";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import PetsIcon from '@mui/icons-material/Pets';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
@@ -59,6 +61,11 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [medicalOpen, setMedicalOpen] = useState(false);
+
+  const handleMedicalClick = () => {
+    setMedicalOpen(!medicalOpen);
+  };
 
   // For API
   const [currentUser, setCurrentUser] = useState("");
@@ -331,13 +338,26 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-             <Item
-              title="Medical History"
-              to="/dashboard/medical"
-              icon={<MedicalInformationIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            
+            <ListItemButton component={Link} to="/dashboard/medical" onClick={handleMedicalClick} style={{ width: '200px', marginLeft: '12px',}}>
+            <ListItemIcon>
+              <MedicalInformationIcon />
+            </ListItemIcon>
+            <ListItemText primary="Medical History" />
+            {medicalOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={medicalOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton component={Link} to="/dashboard/medical/view" style={{  marginLeft: '12px', }}>
+                <ListItemIcon>
+                  <MedicalInformationIcon />
+                </ListItemIcon>
+                <ListItemText primary="View Medical History"/>
+              </ListItemButton>
+            </List>
+          </Collapse>
+
+              {/* ... */}
           </Box>
         </Menu>
       </ProSidebar>

@@ -1,9 +1,9 @@
 import { Box, IconButton, useTheme, Menu, MenuItem, Badge, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, TextField } from "@mui/material";
-import { useContext, useState,useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import "../../styles/topbar.css"
+import "../../styles/topbar.css";
 import http from "../../utils/http";
 
 const Topbar = () => {
@@ -14,30 +14,8 @@ const Topbar = () => {
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(1); // Update the notification count based on your logic
+  const [notificationCount, setNotificationCount] = useState(0);
   const [products, setProducts] = useState([]);
-
-  const getProducts = () => {
-    http.get('/inventory/view')
-        .then((res) => {
-          const products = res.data.map((product, key) => ({
-            id: key+1,
-            _id: product._id,
-            expDate: product.expDate,
-            itemDescription: product.itemDescription,
-            itemName: product.itemName,
-            itemType: product.itemType,
-            quantity: product.quantity,
-          }));
-          setProducts(products);
-        })
-        .catch((err) => console.log(err));
-  }
-
-  useEffect(() => {
-    getProducts();
-  },[])
-
   const userProfile = {
     username: "janwryMock",
     name: "Janwry DelaCruz",
@@ -45,6 +23,31 @@ const Topbar = () => {
     contact: "1234567890",
     role: "Admin",
   };
+  const getProducts = () => {
+    http
+      .get("/inventory/view")
+      .then((res) => {
+        const products = res.data.map((product, key) => ({
+          id: key + 1,
+          _id: product._id,
+          expDate: product.expDate,
+          itemDescription: product.itemDescription,
+          itemName: product.itemName,
+          itemType: product.itemType,
+          quantity: product.quantity,
+        }));
+        setProducts(products);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  useEffect(() => {
+    setNotificationCount(products.length);
+  }, [products]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,6 +85,27 @@ const Topbar = () => {
     setIsProfileDialogOpen(false);
   };
 
+  const handleRemoveItem = (itemId) => {
+    // Remove the item from the products state based on its ID
+    const updatedProducts = products.filter((product) => product.id !== itemId);
+    setProducts(updatedProducts);
+    localStorage.setItem("removedItems", JSON.stringify(updatedProducts)); // Store the updated products in local storage
+  };
+
+  const handleRemoveAllItems = () => {
+    // Remove all items from the products state
+    setProducts([]);
+    localStorage.setItem("removedItems", "[]"); // Store an empty array in local storage to remove all items
+  };
+
+  // Load the removed items from local storage on component mount
+  useEffect(() => {
+    const removedItems = localStorage.getItem("removedItems");
+    if (removedItems) {
+      setProducts(JSON.parse(removedItems));
+    }
+  }, []);
+
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
@@ -89,8 +113,7 @@ const Topbar = () => {
         display="flex"
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
-      >
-      </Box>
+      ></Box>
 
       {/* ICONS */}
       <Box display="flex">
@@ -120,12 +143,24 @@ const Topbar = () => {
           open={isNotificationOpen}
           onClose={handleNotificationClose}
         >
-           <h5 className="notification-title">Notifications</h5>
-          <MenuItem>New item added on inventory</MenuItem>
-          <MenuItem>New added animal record</MenuItem>
-          <MenuItem>New added mortality report</MenuItem>
-          <MenuItem>New added observation report</MenuItem>
-          <MenuItem>New added medical history record</MenuItem>
+          <h5 className="notification-title">Notifications</h5>
+          {products.length === 0 ? (
+            <MenuItem>No new items</MenuItem>
+          ) : (
+            products.map((product) => (
+              <MenuItem key={product.id}>
+                {product.itemName}
+                <IconButton onClick={() => handleRemoveItem(product.id)}>
+                  Remove
+                </IconButton>
+              </MenuItem>
+            ))
+          )}
+          {products.length > 0 && (
+            <MenuItem>
+              <IconButton onClick={handleRemoveAllItems}>Remove All</IconButton>
+            </MenuItem>
+          )}
         </Menu>
       </Box>
 
@@ -180,7 +215,9 @@ const Topbar = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="warning" onClick={handleCloseProfileDialog}>Close</Button>
+          <Button variant="warning" onClick={handleCloseProfileDialog}>
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
