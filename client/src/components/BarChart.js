@@ -7,31 +7,42 @@ import '../styles/charts.css';
 
 const BarChart = () => {
   const [reports, setReports] = useState([]);
+
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const getMortalityReport = () => {
-    http
-      .get('/mortality-report/view')
-      .then((res) => {
-        const reports = res.data.map((report, key) => ({
-          id: key + 1,
-          _id: report._id,
-          animalID: report.animalID,
-          staffID: report.staffID,
-          casueOfDeath: report.casueOfDeath,
-          deathDate: report.deathDate,
-          deathTime: report.deathTime,
-          dateReported: report.dateReported,
-        }));
-        setReports(reports);
-      })
-      .catch((err) => console.log(err));
-  };
+
+    const getMortalityReport = () => {
+    http.get('/mortality-report/view')
+        .then((res) => {
+          const reports = res.data.map((report, key) => ({
+            id: key+1,
+            _id: report._id,
+            animalID: report.animalID,
+            staffID: report.staffID,
+            casueOfDeath: report.casueOfDeath,
+            deathDate: report.deathDate,
+            deathTime: report.deathTime,
+            dateReported: report.dateReported,
+          }));
+          setReports(reports);
+        })
+        .catch((err) => console.log(err));
+  }
 
   useEffect(() => {
     getMortalityReport();
-  }, []);
+  },[])
 
+  
+  const Tooltip = ({ data }) => (
+    <div className="chart-tooltip">
+         <div className="tooltip-header">Death Information</div>
+      <div className='tooltip-content'>{`Count of Deaths: ${data.count}`}</div>
+    </div>
+
+    
+  );
   const causeOfDeathCounts = reports.reduce((counts, report) => {
     counts[report.casueOfDeath] = (counts[report.casueOfDeath] || 0) + 1;
     return counts;
@@ -48,6 +59,7 @@ const BarChart = () => {
     causeOfDeath,
     count: causeOfDeathCounts[causeOfDeath],
   }));
+
   const highestDeathCount = Math.max(...Object.values(causeOfDeathCounts));
 
   const getTickValues = (count) => {
@@ -117,8 +129,6 @@ const BarChart = () => {
         legendOffset: -40,
         tickValues: getTickValues(highestDeathCount),
         valueScale:'linear',
-      
-       
       }}
       labelSkipWidth={12}
       labelSkipHeight={12}
@@ -156,6 +166,7 @@ const BarChart = () => {
           ],
         },
       ]}
+      tooltip={Tooltip}
     />
   );
 };
