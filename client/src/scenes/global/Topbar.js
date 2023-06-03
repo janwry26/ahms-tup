@@ -3,6 +3,8 @@ import { useContext, useState, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
 import "../../styles/topbar.css";
 import http from "../../utils/http";
 
@@ -10,7 +12,8 @@ const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,22 +53,22 @@ const Topbar = () => {
   }, [products]);
 
   const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    setMenuAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setMenuAnchorEl(null);
   };
 
   const handleNotificationClick = (event) => {
     setIsNotificationOpen(true);
-    setAnchorEl(event.currentTarget);
+    setNotificationAnchorEl(event.currentTarget);
     setNotificationCount(0); // Reset the notification count when clicked
   };
 
   const handleNotificationClose = () => {
     setIsNotificationOpen(false);
-    setAnchorEl(null);
+    setNotificationAnchorEl(null);
   };
 
   const handleLogout = () => {
@@ -107,16 +110,18 @@ const Topbar = () => {
   }, []);
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
+    <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
       {/* SEARCH BAR */}
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
-      ></Box>
+      >
+        {/* Your search bar content */}
+      </Box>
 
       {/* ICONS */}
-      <Box display="flex">
+      <Box display="flex" alignItems="center" ml={2}>
         <IconButton onClick={handleNotificationClick}>
           <Badge badgeContent={notificationCount} color="error">
             <NotificationsOutlinedIcon />
@@ -126,8 +131,8 @@ const Topbar = () => {
           <PersonOutlinedIcon />
         </IconButton>
         <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
           onClose={handleMenuClose}
         >
           <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
@@ -139,27 +144,45 @@ const Topbar = () => {
           )}
         </Menu>
         <Menu
-          anchorEl={anchorEl}
+          anchorEl={notificationAnchorEl}
           open={isNotificationOpen}
           onClose={handleNotificationClose}
+          className="notification-menu"
+         
         >
-          <h5 className="notification-title">Notifications</h5>
-          {products.length === 0 ? (
-            <MenuItem>No new items</MenuItem>
-          ) : (
-            products.map((product) => (
-              <MenuItem key={product.id}>
-                {product.itemName}
-                <IconButton onClick={() => handleRemoveItem(product.id)}>
-                  Remove
-                </IconButton>
-              </MenuItem>
-            ))
-          )}
+          <DialogTitle>Notifications</DialogTitle>
+          <DialogContent>
+            <div className="notification-items">
+              {products.length === 0 ? (
+                <Typography variant="body2" className="no-items-text">
+                  No new items
+                </Typography>
+              ) : (
+                products.map((product) => (
+                  <div className="notification-item" key={product.id}>
+                    <Box className="notification-layout">
+                      <Typography variant="body3" className="item">{product.itemName}</Typography>
+                      <Typography variant="body2" className="added-text">
+                        Added to inventory
+                      </Typography>
+                      <IconButton
+                        onClick={() => handleRemoveItem(product.id, product.itemName)}
+                        className="remove-button"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </div>
+                ))
+              )}
+            </div>
+          </DialogContent>
           {products.length > 0 && (
-            <MenuItem>
-              <IconButton onClick={handleRemoveAllItems}>Remove All</IconButton>
-            </MenuItem>
+            <DialogActions>
+              <Button onClick={handleRemoveAllItems} color="error">
+                Remove All
+              </Button>
+            </DialogActions>
           )}
         </Menu>
       </Box>

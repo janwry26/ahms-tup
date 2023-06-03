@@ -3,4 +3,23 @@
     margin: 10px 0;
     color: #5cc0af;
   }
-  
+  .notification-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    margin-right: 2rem;
+  }
+
+  .notification-layout{
+    width: 260px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-left: 35px;
+  }
+  .item{
+    color: #5cc0af;
+  }
