@@ -3,7 +3,6 @@ import { useState,useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import PieChart from "../../components/PieChart";
-import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import LineChart from "../../components/LineChart";

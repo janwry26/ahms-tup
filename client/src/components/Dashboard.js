@@ -13,7 +13,6 @@ import Form from "../scenes/form";
 import AdminForm from "../scenes/adminForm";
 import Line from "../scenes/line";
 import Pie from "../scenes/pie";
-import Geography from "../scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../theme";
 import Calendar from "../scenes/calendar/calendar";
@@ -46,7 +45,6 @@ function DashboardMain() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/bar" element={<Bar />} />
             <Route path="/pie" element={<Pie />} />
-            <Route path="/geography" element={<Geography />} />
             <Route path="/task" element={<Task />} />
             <Route path="/inventory1" element={<Inventory />} />
             <Route path="/observation" element={<Observation />} />
