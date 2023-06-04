@@ -294,7 +294,8 @@ const ObservationReport = () => {
 
         { field: "staffName", headerName: "Staff Name", flex: 1 },  
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
-        { field: "dueDate", headerName: "Due Date", flex: 1 },  
+        { field: "dueDate", headerName: "Due Date", flex: 0.7 },  
+        { field: "taskStatus", headerName: "Task Status", flex: 1 },  
          { 
           field: "actions",
            headerName: "Actions", 
