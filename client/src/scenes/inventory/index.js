@@ -1,3 +1,5 @@
+import * as React from 'react';
+import Modal from '@mui/material/Modal';
 import { useState,useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
@@ -15,6 +17,10 @@ const Inventory = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true); 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  
 
   const getProducts = () => {
     http.get('/inventory/view')
@@ -101,11 +107,16 @@ const Inventory = () => {
     setProducts(newProducts);
   };
 
-  const handleQuantityChange = (index, amount) => {
-    const newProducts = [...products];
-    const product = newProducts[index];
-    product.quantity = Math.max(parseInt(product.quantity) + amount, 0);
-    setProducts(newProducts);
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
   };
 
   const handleEditDialogOpen = (product) => {
@@ -166,6 +177,14 @@ const Inventory = () => {
         fontSize="36px"
         mt="20px"
       />
+      <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+      <Box sx={style}>
       <Form onSubmit={handleAddProduct}>
            <Box marginBottom="10px">
                <InputLabel >Medicine</InputLabel>
@@ -238,7 +257,8 @@ const Inventory = () => {
           </Button>
         </div>
       </Form>
-
+      </Box>
+      </Modal>
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -275,7 +295,7 @@ const Inventory = () => {
         className="table"
           rows={products}
           columns={[
-            { field: "id", headerName: "#", flex: 0.5 },
+            { field: "id", headerName: "ID", flex: 0.3 },
             { field: "itemName", headerName: "Name", flex: 1 },
             { field: "itemType", headerName: "Type", flex: 1 },
             { field: "itemDescription", headerName: "Description", flex: 1 },

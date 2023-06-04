@@ -1,20 +1,16 @@
-/* .loader-overlay1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #494a52ea;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  } */
+.btn-color{
+  background: #2e7c67;
+  width: 200px;
+  font-size: 20px;
+  font-weight: 400;
+  border: none;
+  letter-spacing: 4px;
+  border-radius:10px;
 
+}
+.btn-color:hover{
+  background: #326d63;
+}
   .loader1 {
     animation: rotate 1s infinite;
     height: 50px;

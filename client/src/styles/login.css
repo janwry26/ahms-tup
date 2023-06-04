@@ -99,7 +99,7 @@ h2 {
 }
 
 Button.btnDashBoard{
-  width: 200px;
+  width: 100%;
   margin-top: 2rem;
   padding: 10px 20px;
   border-radius:10px;
