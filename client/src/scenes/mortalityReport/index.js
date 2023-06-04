@@ -154,8 +154,8 @@ const MortalityReport = () => {
 
   const handleEditDialogSave = () => {
     const editedReport = {
-      animalID: document.getElementById("editAnimalID").value,
-      staffID: document.getElementById("editStaffID").value,
+      animalID: document.getElementById("editAnimalName").value,
+      staffID: document.getElementById("editStaffName").value,
       casueOfDeath: document.getElementById("editCauseOfDeath").value,
       deathDate: document.getElementById("editDeathDate").value,
       deathTime: document.getElementById("editDeathTime").value,
@@ -236,8 +236,8 @@ const MortalityReport = () => {
                 )
             })}          
           </Select>
-
         </Box>
+
         <Box marginBottom="10px">
           <InputLabel>Cause of Death</InputLabel>
           <Select
@@ -410,54 +410,53 @@ const MortalityReport = () => {
         <DialogTitle>Edit Report</DialogTitle>
         <DialogContent>
           <Form onSubmit={handleEditReport}>
-            <Form.Group className="mb-3" controlId="editAnimalID">
-              <Form.Label>Animal ID</Form.Label>
-              <Form.Control
-                placeholder="Enter animal ID"
+          <Box marginBottom="10px">
+            <InputLabel >Animal Name</InputLabel>
+              <Select
+                  id="editAnimalName"
+                  native
+                  fullWidth
+                  required
                 defaultValue={editReport ? editReport.animalID : ""}
-                required
-                type="number"
-              
-              />
-            </Form.Group>
 
-            <Form.Group className="mb-3" controlId="editStaffID">
-              <Form.Label>Staff ID</Form.Label>
-              <Form.Control
-                placeholder="Enter staff ID"
-                defaultValue={editReport ? editReport.staffID : ""}
-                required
-                type="number"
+                  variant="filled"
+                >
+                  <option value="" >Select an Animal</option>
+                  {animalList.map((val) => {
+                      return (
+                        <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                      )
+                  })}          
+                </Select>
+            </Box>
 
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="editCauseOfDeath">
-            <Form.Label>Cause of Death</Form.Label>
-            <Form.Control
-              as="select"
-              defaultValue={editReport ? editReport.causeOfDeath : ""}
+             <Box marginBottom="10px">
+          <InputLabel>Staff</InputLabel>
+            <Select
+            
+              id="editStaffName"
+              native
+              fullWidth
               required
+              defaultValue={editReport ? editReport.staffID : ""}
+              variant="filled"
             >
-              <option value="">Select cause of death</option>
-              <option value="Age-related conditions">Age-related conditions</option>
-              <option value="Disease">Disease</option>
-              <option value="Genetic conditions">Genetic conditions</option>
-              <option value="Trauma">Trauma</option>
-              <option value="Stress-related factors">Stress-related factors</option>
-              <option value="Reproductive problems">Reproductive problems</option>
-              <option value="Nutritional imbalances">Nutritional imbalances</option>
-              <option value="Parasitic infections">Parasitic infections</option>
-              <option value="Accidental poisonings">Accidental poisonings</option>
-              <option value="Anesthesia-related complications">Anesthesia-related complications</option>
-              <option value="Respiratory infections">Respiratory infections</option>
-              <option value="Gastrointestinal disorders">Gastrointestinal disorders</option>
-              <option value="Cardiovascular diseases">Cardiovascular diseases</option>
-              <option value="Renal (kidney) failure">Renal (kidney) failure</option>
-              <option value="Neurological disorders">Neurological disorders</option>
-            </Form.Control>
-          </Form.Group>
+              <option value="" >Select a Staff</option>
+              {staffList.map((val) => {
+                  return (
+                    <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                  )
+              })}          
+            </Select>
+           </Box>
 
+           <Form.Group className="mb-3" controlId="editCauseOfDeath">
+              <Form.Label>Cause of Death</Form.Label>
+              <Form.Control
+                defaultValue={editReport ? editReport.casueOfDeath : ""}
+                required
+              />
+            </Form.Group>
 
             <Form.Group className="mb-3" controlId="editDeathDate">
               <Form.Label>Date</Form.Label>
