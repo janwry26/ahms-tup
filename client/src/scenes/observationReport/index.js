@@ -1,3 +1,4 @@
+
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -148,8 +149,8 @@ const ObservationReport = () => {
 
   const handleEditDialogSave = () => {
     const editedReport = {
-      animalID: document.getElementById("editAnimalID").value,
-      staffID: document.getElementById("editStaffID").value,
+      animalName: document.getElementById("editAnimalName").value, // Update animalID instead of animalName
+      staffName: document.getElementById("editStaffName").value,
       reportDescription: document.getElementById("editReportDescription").value,
       dateReported: document.getElementById("editDateReported").value,
     };
@@ -166,6 +167,7 @@ const ObservationReport = () => {
       })
       .catch((err) => console.log(err));
   };
+  
   
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -325,24 +327,46 @@ const ObservationReport = () => {
     <DialogTitle>Edit Report</DialogTitle>
     <DialogContent>
       <Form onSubmit={handleEditReport}>
-        <Form.Group className="mb-3" controlId="editAnimalID">
-          <Form.Label>Animal ID</Form.Label>
-          <Form.Control
-            placeholder="Enter animal ID"
+  
+        <Box marginBottom="10px">
+        <InputLabel >Animal</InputLabel>
+        <Select
+            id="editAnimalName"
             defaultValue={editReport ? editReport.animalID : ""}
+            native
+            fullWidth
             required
-          />
+            variant="filled"
+          >
+            <option value="" >Select an Animal</option>
+            {animalList.map((val) => {
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
+          </Select>
+    </Box>
+    <Form.Group className="mb-3" controlId="editReportDescription">
+         
         </Form.Group>
-
-
-        <Form.Group className="mb-3" controlId="editStaffID">
-          <Form.Label>Staff ID</Form.Label>
-          <Form.Control
-            placeholder="Enter staff ID"
+         <Box marginBottom="10px">
+    <InputLabel>Staff</InputLabel>
+          <Select
+            id="editStaffName"
+            native
+            fullWidth
+            required
             defaultValue={editReport ? editReport.staffID : ""}
-            required
-          />
-        </Form.Group>
+            variant="filled"
+          >
+            <option value="" >Select a Staff</option>
+            {staffList.map((val) => {
+                return (
+                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                )
+            })}          
+          </Select>
+    </Box>
 
         <Form.Group className="mb-3" controlId="editReportDescription">
           <Form.Label>Report Description</Form.Label>
