@@ -14,6 +14,7 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -28,6 +29,7 @@ import pf1 from "../../assets/images/random-profiles/pf1.jpg";
 import pf2 from "../../assets/images/random-profiles/pf2.jpg";
 import pf3 from "../../assets/images/random-profiles/pf3.jpg";
 import pf4 from "../../assets/images/random-profiles/pf4.jpg";
+
 const Item = ({ title, to, icon, selected, setSelected, disabled }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -350,7 +352,7 @@ const Sidebar = () => {
             <List component="div" disablePadding>
               <ListItemButton component={Link} to="/dashboard/view-medical-history" style={{  marginLeft: '12px', }}>
                 <ListItemIcon>
-                  <MedicalInformationIcon />
+                  <WorkHistoryIcon />
                 </ListItemIcon>
                 <ListItemText primary="View Medical History"/>
               </ListItemButton>
