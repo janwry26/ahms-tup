@@ -226,6 +226,18 @@ const ObservationReport = () => {
             })}          
           </Select>
     </Box>
+    <Box marginBottom="10px">
+        <InputLabel >Task ID</InputLabel>
+          <TextField
+              placeholder="Input Task ID..."
+
+              name="taskID"
+              variant="filled"
+              fullWidth
+              required
+              type="number" 
+            />
+    </Box>
 
     <Box marginBottom="10px">
         <InputLabel >Task Description</InputLabel>
@@ -238,10 +250,13 @@ const ObservationReport = () => {
             />
     </Box>
 
+
     <Box marginBottom="10px">
         <InputLabel >Task Due Date</InputLabel>
           <TextField
               name="dateReported"
+              placeholder="Input Task Description..."
+
               variant="filled"
               fullWidth
               required
@@ -290,8 +305,8 @@ const ObservationReport = () => {
     <DataGrid
       rows={reports}
       columns={[ 
+        { field: "taskID",headerName: "Task ID", flex: 0.3 },
         { field: "taskName",headerName: "Task Name", flex: 1 },
-
         { field: "staffName", headerName: "Staff Name", flex: 1 },  
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
         { field: "dueDate", headerName: "Due Date", flex: 0.7 },  
@@ -314,7 +329,7 @@ const ObservationReport = () => {
               </Button>
             </div>
           ),
-          flex: 0.5,
+          flex: 0.6,
         },
       ]}
       components={{ Toolbar: GridToolbar }}
