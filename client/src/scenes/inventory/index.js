@@ -12,7 +12,6 @@ import http from "../../utils/http";
 import "../../styles/loader.css"
 const Inventory = () => {
   const [products, setProducts] = useState([]);
-  const [temp, setTemp] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true); 
