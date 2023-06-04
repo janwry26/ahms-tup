@@ -38,10 +38,6 @@ const Inventory = () => {
     getProducts();
   },[])
 
-  // useEffect(() => {
-  //   // Perform necessary reload actions here
-  //   console.log("Component reloaded");
-  // }, []);
 
   const handleAddProduct = (event) => {
     event.preventDefault();
@@ -342,15 +338,12 @@ const Inventory = () => {
 
     <Form.Group className="mb-3" controlId="editType">
     <Form.Label>Type of medicines</Form.Label>
-    <Form.Control as="select" defaultValue={editProduct ? editProduct.itemType : ""} required>
-      <option value="">Select a medicine</option>
-      <option value="Diazepam">Diazepam </option>
-      <option value="Meloxicam">Meloxicam</option>
-      <option value="Doxycycline">Doxycycline</option>
-      <option value="Ivermectin">Ivermectin</option>
-      <option value="Methimazole">Methimazole</option>
-      <option value="Enrofloxacin">Enrofloxacin</option>
-    </Form.Control>
+    <Form.Control
+        type="text"
+        placeholder="Enter product type"
+        defaultValue={editProduct ? editProduct.itemType : ""}
+        required
+      />
   </Form.Group>
 
     <Form.Group className="mb-3" controlId="editDescription">
