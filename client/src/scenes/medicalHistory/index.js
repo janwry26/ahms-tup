@@ -133,8 +133,8 @@ const MedicalHistory = () => {
 
   const handleEditDialogSave = () => {
     const editedReport = {
-      animalID: document.getElementById("editAnimalId").value,
-      staffID: document.getElementById("editStaffId").value,
+      animalID: document.getElementById("editAnimalName").value,
+      staffID: document.getElementById("editStaffName").value,
       healthDescription: document.getElementById("editHealthDescription").value,
      nextCheckupDate: document.getElementById("editNextCheckupDate").value,
       medication: document.getElementById("editMedication").value,
@@ -376,23 +376,46 @@ const MedicalHistory = () => {
         <DialogTitle>Edit Report</DialogTitle>
         <DialogContent>
           <Form onSubmit={handleEditReport}>
-            <Form.Group className="mb-3" controlId="editAnimalId">
-              <Form.Label>Animal</Form.Label>
-              <Form.Control
-                placeholder="Enter animal ID"
-                defaultValue={editReport ? editReport.animalID : ""}
-                required
-              />
-            </Form.Group>
+        
+        <Box marginBottom="10px">
+          <InputLabel>Animal</InputLabel>
+          <Select
+            id="editAnimalName"
+            native
+            fullWidth
+            required
+            defaultValue={editReport ? editReport.animalID : ""}
 
-            <Form.Group className="mb-3" controlId="editStaffId">
-              <Form.Label>Staff</Form.Label>
-              <Form.Control
-                placeholder="Enter staff ID"
-                defaultValue={editReport ? editReport.staffID : ""}
+            variant="filled"
+          >
+            <option value="" >Select an Animal</option>
+            {animalList.map((val) => {
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
+          </Select>
+        </Box>     
+
+             <Box marginBottom="10px">
+              <InputLabel>Staff</InputLabel>
+              <Select
+                id="editStaffName"
+                native
+                fullWidth
                 required
-              />
-            </Form.Group>
+                defaultValue={editReport ? editReport.staffID : ""}
+
+                variant="filled"
+              >
+                <option value="" >Select a Staff</option>
+                {staffList.map((val) => {
+                    return (
+                      <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                    )
+                })}          
+              </Select>
+            </Box>
 
             <Form.Group className="mb-3" controlId="editHealthDescription">
               <Form.Label>Health Description</Form.Label>
