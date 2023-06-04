@@ -10,6 +10,7 @@ import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { formatDate } from "../../utils/formatDate";
 
 
 const ObservationReport = () => {
@@ -39,7 +40,7 @@ const ObservationReport = () => {
               animalName: animalName,
               staffName: staffName,
               reportDescription: report.reportDescription,
-              dateReported: report.dateReported,
+              dateReported: formatDate(report.dateReported),
             };
           });
       });
@@ -163,7 +164,7 @@ const ObservationReport = () => {
         );
         setReports(updatedReports);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success');
+        Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
       })
       .catch((err) => console.log(err));
   };

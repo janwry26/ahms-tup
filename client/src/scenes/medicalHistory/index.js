@@ -9,6 +9,7 @@ import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { formatDate } from "../../utils/formatDate";
 
 const MedicalHistory = () => {
   const [reports, setReports] = useState([]);
@@ -37,7 +38,7 @@ const MedicalHistory = () => {
               animalName: animalName,
               staffName: staffName,
               healthDescription: report.healthDescription,
-              nextCheckupDate: report.nextCheckupDate,
+              nextCheckupDate: formatDate(report.nextCheckupDate),
               medication: report.medication,
               vaccineStatus: report.vaccineStatus,
             };
@@ -149,12 +150,10 @@ const MedicalHistory = () => {
         );
         setReports(updatedReports);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success');
+        Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
       })
       .catch((err) => console.log(err));
   };
-
-
 
   const handleDeleteReport = (_id) => {
     Swal.fire({

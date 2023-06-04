@@ -9,6 +9,7 @@ import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { formatDate } from "../../utils/formatDate";
 
 const MortalityReport = () => {
   const [reports, setReports] = useState([]);
@@ -54,12 +55,12 @@ const MortalityReport = () => {
              _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
-                animalName: animalName,
+              animalName: animalName,
               staffName: staffName,
               casueOfDeath: report.casueOfDeath,
               deathDate: report.deathDate,
               deathTime: report.deathTime,
-              dateReported: report.dateReported,
+              dateReported: formatDate(report.dateReported),
             };
           });
       });
@@ -189,7 +190,7 @@ const MortalityReport = () => {
         );
         setReports(updatedReports);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success');
+        Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
       })
       .catch((err) => console.log(err));
   };
