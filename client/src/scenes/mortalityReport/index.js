@@ -1,4 +1,6 @@
- import { Form, Button } from "react-bootstrap";
+import * as React from 'react';
+import Modal from '@mui/material/Modal'; 
+import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
@@ -17,8 +19,10 @@ const MortalityReport = () => {
   const [editReport, setEditReport] = useState(null);
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
-
- const getMortalityReport = () => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const getMortalityReport = () => {
     http.get('/mortality-report/view')
     .then((res) => {
       const reportPromises = res.data.map((report, key) => {
@@ -175,6 +179,17 @@ const MortalityReport = () => {
       .catch((err) => console.log(err));
   };
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -201,6 +216,14 @@ const MortalityReport = () => {
         fontSize="36px"
         mt="20px"
       />
+       <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+      <Box sx={style}>
       <Form onSubmit={handleAddReport}>
       <Box marginBottom="10px">
       <InputLabel >Animal</InputLabel>
@@ -303,15 +326,14 @@ const MortalityReport = () => {
 
             />
           </Box>
-  
-
         <div className="d-grid gap-2" style={{ marginTop: "-20px", marginBottom: "20px" }}>
           <Button className="btnDashBoard" type="submit">
             <FaPlus /> Add Report
           </Button>
         </div>
       </Form>
-
+      </Box>
+      </Modal>
       <Box
         m="40px 0 0 0"
         height="75vh"

@@ -1,3 +1,5 @@
+import * as React from 'react';
+import Modal from '@mui/material/Modal'; 
 import { useState,useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select,MenuItem } from "@mui/material";
@@ -17,6 +19,9 @@ const AnimalRecords = () => {
   const [editRecord, setEditRecord] = useState(null);
   const [species, setSpecies] = useState('');
   const [gender, setGender] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleSpeciesChange = (event) => {
     setSpecies(event.target.value);
@@ -146,7 +151,17 @@ const AnimalRecords = () => {
       })
       .catch((err) => console.log(err));
   };
-
+  const style = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+    };
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isLoading, setIsLoading] = useState(true); 
@@ -172,6 +187,14 @@ const AnimalRecords = () => {
         fontSize="36px"
         mt="20px"
       />
+       <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+      <Box sx={style}>
       <Form onSubmit={handleAddRecord}>
       <Box marginBottom="10px">
       <InputLabel >Name</InputLabel>
@@ -250,21 +273,7 @@ const AnimalRecords = () => {
               type="number"
             />
       </Box>
-{/* 
-      <Box marginBottom="10px">
-               <InputLabel>Animal Gender</InputLabel>
-                  <Select
-                    name="gender"
-                    native
-                    fullWidth
-                    required
-                    variant="filled"
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </Select>
-                </Box> */}
+
 
         <Box marginBottom="10px">
         <InputLabel>Species</InputLabel>
@@ -327,7 +336,8 @@ const AnimalRecords = () => {
           </Button>
         </div>
       </Form>
-
+      </Box>
+      </Modal>
       <Box
         m="40px 0 0 0"
         height="75vh"
