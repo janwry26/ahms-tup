@@ -17,27 +17,7 @@ const MortalityReport = () => {
   const [editReport, setEditReport] = useState(null);
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
-//   const getMortalityReport = () => {
-//     http.get('/mortality-report/view')
-//         .then((res) => {
-//           const reports = res.data.map((report, key) => ({
-//             id: key+1,
-//             _id: report._id,
-//             animalID: report.animalID,
-//             staffID: report.staffID,
-//             casueOfDeath: report.casueOfDeath,
-//             deathDate: report.deathDate,
-//             deathTime: report.deathTime,
-//             dateReported: report.dateReported,
-//           }));
-//           setReports(reports);
-//         })
-//         .catch((err) => console.log(err));
-//   }
 
-//   useEffect(() => {
-//     getMortalityReport();
-//   },[])
  const getMortalityReport = () => {
     http.get('/mortality-report/view')
     .then((res) => {
@@ -58,7 +38,7 @@ const MortalityReport = () => {
               animalName: animalName,
               staffName: staffName,
               casueOfDeath: report.casueOfDeath,
-              deathDate: report.deathDate,
+              deathDate: formatDate(report.deathDate),
               deathTime: report.deathTime,
               dateReported: formatDate(report.dateReported),
             };

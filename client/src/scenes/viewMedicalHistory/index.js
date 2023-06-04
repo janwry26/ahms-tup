@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import Autocomplete from "@mui/material/Autocomplete";
 import http from "../../utils/http";
 import Header from "../../components/Header";
+import { formatDate } from "../../utils/formatDate";
 
 const ViewMedicalHistory = () => {
   const [searchAnimalName, setSearchAnimalName] = useState("");
@@ -50,7 +51,7 @@ const ViewMedicalHistory = () => {
                   animalName: animalName,
                   staffName: staffName,
                   healthDescription: report.healthDescription,
-                  nextCheckupDate: report.nextCheckupDate,
+                  nextCheckupDate: formatDate(report.nextCheckupDate),
                   medication: report.medication,
                   vaccineStatus: report.vaccineStatus,
                 };

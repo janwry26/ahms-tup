@@ -9,6 +9,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { formatDate } from "../../utils/formatDate";
 
 const AnimalRecords = () => {
   const [records, setRecords] = useState([]);
@@ -36,7 +37,7 @@ const AnimalRecords = () => {
             gender: record.gender,             
             breedType: record.breedType,
             weight: record.weight,
-            birthDate: record.birthDate,
+            birthDate: formatDate(record.birthDate),
           }));
           setRecords(records);
         })
