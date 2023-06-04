@@ -193,7 +193,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Line Chart For Mortality Information
+            Mortality Information
           </Typography>
           <Box height="250px" mt="-20px">
             <LineChart isDashboard={true} />
@@ -210,7 +210,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Pie Chart For Vaccine Status
+           Vaccine Status
           </Typography>
           <Box height="500px" mt="40px">
             <PieChart isDashboard={true} />
@@ -232,7 +232,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Bar Chart For Inventory Information
+           Inventory Information
           </Typography>
           <Box height="250px" mt="-20px">
             <BarChart isDashboard={true} />
