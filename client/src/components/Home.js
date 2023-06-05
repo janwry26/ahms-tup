@@ -61,24 +61,9 @@ function Home() {
             </div>
         <button id="btn1"><SlArrowDown  className='first-page-icon'/></button>
       </div>
-      <div id="page2" className="second-container hidden1 transition">
-        <div className='about shadow'>
-
-            <h1> About the system</h1>
-            <p>
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-            </p>
-        </div>
-        <button id="btn2"><SlArrowDown  className='first-page-icon'/></button>
-      </div>
-      <div id="page3" className="third-container hidden2 transition">
-        <h1>third page</h1>
-        <button id="btn3"><SlArrowUp  className='first-page-icon'/></button>
-      </div>
+     
     </div>
-    // <Link to="/login">
-    //   <button type="button" className="btn btn2 btn-primary btn-lg">Login</button>
-    // </Link>
+   
   );
 }
 

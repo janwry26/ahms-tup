@@ -5,12 +5,6 @@ export const MenuData = [
         cName:"nav-links",
         icon:"fa-solid  fa-house-user"
     },
-    {
-        title: 'About',
-        url:"#",
-        cName:"nav-links",
-        icon:"fa-solid  fa-circle-info"
-    },
 
     {
         title: 'Contact Admin',
