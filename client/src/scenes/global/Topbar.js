@@ -3,17 +3,14 @@ import { useContext, useState, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
+import ClearIcon from "@mui/icons-material/Clear";
 import "../../styles/topbar.css";
 import http from "../../utils/http";
 import jwtDecode from 'jwt-decode';
 
-  const Topbar = () => {
+const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +18,8 @@ import jwtDecode from 'jwt-decode';
   const [products, setProducts] = useState([]);
   const [currentUser, setCurrentUser] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-
+  const [anchorElProfile, setAnchorElProfile] = useState(null);
+  const [anchorElNotification, setAnchorElNotification] = useState(null);
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token);
@@ -32,18 +30,42 @@ import jwtDecode from 'jwt-decode';
     } else {
       setIsAdmin(false);
     }
-  }
+  };
 
-  useEffect(()=> {
-    getCurrentUser()
-  },[])
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      const storedItems = localStorage.getItem("notificationItems");
+      if (storedItems) {
+        setProducts(JSON.parse(storedItems));
+        setNotificationCount(JSON.parse(storedItems).length);
+      } else {
+        getProducts();
+      }
+    } else {
+      const storedRemovedItems = localStorage.getItem("removedNotificationItems");
+      const storedItems = localStorage.getItem("notificationItems");
+      if (storedItems) {
+        setProducts(JSON.parse(storedItems));
+        setNotificationCount(JSON.parse(storedItems).length);
+      } else if (storedRemovedItems) {
+        const removedItems = JSON.parse(storedRemovedItems);
+        setProducts(removedItems);
+        setNotificationCount(removedItems.length);
+      } else {
+        setProducts([]);
+        setNotificationCount(0);
+      }
+    }
+  }, [localStorage.getItem("token")]);
 
   const getProducts = () => {
-    http
-      .get("/inventory/view")
+    http.get('/inventory/view')
       .then((res) => {
-        const products = res.data.map((product, key) => ({
+        const newProducts = res.data.map((product, key) => ({
           id: key + 1,
           _id: product._id,
           expDate: product.expDate,
@@ -52,44 +74,57 @@ import jwtDecode from 'jwt-decode';
           itemType: product.itemType,
           quantity: product.quantity,
         }));
-        setProducts(products);
+        setProducts(newProducts);
+        setNotificationCount(newProducts.length);
+        localStorage.setItem("notificationItems", JSON.stringify(newProducts));
       })
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    getProducts();
-  }, []);
-
-  useEffect(() => {
-    setNotificationCount(products.length);
-  }, [products]);
-
-  const handleMenuOpen = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  };
-
-  const handleNotificationClick = (event) => {
-    setIsNotificationOpen(true);
-    setNotificationAnchorEl(event.currentTarget);
-    setNotificationCount(0); // Reset the notification count when clicked
-  };
-
-  const handleNotificationClose = () => {
-    setIsNotificationOpen(false);
-    setNotificationAnchorEl(null);
+  const handleRemoveItem = (itemId) => {
+    // Remove the item from the products array
+    const updatedProducts = products.filter((product) => product.id !== itemId);
+    setProducts(updatedProducts);
+    setNotificationCount(updatedProducts.length);
+    // Update notification items in local storage only if the user is logged in
+    if (localStorage.getItem("token")) {
+      localStorage.setItem("notificationItems", JSON.stringify(updatedProducts));
+    } else {
+      // If the user is not logged in, store the removed items separately
+      const removedItems = JSON.parse(localStorage.getItem("removedNotificationItems")) || [];
+      const removedItem = products.find((product) => product.id === itemId);
+      removedItems.push(removedItem);
+      localStorage.setItem("removedNotificationItems", JSON.stringify(removedItems));
+    }
   };
 
   const handleLogout = () => {
-    setIsLoading(true); // Show the loader
+    setIsLoading(true);
     localStorage.removeItem("token");
+    // Clear notification items in local storage
+    localStorage.removeItem("notificationItems");
+    localStorage.removeItem("removedNotificationItems"); // Remove removed items when logging out
+    setProducts([]); // Clear the products array
+    setNotificationCount(0); // Reset the notification count
     setTimeout(() => {
       window.location = "/login";
     }, 1500);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorElProfile(null);
+  };
+
+  const handleNotificationClick = (event) => {
+    setAnchorElNotification(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setAnchorElNotification(null);
   };
 
   const handleViewProfile = () => {
@@ -101,40 +136,13 @@ import jwtDecode from 'jwt-decode';
     setIsProfileDialogOpen(false);
   };
 
-  const handleRemoveItem = (itemId) => {
-    // Remove the item from the products state based on its ID
-    const updatedProducts = products.filter((product) => product.id !== itemId);
-    setProducts(updatedProducts);
-    localStorage.setItem("removedItems", JSON.stringify(updatedProducts)); // Store the updated products in local storage
-  };
-
-  const handleRemoveAllItems = () => {
-    // Remove all items from the products state
-    setProducts([]);
-    localStorage.setItem("removedItems", "[]"); // Store an empty array in local storage to remove all items
-  };
-
-  // Load the removed items from local storage on component mount
-  useEffect(() => {
-    const removedItems = localStorage.getItem("removedItems");
-    if (removedItems) {
-      setProducts(JSON.parse(removedItems));
-    }
-  }, []);
-
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
+    <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
-      <Box
-        display="flex"
-        backgroundColor={colors.primary[400]}
-        borderRadius="3px"
-      >
-        {/* Your search bar content */}
-      </Box>
+      <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px"></Box>
 
       {/* ICONS */}
-      <Box display="flex" alignItems="center" ml={2}>
+      <Box display="flex">
         <IconButton onClick={handleNotificationClick}>
           <Badge badgeContent={notificationCount} color="error">
             <NotificationsOutlinedIcon />
@@ -143,11 +151,7 @@ import jwtDecode from 'jwt-decode';
         <IconButton onClick={handleMenuOpen}>
           <PersonOutlinedIcon />
         </IconButton>
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleMenuClose}
-        >
+        <Menu anchorEl={anchorElProfile} open={Boolean(anchorElProfile)} onClose={handleMenuClose}>
           <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
           {isLoading && (
@@ -156,47 +160,16 @@ import jwtDecode from 'jwt-decode';
             </div>
           )}
         </Menu>
-        <Menu
-          anchorEl={notificationAnchorEl}
-          open={isNotificationOpen}
-          onClose={handleNotificationClose}
-          className="notification-menu"
-         
-        >
-          <DialogTitle>Notifications</DialogTitle>
-          <DialogContent>
-            <div className="notification-items">
-              {products.length === 0 ? (
-                <Typography variant="body2" className="no-items-text">
-                  No new items
-                </Typography>
-              ) : (
-                products.map((product) => (
-                  <div className="notification-item" key={product.id}>
-                    <Box className="notification-layout">
-                      <Typography variant="body3" className="item">{product.itemName}</Typography>
-                      <Typography variant="body2" className="added-text">
-                        Added to inventory
-                      </Typography>
-                      <IconButton
-                        onClick={() => handleRemoveItem(product.id, product.itemName)}
-                        className="remove-button"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </div>
-                ))
-              )}
-            </div>
-          </DialogContent>
-          {products.length > 0 && (
-            <DialogActions>
-              <Button onClick={handleRemoveAllItems} color="error">
-                Remove All
-              </Button>
-            </DialogActions>
-          )}
+        <Menu anchorEl={anchorElNotification} open={Boolean(anchorElNotification)} onClose={handleNotificationClose}>
+          <h5 className="notification-title">Notifications</h5>
+          {products.map((product) => (
+            <MenuItem key={product.id}>
+              {product.itemName} added to inventory
+              <IconButton size="small" onClick={() => handleRemoveItem(product.id)}>
+                <ClearIcon />
+              </IconButton>
+            </MenuItem>
+          ))}
         </Menu>
       </Box>
 
@@ -206,12 +179,7 @@ import jwtDecode from 'jwt-decode';
         <DialogContent>
           <Box>
             <Typography variant="subtitle1">Username:</Typography>
-            <TextField
-              value={currentUser.username}
-              fullWidth
-              variant="outlined"
-              disabled
-            />
+            <TextField value={currentUser.username} fullWidth variant="outlined" disabled />
           </Box>
           {currentUser && (
             <Box>
@@ -226,34 +194,19 @@ import jwtDecode from 'jwt-decode';
           )}
           <Box>
             <Typography variant="subtitle1">Email:</Typography>
-            <TextField
-              value={currentUser.email}
-              fullWidth
-              variant="outlined"
-              disabled
-            />
+            <TextField value={currentUser.email} fullWidth variant="outlined" disabled />
           </Box>
           {currentUser && (
-          <Box>
-            <Typography variant="subtitle1">Contact:</Typography>
-            <TextField
-              value={currentUser.contactNum}
-              fullWidth
-              variant="outlined"
-              disabled
-            />
-          </Box>
+            <Box>
+              <Typography variant="subtitle1">Contact:</Typography>
+              <TextField value={currentUser.contactNum} fullWidth variant="outlined" disabled />
+            </Box>
           )}
-           {isAdmin && (
-          <Box>
-            <Typography variant="subtitle1">Acc Type:</Typography>
-            <TextField
-              value={isAdmin.accType}
-              fullWidth
-              variant="outlined"
-              disabled
-            />
-          </Box>
+          {isAdmin && (
+            <Box>
+              <Typography variant="subtitle1">Acc Type:</Typography>
+              <TextField value={isAdmin.accType} fullWidth variant="outlined" disabled />
+            </Box>
           )}
         </DialogContent>
         <DialogActions>
