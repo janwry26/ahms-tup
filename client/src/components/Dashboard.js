@@ -15,7 +15,6 @@ import Line from "../scenes/line";
 import Pie from "../scenes/pie";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../theme";
-import Calendar from "../scenes/calendar/calendar";
 import Task from "../scenes/task";
 import Inventory from "../scenes/inventory"
 import Observation from "../scenes/observationReport"
@@ -42,7 +41,6 @@ function DashboardMain() {
             <Route path="/adminForm" element={<AdminForm />} />
             <Route path="/team" element={<Team />} />
             <Route path="/line" element={<Line />} />
-            <Route path="/calendar" element={<Calendar />} />
             <Route path="/bar" element={<Bar />} />
             <Route path="/pie" element={<Pie />} />
             <Route path="/task" element={<Task />} />
