@@ -7,11 +7,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import "../../styles/topbar.css";
 import http from "../../utils/http";
+import jwtDecode from 'jwt-decode';
 
-const Topbar = () => {
+  const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
@@ -19,13 +19,26 @@ const Topbar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [products, setProducts] = useState([]);
-  const userProfile = {
-    username: "janwryMock",
-    name: "Janwry DelaCruz",
-    email: "janwry@mock.com",
-    contact: "1234567890",
-    role: "Admin",
-  };
+  const [currentUser, setCurrentUser] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const getCurrentUser = () => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token);
+    setCurrentUser(decoded);
+    console.log(decoded);
+    if (decoded.username === "Admin" || decoded.username === "Super Admin") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }
+
+  useEffect(()=> {
+    getCurrentUser()
+  },[])
+
+
   const getProducts = () => {
     http
       .get("/inventory/view")
@@ -194,48 +207,54 @@ const Topbar = () => {
           <Box>
             <Typography variant="subtitle1">Username:</Typography>
             <TextField
-              value={userProfile.username}
+              value={currentUser.username}
               fullWidth
               variant="outlined"
               disabled
             />
           </Box>
-          <Box>
-            <Typography variant="subtitle1">Name:</Typography>
-            <TextField
-              value={userProfile.name}
-              fullWidth
-              variant="outlined"
-              disabled
-            />
-          </Box>
+          {currentUser && (
+            <Box>
+              <Typography variant="subtitle1">Name:</Typography>
+              <TextField
+                value={`${currentUser.firstName}, ${currentUser.lastName}  `}
+                fullWidth
+                variant="outlined"
+                disabled
+              />
+            </Box>
+          )}
           <Box>
             <Typography variant="subtitle1">Email:</Typography>
             <TextField
-              value={userProfile.email}
+              value={currentUser.email}
               fullWidth
               variant="outlined"
               disabled
             />
           </Box>
+          {currentUser && (
           <Box>
             <Typography variant="subtitle1">Contact:</Typography>
             <TextField
-              value={userProfile.contact}
+              value={currentUser.contactNum}
               fullWidth
               variant="outlined"
               disabled
             />
           </Box>
+          )}
+           {isAdmin && (
           <Box>
-            <Typography variant="subtitle1">Role:</Typography>
+            <Typography variant="subtitle1">Acc Type:</Typography>
             <TextField
-              value={userProfile.role}
+              value={isAdmin.accType}
               fullWidth
               variant="outlined"
               disabled
             />
           </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <Button variant="warning" onClick={handleCloseProfileDialog}>

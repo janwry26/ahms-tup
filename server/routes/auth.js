@@ -22,7 +22,13 @@ router.post("/user", async (req, res) => {
         if (!user) return res.status(400).send("Invalid Username");
 
         //generate JWT token
-        const jwtData = {_id: user.id, username: user.username, email: user.email}
+        const jwtData = {
+            _id: user.id,
+            username: user.username,
+            email: user.email,
+            lastName: user.lastName,
+            firstName: user.firstName,
+            contactNum: user.contactNum}
         const token = jwt.sign(jwtData, process.env.JWTSECRET, {expiresIn: "1h"})
 
         res.send(token);
