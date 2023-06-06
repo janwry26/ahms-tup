@@ -274,7 +274,7 @@ const Sidebar = () => {
               Inventory
             </Typography>
             <Item
-              title="Inventory 1"
+              title="Inventory"
               to="inventory1"
               icon={<Inventory2OutlinedIcon />}
               selected={selected}
@@ -289,7 +289,7 @@ const Sidebar = () => {
              Task
             </Typography>
             <Item
-              title="Create Task"
+              title="Task"
               to="/dashboard/task"
               icon={<AddTaskIcon />}
               selected={selected}
