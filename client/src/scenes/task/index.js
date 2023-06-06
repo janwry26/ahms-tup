@@ -25,6 +25,7 @@ const Task = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [currentDate] = useState(new Date().toISOString().split("T")[0]);
   
   const [currentUser, setCurrentUser] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -50,8 +51,8 @@ const Task = () => {
     }
   }
 
-  const getTasks = (stid) => {
-    
+  const getTasks = async (stid) => {
+    await http.put(`task/overdue/${stid}`);
     if (admin) {
       http.get(`task/view`)
       .then((res) => {
@@ -102,7 +103,7 @@ const Task = () => {
                 taskDescription: task.taskDescription,
                 taskDueDate: formatDate(task.taskDueDate),
                 taskStatus: task.taskStatus, 
-                taskAccomplishDate: task.taskAccomplishDate
+                taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
               };
             });
         });
@@ -252,6 +253,36 @@ const Task = () => {
       .catch((err) => console.log(err));
   };
 
+  const handleUpdateStatus = (status, _id) => {
+    let updatedStatus;
+    status != "Completed" ? updatedStatus = "Completed" : updatedStatus = "Pending";
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Task will be mark as completed!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        http
+          .put(`/task/edit-status/${_id}`, {
+            taskStatus: updatedStatus,
+          })
+          .then((res) => {
+            console.log(res);
+            Swal.fire('Success', 'Task updated successfully!', 'success').then(() => window.location.reload());
+            
+          })
+          .catch((err) => console.log(err));
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Your task is safe :)', 'error');
+      }
+    });
+    
+  }
       const style = {
         position: 'absolute',
         top: '50%',
@@ -343,11 +374,11 @@ const Task = () => {
               <TextField
                   name="taskDueDate"
                   placeholder="Input Task Description..."
-
                   variant="filled"
                   fullWidth
                   required
                   type="date" 
+                  inputProps={{ min: currentDate }}
                 />
         </Box>
 
@@ -398,7 +429,8 @@ const Task = () => {
         { field: "staffName", headerName: "Staff Name", flex: 1 },
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
         { field: "taskDueDate", headerName: "Due Date", flex: 0.7 },  
-        { field: "taskStatus", headerName: "Task Status", flex: 1 },  
+        { field: "taskStatus", headerName: "Task Status", flex: 1 },
+        { field: "taskAccomplishDate", headerName: "Task Accomplish Date", flex: 1 },
          { 
           field: "actions",
            headerName: "Actions", 
@@ -426,7 +458,8 @@ const Task = () => {
         { field: "taskName",headerName: "Task Name", flex: 1 },
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
         { field: "taskDueDate", headerName: "Due Date", flex: 0.7 },  
-        { field: "taskStatus", headerName: "Task Status", flex: 1 },  
+        { field: "taskStatus", headerName: "Task Status", flex: 1 },
+        { field: "taskAccomplishDate", headerName: "Task Accomplish Date", flex: 1 },
          { 
           field: "actions",
            headerName: "Actions", 
@@ -434,7 +467,7 @@ const Task = () => {
              filterable: false, 
               renderCell: (params) => 
               (<div> 
-                <Button  variant="success" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
+                <Button disabled={params.row.taskStatus === "Completed"} variant="success" size="sm" onClick={() => handleUpdateStatus(params.row.taskStatus, params.row._id)}>
                   <HowToRegIcon />
                 </Button>
             </div>
@@ -502,6 +535,7 @@ const Task = () => {
           <Form.Control
             type="date"
             defaultValue={editTask ? editTask.taskDueDate : ""}
+            min={currentDate}
             required
           />
         </Form.Group>

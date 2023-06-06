@@ -46,6 +46,35 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update task"));
 });
 
+router.put("/edit-status/:id", async (req, res) => {
+    const currentDate = new Date();
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        taskStatus: req.body.taskStatus,
+        taskAccomplishDate: currentDate
+    })
+    .then(() => {
+        res.send("Task updated successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to update task"));
+});
+
+router.put("/overdue/:userId", async (req, res) => {
+    const { userId } = req.params;
+    const currentDate = new Date();
+  
+    Task.updateMany(
+      { staffID: userId, taskDueDate: { $lt: currentDate }, taskStatus: { $ne: "Completed" } },
+      {
+        taskStatus: "Overdue",
+      }
+    )
+      .then(() => {
+        res.send("Tasks updated successfully");
+      })
+      .catch((err) => res.send(err + "\nFailed to update tasks"));
+  });
+     
+
 router.put("/archive/:id", async (req, res) => {
     Task.findByIdAndUpdate({ _id: req.params.id }, {
         isArchived: true
