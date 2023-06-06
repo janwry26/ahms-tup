@@ -47,8 +47,8 @@ router.post("/register", async (req, res) => {
 });
 
 
-router.get("/view", async (req, res) => {
-    User.find()
+router.get("/view", async (req, res) =>     {
+    User.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
         .then((items) => res.json(items))
         .catch((err) => res.status(400).json("Error: " + err));
 });

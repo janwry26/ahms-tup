@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import "../../styles/loader.css";
 import { FaArchive, } from "react-icons/fa";
 import {  Button } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const Team = () => {
   const [teamData, setTeamData] = useState({});
