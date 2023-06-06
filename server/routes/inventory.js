@@ -36,10 +36,30 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update item"));
 });
 
-router.delete('/delete/:id', async (req, res) => {
-    await Inventory.findByIdAndRemove({ _id: req.params.id})
-        .then((doc) => res.send("Item deleted successfully"))
-        .catch((err) => res.send(err + "\nFailed to delete item"));
+// router.delete('/delete/:id', async (req, res) => {
+//     await Inventory.findByIdAndRemove({ _id: req.params.id})
+//         .then((doc) => res.send("Item deleted successfully"))
+//         .catch((err) => res.send(err + "\nFailed to delete item"));
+// });
+
+router.put("/archive/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: true
+    })
+    .then(() => {
+        res.send("Item archived successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to archive Item"));
+});
+
+router.put("/restore/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: false
+    })
+    .then(() => {
+        res.send("Item restored successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to restore Item"));
 });
 
 

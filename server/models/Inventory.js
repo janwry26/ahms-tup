@@ -7,6 +7,7 @@ const inventorySchema = new mongoose.Schema({
     itemDescription: { type: String, required: true },
     quantity: { type: Number, required: true },
     expDate: { type: String, required: true },
+    isArchived: { type: Boolean }
 });
 
 module.exports = mongoose.model("inventory_collection", inventorySchema);
