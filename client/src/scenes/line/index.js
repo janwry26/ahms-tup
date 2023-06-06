@@ -22,7 +22,7 @@ const Line = () => {
   }
   return (
     <Box m="20px">
-      <Header title="Line Chart" subtitle="Simple Line Chart" />
+      <Header title="Line Chart" subtitle="Detailed information of products on inventory" />
       <Box height="75vh">
         <LineChart />
       </Box>

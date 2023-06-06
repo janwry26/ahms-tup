@@ -21,7 +21,7 @@ const Bar = () => {
   }
   return (
     <Box m="20px">
-      <Header title="Bar Chart" subtitle="Simple Bar Chart" />
+      <Header title="Bar Chart" subtitle="Information for most common cause of death" />
       <Box height="75vh">
         <BarChart />
       </Box>

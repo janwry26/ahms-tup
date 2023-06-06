@@ -21,7 +21,7 @@ const Pie = () => {
   }
   return (
     <Box m="20px" >
-      <Header title="Pie Chart" subtitle="Simple Pie Chart" />
+      <Header title="Pie Chart" subtitle="Information for vaccination status" />
       <Box height="75vh">
         <PieChart />
       </Box>
