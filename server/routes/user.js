@@ -79,6 +79,17 @@ router.get("/view-email/:email", async (req, res) => {
         .catch((err) => res.status(400).json({ error: err.message }));
 });
 
+router.get("/view-staff/:_id", async (req, res) => {
+    const { _id } = req.params;
+    User.findOne({ _id })
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json(user);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
 
 router.put("/edit/:id", async (req, res) => {
     User.findByIdAndUpdate({ _id: req.params.id }, {

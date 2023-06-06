@@ -34,11 +34,13 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update report"));
 });
 
-router.delete('/delete/:id', async (req, res) => {
-    await Report.findByIdAndRemove({ _id: req.params.id})
-        .then((doc) => res.send("Report deleted successfully"))
-        .catch((err) => res.send(err + "\nFailed to delete report"));
-});
+// router.delete('/delete/:id', async (req, res) => {
+//     await Report.findByIdAndRemove({ _id: req.params.id})
+//         .then((doc) => res.send("Report deleted successfully"))
+//         .catch((err) => res.send(err + "\nFailed to delete report"));
+// });
+
+
 
 
 module.exports = router;

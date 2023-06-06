@@ -22,6 +22,15 @@ router.get("/view", async (req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/view-user/:staffID", async (req, res) => {
+    const { staffID } = req.params;
+  
+    Task.find({staffID: staffID, $or: [{ isArchived: { $exists: false } }, { isArchived: false }]})
+        .then((items) => res.json(items))
+        .catch((err) => res.status(400).json("Error: " + err));
+  });
+  
+
 router.put("/edit/:id", async (req, res) => {
     Task.findByIdAndUpdate({ _id: req.params.id }, {
         taskName: req.body.taskName,

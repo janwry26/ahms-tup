@@ -44,7 +44,7 @@ router.put("/edit/:id", async (req, res) => {
 // });
 
 router.put("/archive/:id", async (req, res) => {
-    Task.findByIdAndUpdate({ _id: req.params.id }, {
+    HealthReport.findByIdAndUpdate({ _id: req.params.id }, {
         isArchived: true
     })
     .then(() => {
@@ -54,7 +54,7 @@ router.put("/archive/:id", async (req, res) => {
 });
 
 router.put("/restore/:id", async (req, res) => {
-    Task.findByIdAndUpdate({ _id: req.params.id }, {
+    HealthReport.findByIdAndUpdate({ _id: req.params.id }, {
         isArchived: false
     })
     .then(() => {

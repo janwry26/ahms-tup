@@ -13,6 +13,7 @@ import { useState,useEffect } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
 import { formatDate } from "../../utils/formatDate";
+import jwtDecode from 'jwt-decode';
 
 
 const Task = () => {
@@ -24,38 +25,99 @@ const Task = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  
+  const [currentUser, setCurrentUser] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  let decoded;
+  let admin;
 
-  const getTasks = () => {
-    http.get('/task/view')
-    .then((res) => {
-      const requestPromises = res.data.map((task, key) => {
-        const staffRequest = http.get(`/user/view/${task.staffID}`);
+  const getCurrentUser = () => {
+    const token = localStorage.getItem('token');
+    decoded = jwtDecode(token);
+    setCurrentUser(decoded);
+    if (decoded.username === "Admin" || decoded.username === "Super Admin") {
+      setIsAdmin(true);
+      admin = true;
+    } else {
+      setIsAdmin(false);
+      admin = false;
 
-        return Promise.all([staffRequest])
-          .then(([staffRes]) => {
-            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-
-            return {
-              id: key+1,
-              _id: task._id,
-              taskName: task.taskName,
-              staffId: task.staffID,
-              staffName: staffName,
-              taskDescription: task.taskDescription,
-              taskDueDate: formatDate(task.taskDueDate),
-              taskStatus: task.taskStatus, 
-              taskAccomplishDate: task.taskAccomplishDate
-            };
-          });
-      });
-
-      Promise.all(requestPromises)
-        .then((task) => {
-          setTasks(task);
+      http.get(`/user/view-staff/${decoded._id}`)
+        .then((res) => {
+          getTasks(res.data.staffId);
         })
         .catch((err) => console.log(err));
-    })
-    .catch((err) => console.log(err));
+    }
+  }
+
+  const getTasks = (stid) => {
+    
+    if (admin) {
+      http.get(`task/view`)
+      .then((res) => {
+        const requestPromises = res.data.map((task, key) => {
+          const staffRequest = http.get(`/user/view/${task.staffID}`);
+
+          return Promise.all([staffRequest])
+            .then(([staffRes]) => {
+              const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+              return {
+                id: key+1,
+                _id: task._id,
+                taskName: task.taskName,
+                staffId: task.staffID,
+                staffName: staffName,
+                taskDescription: task.taskDescription,
+                taskDueDate: formatDate(task.taskDueDate),
+                taskStatus: task.taskStatus, 
+                taskAccomplishDate: task.taskAccomplishDate
+              };
+            });
+        });
+
+        Promise.all(requestPromises)
+          .then((task) => {
+            setTasks(task);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+    } else {
+      http.get(`task/view-user/${stid}`)
+      .then((res) => {
+        const requestPromises = res.data.map((task, key) => {
+          const staffRequest = http.get(`/user/view/${task.staffID}`);
+
+          return Promise.all([staffRequest])
+            .then(([staffRes]) => {
+              const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+              return {
+                id: key+1,
+                _id: task._id,
+                taskName: task.taskName,
+                staffId: task.staffID,
+                staffName: staffName,
+                taskDescription: task.taskDescription,
+                taskDueDate: formatDate(task.taskDueDate),
+                taskStatus: task.taskStatus, 
+                taskAccomplishDate: task.taskAccomplishDate
+              };
+            });
+        });
+
+        Promise.all(requestPromises)
+          .then((task) => {
+            setTasks(task);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+    }
+
+    // http.get(`task/view-user/${stid}`)
+    
   }
 
   const getAnimals = () => {
@@ -77,10 +139,15 @@ const Task = () => {
   }
   
   useEffect(() => {
-    getAnimals();
-    getStaffs();
-    getTasks();
-  },[])
+    const fetchData = async () => {
+      await getAnimals();
+      await getStaffs();
+      await getCurrentUser();
+      getTasks();
+    };
+  
+    fetchData();
+  }, []);
 
   const handleAddTask = async (event) => {
     const {
@@ -323,12 +390,12 @@ const Task = () => {
       },
     }}
   >
-    <DataGrid
+    {isAdmin && <DataGrid
       rows={tasks}
       columns={[ 
         { field: "id",headerName: "#", flex: 0.3 },
         { field: "taskName",headerName: "Task Name", flex: 1 },
-        { field: "staffName", headerName: "Staff Name", flex: 1 },  
+        { field: "staffName", headerName: "Staff Name", flex: 1 },
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
         { field: "taskDueDate", headerName: "Due Date", flex: 0.7 },  
         { field: "taskStatus", headerName: "Task Status", flex: 1 },  
@@ -339,22 +406,44 @@ const Task = () => {
              filterable: false, 
               renderCell: (params) => 
               (<div> 
-               <Button  className="btn btn-sm mx-1" variant="primary" onClick={() => handleArchive(params.row._id)}>
+                <Button  className="btn btn-sm mx-1" variant="primary" onClick={() => handleArchive(params.row._id)}>
                  <FaArchive />
-                  </Button> 
+                </Button>
                 <Button className="mx-1" variant="warning" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
-                <FaEdit />
-              </Button>
-              <Button  variant="success" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
-                <HowToRegIcon />
-              </Button>
+                  <FaEdit />
+                </Button>
             </div>
           ),
           flex: 0.6,
         },
       ]}
       components={{ Toolbar: GridToolbar }}
-    />
+    />}
+    {!isAdmin && <DataGrid
+      rows={tasks}
+      columns={[ 
+        { field: "id",headerName: "#", flex: 0.3 },
+        { field: "taskName",headerName: "Task Name", flex: 1 },
+        { field: "taskDescription", headerName: "Task Description", flex: 1 },
+        { field: "taskDueDate", headerName: "Due Date", flex: 0.7 },  
+        { field: "taskStatus", headerName: "Task Status", flex: 1 },  
+         { 
+          field: "actions",
+           headerName: "Actions", 
+            sortable: false, 
+             filterable: false, 
+              renderCell: (params) => 
+              (<div> 
+                <Button  variant="success" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
+                  <HowToRegIcon />
+                </Button>
+            </div>
+          ),
+          flex: 0.6,
+        },
+      ]}
+      components={{ Toolbar: GridToolbar }}
+    />}
   </Box>
 
   {/* Edit Dialog */}
