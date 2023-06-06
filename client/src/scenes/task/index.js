@@ -320,7 +320,9 @@ const Task = () => {
         fontSize="36px"
         mt="20px"
       />
+       {isAdmin &&
        <Button onClick={handleOpen} className="btn btn-color" >Create Task</Button>
+        }
       <Modal
         open={open}
         onClose={handleClose}
