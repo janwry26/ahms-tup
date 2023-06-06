@@ -72,7 +72,7 @@ const Task = () => {
                 taskDescription: task.taskDescription,
                 taskDueDate: formatDate(task.taskDueDate),
                 taskStatus: task.taskStatus, 
-                taskAccomplishDate: task.taskAccomplishDate
+                taskAccomplishDate: formatDate(task.taskAccomplishDate)
               };
             });
         });
