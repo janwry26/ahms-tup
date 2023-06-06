@@ -58,7 +58,6 @@ function Home() {
             <div className='right'>
                 <img src={Hero}/>
             </div>
-        <button id="btn1"><SlArrowDown  className='first-page-icon'/></button>
       </div>
      
     </div>
