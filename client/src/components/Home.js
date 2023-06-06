@@ -47,8 +47,7 @@ function Home() {
             <div className='middle'>
               <h1><span>Animal</span>  Healthcare Management System</h1>
               <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-              Lorem Ipsum is simply dummy text. 
+                Simplify and optimize animal healthcare management with our intuitive system. Task management, medical records, observation report, mortality report, medical history, inventory for medicines, and overall care for pets and animals. Track and monitor their health status effortlessly for timely and effective healthcare delivery.
               </p>
               <div className='btn-container'>
                <Link to="/login">
