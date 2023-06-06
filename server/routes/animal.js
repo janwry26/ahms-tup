@@ -4,9 +4,9 @@ const Animal = require("../models/Animal");
 const getNextCounterValue = require("./counterUtils");
 
 router.get("/view", async (req, res) => {
-    Animal.find()
-        .then((items) => res.json(items))
-        .catch((err) => res.status(400).json("Error: " + err));
+    Animal.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.get("/view/:animalID", async (req, res) => {
@@ -40,6 +40,7 @@ router.post("/add", async (req, res) => {
 
 router.put("/edit/:id", async (req, res) => {
     Animal.findByIdAndUpdate({ _id: req.params.id }, {
+        animalName: req.body.animalName,
         breedType: req.body.breedType, 
         species: req.body.species,
         weight: req.body.weight, 

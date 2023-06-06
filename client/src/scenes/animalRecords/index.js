@@ -82,23 +82,27 @@ const AnimalRecords = () => {
     event.target.reset();
   };
 
-  const handleDeleteRecord = (index) => {
+  const handleDeleteRecord = (_id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover this record!",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this product!',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        const newRecords = [...records];
-        newRecords.splice(index, 1);
-        setRecords(newRecords);
-        Swal.fire("Deleted!", "Your record has been deleted.", "success");
+        http
+          .put(`/animal/archive/${_id}`)
+          .then((res) => {
+            console.log(res);
+            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            getAnimalRecord(); // Refresh the products list
+          })
+          .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire("Cancelled", "Your record is safe :)", "error");
+        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
       }
     });
   };
@@ -125,8 +129,6 @@ const AnimalRecords = () => {
     setEditDialogOpen(false);
   };
 
- 
-
   const handleEditDialogSave = () => {
     const editedRecord = {
           animalName: document.getElementById("editAnimalName").value,
@@ -151,6 +153,7 @@ const AnimalRecords = () => {
       })
       .catch((err) => console.log(err));
   };
+
   const style = {
       position: 'absolute',
       top: '50%',
@@ -422,6 +425,7 @@ const AnimalRecords = () => {
           <Form.Group className="mb-3" controlId="editAnimalName">
               <Form.Label>Animal Name</Form.Label>
               <Form.Control
+               name="editAnimalName"
                 type="text"
                 placeholder="Enter animal name"
                 defaultValue={editRecord ? editRecord.animalName : ""}
@@ -455,17 +459,6 @@ const AnimalRecords = () => {
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </Form.Control>
-            </Form.Group>
-
-
-            <Form.Group className="mb-3" controlId="editAnimalID">
-              <Form.Label>Animal ID</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter animal ID"
-                defaultValue={editRecord ? editRecord.animalID : ""}
-                required
-              />
             </Form.Group>
 
            <Form.Group className="mb-3" controlId="editBreedType">

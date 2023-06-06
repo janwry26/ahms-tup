@@ -121,7 +121,7 @@ const MortalityReport = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         http
-          .delete(`/mortality-report/delete/${_id}`)
+          .put(`/mortality-report/archive/${_id}`)
           .then((res) => {
             console.log(res);
             Swal.fire('Deleted!', 'Your product has been deleted.', 'success');

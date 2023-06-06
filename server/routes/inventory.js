@@ -17,9 +17,9 @@ router.post("/add", async (req, res) => {
 });
 
 router.get("/view", async (req, res) => {
-    Inventory.find()
-        .then((items) => res.json(items))
-        .catch((err) => res.status(400).json("Error: " + err));
+    Inventory.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.put("/edit/:id", async (req, res) => {
