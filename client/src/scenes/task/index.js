@@ -197,7 +197,7 @@ const Task = () => {
         http
           .put(`/task/archive/${_id}`)
           .then((res) => {
-            Swal.fire('Deleted!', 'Task has been deleted.', 'success');
+            Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
             getTasks(); // Refresh the products list
           })
           .catch((err) => console.log(err));
@@ -247,7 +247,7 @@ const Task = () => {
         );
         setTasks(updatedTasks);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success');
+        Swal.fire('Success', 'Product updated successfully!', 'success').then(() => window.location.reload());
         getTasks();
       })
       .catch((err) => console.log(err));
