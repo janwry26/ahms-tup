@@ -20,6 +20,8 @@ const MortalityReport = () => {
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [selectedAnimal, setSelectedAnimal] = useState(""); // Step 1
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const getMortalityReport = () => {
@@ -227,40 +229,30 @@ const MortalityReport = () => {
       <Form onSubmit={handleAddReport}>
       <Box marginBottom="10px">
       <InputLabel >Animal</InputLabel>
-        <Select
-            name="animalID"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select an Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                )
-            })}          
-          </Select>
+      <Select
+          name="animalID"
+          native
+          fullWidth
+          required
+          variant="filled"
+        >
+          <option value="">Select an Animal</option>
+          {animalList.map((val) => {
+            const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
+            if (isAnimalInTable) {
+              return null; // Hide the option if the animal name is already in the table
+            }
+            return (
+              <option value={val.animalID} key={val.animalID}>
+                {val.animalName}
+              </option>
+            );
+          })}
+        </Select>
+
       </Box>
 
-      <Box marginBottom="10px">
-        <InputLabel>Staff</InputLabel>
-          <Select
-            name="staffID"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select a Staff</option>
-            {staffList.map((val) => {
-                return (
-                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
-                )
-            })}          
-          </Select>
-        </Box>
-
+     
         <Box marginBottom="10px">
           <InputLabel>Cause of Death</InputLabel>
           <Select
@@ -326,6 +318,24 @@ const MortalityReport = () => {
 
             />
           </Box>
+          <Box marginBottom="10px">
+        <InputLabel>Staff</InputLabel>
+          <Select
+            name="staffID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" >Select a Staff</option>
+            {staffList.map((val) => {
+                return (
+                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                )
+            })}          
+          </Select>
+        </Box>
+
         <div className="d-grid gap-2" style={{ marginTop: "-20px", marginBottom: "20px" }}>
           <Button className="btnDashBoard" type="submit">
             <FaPlus /> Add Report
@@ -369,9 +379,9 @@ const MortalityReport = () => {
           rows={reports}
           columns={[
             { field: "animalName", headerName: "Animal Name", flex: 1 },
-            { field: "staffName", headerName: "Staff Name", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
+            { field: "staffName", headerName: "Reported By", flex: 1 },
             {
               field: "deathTime",
               headerName: "Death Time",
@@ -434,43 +444,30 @@ const MortalityReport = () => {
           <Form onSubmit={handleEditReport}>
           <Box marginBottom="10px">
             <InputLabel >Animal Name</InputLabel>
-              <Select
-                  id="editAnimalName"
-                  native
-                  fullWidth
-                  required
-                defaultValue={editReport ? editReport.animalID : ""}
+            <Select
+            id="editAnimalName"
+            native
+            fullWidth
+            required
+            defaultValue={editReport ? editReport.animalID : ""}
+            variant="filled"
+          >
+            <option value="">Select an Animal</option>
+            {animalList.map((val) => {
+              const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
+              if (isAnimalInTable) {
+                return null; // Hide the option if the animal name is already in the table
+              }
+              return (
+                <option value={val.animalID} key={val.animalID}>
+                  {val.animalName}
+                </option>
+              );
+            })}
+          </Select>
 
-                  variant="filled"
-                >
-                  <option value="" >Select an Animal</option>
-                  {animalList.map((val) => {
-                      return (
-                        <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                      )
-                  })}          
-                </Select>
             </Box>
 
-             <Box marginBottom="10px">
-          <InputLabel>Staff</InputLabel>
-            <Select
-            
-              id="editStaffName"
-              native
-              fullWidth
-              required
-              defaultValue={editReport ? editReport.staffID : ""}
-              variant="filled"
-            >
-              <option value="" >Select a Staff</option>
-              {staffList.map((val) => {
-                  return (
-                    <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
-                  )
-              })}          
-            </Select>
-           </Box>
 
            <Form.Group className="mb-3" controlId="editCauseOfDeath">
               <Form.Label>Cause of Death</Form.Label>
@@ -506,6 +503,25 @@ const MortalityReport = () => {
                 required
               />
             </Form.Group>
+            <Box marginBottom="10px">
+          <InputLabel>Staff</InputLabel>
+            <Select
+            
+              id="editStaffName"
+              native
+              fullWidth
+              required
+              defaultValue={editReport ? editReport.staffID : ""}
+              variant="filled"
+            >
+              <option value="" >Select a Staff</option>
+              {staffList.map((val) => {
+                  return (
+                    <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+                  )
+              })}          
+            </Select>
+           </Box>
           </Form>
         </DialogContent>
         <DialogActions>
