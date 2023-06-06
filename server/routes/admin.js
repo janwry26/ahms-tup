@@ -40,6 +40,12 @@ router.get("/view", async (req, res) => {
         .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/view", async (req, res) => {
+    Admin.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json("Error: " + err));
+});
+
 router.put("/archive/:id", async (req, res) => {
     Task.findByIdAndUpdate({ _id: req.params.id }, {
         isArchived: true

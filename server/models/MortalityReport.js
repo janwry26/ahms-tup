@@ -8,6 +8,7 @@ const mortalityReportSchema = new mongoose.Schema({
     deathDate: { type: Date, required: true },
     deathTime: { type: String, required: true },
     dateReported: { type: Date, required: true },
+    isArchived: { type: Boolean }
 });
 
 module.exports = mongoose.model("mortality_report", mortalityReportSchema);

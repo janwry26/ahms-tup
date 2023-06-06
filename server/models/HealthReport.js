@@ -8,6 +8,7 @@ const healthReportSchema = new mongoose.Schema({
     nextCheckupDate: { type: Date, required: true },
     medication: { type: String, required: true },
     vaccineStatus: { type: String, required: true },
+    isArchived: { type: Boolean }
 });
 
 module.exports = mongoose.model("health_report", healthReportSchema);

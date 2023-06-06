@@ -17,9 +17,9 @@ router.post("/add", async (req, res) => {
 });
 
 router.get("/view", async (req, res) => {
-    ObservationReport.find()
-        .then((items) => res.json(items))
-        .catch((err) => res.status(400).json("Error: " + err));
+    ObservationReport.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.put("/edit/:id", async (req, res) => {
@@ -35,11 +35,30 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update report"));
 });
 
-router.delete('/delete/:id', async (req, res) => {
-    await ObservationReport.findByIdAndRemove({ _id: req.params.id})
-        .then((doc) => res.send("Observation Report deleted successfully"))
-        .catch((err) => res.send(err + "\nFailed to delete report"));
+// router.delete('/delete/:id', async (req, res) => {
+//     await ObservationReport.findByIdAndRemove({ _id: req.params.id})
+//         .then((doc) => res.send("Observation Report deleted successfully"))
+//         .catch((err) => res.send(err + "\nFailed to delete report"));
+// });
+
+router.put("/archive/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: true
+    })
+    .then(() => {
+        res.send("Observation Report archived successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to archive Observation Report"));
 });
 
+router.put("/restore/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: false
+    })
+    .then(() => {
+        res.send("Observation Report restored successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to restore Observation Report"));
+});
 
 module.exports = router;
