@@ -283,7 +283,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Mortality Information
+          Inventory Information
           </Typography>
           <Box height="250px" mt="-20px">
             <LineChart isDashboard={true} />
@@ -321,7 +321,7 @@ const Dashboard = () => {
             variant="h5"
             fontWeight="600"
           >
-           Inventory Information
+           Mortality Information
           </Typography>
           <Box height="250px" mt="-30px">
             <BarChart isDashboard={true} />
