@@ -82,7 +82,7 @@ const Inventory = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         http
-          .delete(`/inventory/delete/${_id}`)
+          .put(`/inventory/archive/${_id}`)
           .then((res) => {
             console.log(res);
             Swal.fire('Deleted!', 'Your product has been deleted.', 'success');

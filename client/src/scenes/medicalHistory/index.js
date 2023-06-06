@@ -172,7 +172,7 @@ const MedicalHistory = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         http
-          .delete(`/health-report/delete/${_id}`)
+          .put(`/health-report/archive/${_id}`)
           .then((res) => {
             console.log(res);
             Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
