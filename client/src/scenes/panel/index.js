@@ -66,24 +66,24 @@ const Dashboard = () => {
         })
         .catch((err) => console.log(err));
     };
-      const getObservationReport = () => {
-        http.get('/observation-report/view')
-            .then((res) => {
-              const reports = res.data.map((report, key) => ({
-                id: key+1,
-                _id: report._id,
-                animalID: report.animalID,
-                staffID: report.staffID,
-                reportDescription: report.reportDescription,
-                dateReported: report.dateReported,
-              }));
-             
-          const uniqueSpecies = [...new Set(reports.map(report => report.reportDescription))]; 
+    const getObservationReport = () => {
+      http.get('/observation-report/view')
+        .then((res) => {
+          const reports = res.data.map((report, key) => ({
+            id: key + 1,
+            _id: report._id,
+            animalID: report.animalID,
+            staffID: report.staffID,
+            reportDescription: report.reportDescription,
+            dateReported: report.dateReported,
+          }));
+  
+          const uniqueSpecies = [...new Set(reports.map(report => report.animalID))]; 
           const totalObserve = uniqueSpecies.length;
           setTotalObserved(totalObserve); 
-            })
-            .catch((err) => console.log(err));
-      }
+        })
+        .catch((err) => console.log(err));
+    }
       const getHealthReport = () => {
         http.get('/health-report/view')
             .then((res) => {
@@ -104,9 +104,10 @@ const Dashboard = () => {
             .catch((err) => console.log(err));
       }
           getHealthReport();
-          getObservationReport();
           getAnimalRecord();
+          getObservationReport();
           getProducts();
+          
           const randomProgress = Math.random().toFixed(2); // Generate random number between 0 and 0.99 with 2 decimal places
           setProgress(randomProgress);
           // Simulate loading delay
