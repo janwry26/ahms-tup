@@ -5,6 +5,8 @@ import Header from "../../components/Header";
 import http from "../../utils/http";
 import { useEffect, useState } from "react";
 import "../../styles/loader.css";
+import { FaArchive, } from "react-icons/fa";
+import {  Button } from "react-bootstrap";
 
 const Team = () => {
   const [teamData, setTeamData] = useState({});
@@ -32,27 +34,30 @@ const Team = () => {
     getTeam();
   }, []);
 
-  //   const getMortalityReport = () => {
-//     http.get('/mortality-report/view')
-//         .then((res) => {
-//           const reports = res.data.map((report, key) => ({
-//             id: key+1,
-//             _id: report._id,
-//             animalID: report.animalID,
-//             staffID: report.staffID,
-//             casueOfDeath: report.casueOfDeath,
-//             deathDate: report.deathDate,
-//             deathTime: report.deathTime,
-//             dateReported: report.dateReported,
-//           }));
-//           setReports(reports);
-//         })
-//         .catch((err) => console.log(err));
-//   }
-
-//   useEffect(() => {
-//     getMortalityReport();
-//   },[])
+  const handleDeleteReport = (_id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this product!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        http
+          .put(`/user/archive/${_id}`)
+          .then((res) => {
+            console.log(res);
+            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            getTeam(); // Refresh the products list
+          })
+          .catch((err) => console.log(err));
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
+      }
+    });
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -78,19 +83,16 @@ const Team = () => {
       field: "staffId",
       headerName: "Staff ID",
       flex: 0.4,
-      cellClassName: "name-column--cell",
     },
     {
       field: "firstName",
       headerName: "First Name",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "lastName",
       headerName: "Last Name",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "username",
@@ -107,6 +109,25 @@ const Team = () => {
       headerName: "Contact Number",
       flex: 1,
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <div>
+          <Button
+            className="btn btn-sm mx-1"
+            variant="primary"
+            onClick={() => handleDeleteReport(params.row._id)}
+            style={{ padding: "6px 12px" }}
+          >
+            <FaArchive />
+          </Button>
+        </div>
+      ),
+      flex: 0.4,
+    },
   ];
 
   return (
@@ -121,9 +142,6 @@ const Team = () => {
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.greenAccent[700],
