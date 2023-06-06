@@ -85,10 +85,10 @@ const AnimalRecords = () => {
   const handleDeleteRecord = (_id) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You will not be able to recover this product!',
+      text: 'The animal record has been archived',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Yes, archive it!',
       cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
@@ -97,12 +97,12 @@ const AnimalRecords = () => {
           .put(`/animal/archive/${_id}`)
           .then((res) => {
             console.log(res);
-            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            Swal.fire('Deleted!', 'Animal record has beed archived.', 'success');
             getAnimalRecord(); // Refresh the products list
           })
           .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
+        Swal.fire('Cancelled', 'Animal record is safe :)', 'error');
       }
     });
   };
@@ -149,7 +149,7 @@ const AnimalRecords = () => {
         );
         setRecords(updatedRecords);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success');
+        Swal.fire('Success', 'Animal record updated successfully!', 'success');
       })
       .catch((err) => console.log(err));
   };
@@ -190,7 +190,7 @@ const AnimalRecords = () => {
         fontSize="36px"
         mt="20px"
       />
-       <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+       <Button onClick={handleOpen} className="btn btn-color" >Add Animal</Button>
       <Modal
         open={open}
         onClose={handleClose}

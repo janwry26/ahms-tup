@@ -197,7 +197,7 @@ const Task = () => {
         http
           .put(`/task/archive/${_id}`)
           .then((res) => {
-            Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
+            Swal.fire('Success', 'Task updated successfully!', 'success').then(()=>window.location.reload());
             getTasks(); // Refresh the products list
           })
           .catch((err) => console.log(err));
@@ -247,7 +247,7 @@ const Task = () => {
         );
         setTasks(updatedTasks);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success').then(() => window.location.reload());
+        Swal.fire('Success', 'Task updated successfully!', 'success').then(() => window.location.reload());
         getTasks();
       })
       .catch((err) => console.log(err));
@@ -320,7 +320,7 @@ const Task = () => {
         fontSize="36px"
         mt="20px"
       />
-       <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+       <Button onClick={handleOpen} className="btn btn-color" >Create Task</Button>
       <Modal
         open={open}
         onClose={handleClose}

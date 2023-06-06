@@ -95,7 +95,7 @@ const ObservationReport = () => {
         console.log(res);
         Swal.fire({
           title: 'Success',
-          text: 'Product added to inventory',
+          text: 'Report Added Successfully',
           icon: 'success',
           timer: 700, // Show the alert for 2 seconds
           showConfirmButton: false
@@ -121,12 +121,12 @@ const ObservationReport = () => {
           .put(`/observation-report/archive/${_id}`)
           .then((res) => {
             console.log(res);
-            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            Swal.fire('Archive!', 'Your report has been archived.', 'success');
             getObservationReport(); // Refresh the products list
           })
           .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
+        Swal.fire('Cancelled', 'Your report is safe :)', 'error');
       }
     });
   };
@@ -168,7 +168,7 @@ const ObservationReport = () => {
         );
         setReports(updatedReports);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
+        Swal.fire('Success', 'Report updated successfully!', 'success').then(()=>window.location.reload());
       })
       .catch((err) => console.log(err));
   };
@@ -210,7 +210,7 @@ const ObservationReport = () => {
         fontSize="36px"
         mt="20px"
       />
-       <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+       <Button onClick={handleOpen} className="btn btn-color" >Create Report</Button>
       <Modal
         open={open}
         onClose={handleClose}

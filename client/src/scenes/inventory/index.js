@@ -177,7 +177,7 @@ const Inventory = () => {
         fontSize="36px"
         mt="20px"
       />
-      <Button onClick={handleOpen} className="btn btn-color" >Open Form</Button>
+      <Button onClick={handleOpen} className="btn btn-color" >Add Inventory</Button>
       <Modal
         open={open}
         onClose={handleClose}
