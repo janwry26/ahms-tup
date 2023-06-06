@@ -206,7 +206,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 4" }}
               />
                     <div className="d-grid gap-2" style={{marginTop:"-20px", marginBottom: "20px"}}>
-                    <Button type="submit" className="btnDashBoard"   disbaled={isSubmitting}>
+                    <Button type="submit" className="btnDashBoard"   disabled={isSubmitting}>
                        Create User
                     </Button>
                 </div>

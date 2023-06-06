@@ -100,6 +100,7 @@ const ViewMedicalHistory = () => {
               )}
               value={searchAnimalName}
               onChange={(event, value) => setSearchAnimalName(value)}
+              
             />
           </Box>
           <Button type="submit" variant="contained" size="large" color="secondary" className="ms-2" startIcon={<FaSearch />}  sx={{width: 180, height: 50,}}>
