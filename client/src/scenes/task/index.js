@@ -15,44 +15,43 @@ import http from "../../utils/http";
 import { formatDate } from "../../utils/formatDate";
 
 
-const ObservationReport = () => {
-  const [reports, setReports] = useState([]);
+const Task = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editReport, setEditReport] = useState(null);
+  const [editTask, setEditTask] = useState(null);
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-   const getObservationReport = () => {
-    http.get('/observation-report/view')
+  const getTasks = () => {
+    http.get('/task/view')
     .then((res) => {
-      const reportPromises = res.data.map((report, key) => {
-        const animalRequest = http.get(`/animal/view/${report.animalID}`);
-        const staffRequest = http.get(`/user/view/${report.staffID}`);
+      const requestPromises = res.data.map((task, key) => {
+        const staffRequest = http.get(`/user/view/${task.staffID}`);
 
-        return Promise.all([animalRequest, staffRequest])
-          .then(([animalRes, staffRes]) => {
-            const animalName = animalRes.data.animalName;
+        return Promise.all([staffRequest])
+          .then(([staffRes]) => {
             const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
 
             return {
-               id: key+1,
-              _id: report._id,
-              animalID: report.animalID,
-              staffID: report.staffID,
-              animalName: animalName,
+              id: key+1,
+              _id: task._id,
+              taskName: task.taskName,
+              staffId: task.staffID,
               staffName: staffName,
-              reportDescription: report.reportDescription,
-              dateReported: formatDate(report.dateReported),
+              taskDescription: task.taskDescription,
+              taskDueDate: formatDate(task.taskDueDate),
+              taskStatus: task.taskStatus, 
+              taskAccomplishDate: task.taskAccomplishDate
             };
           });
       });
 
-      Promise.all(reportPromises)
-        .then((reports) => {
-          setReports(reports);
+      Promise.all(requestPromises)
+        .then((task) => {
+          setTasks(task);
         })
         .catch((err) => console.log(err));
     })
@@ -78,39 +77,48 @@ const ObservationReport = () => {
   }
   
   useEffect(() => {
-    getObservationReport();
     getAnimals();
     getStaffs();
+    getTasks();
   },[])
 
-  const handleAddReport = (event) => {
-    event.preventDefault();
-    http
-      .post('/observation-report/add', {
-        animalID: event.target.animalID.value,
-        staffID: event.target.staffID.value,
-        reportDescription: event.target.reportDescription.value,
-        dateReported: event.target.dateReported.value,
+  const handleAddTask = async (event) => {
+    const {
+      taskName,
+      staffId,
+      taskDescription,
+      taskDueDate
+    } = event.target;
+  
+    await http
+      .post('/task/add', {
+        taskName: taskName.value,
+        staffID: staffId.value,
+        taskDescription: taskDescription.value,
+        taskDueDate: taskDueDate.value,
+        taskStatus: "Pending",
+        taskAccomplishDate: ""
       })
       .then((res) => {
-        console.log(res);
+        handleClose();
         Swal.fire({
           title: 'Success',
-          text: 'Product added to inventory',
+          text: "Task added successfully",
           icon: 'success',
           timer: 700, // Show the alert for 2 seconds
           showConfirmButton: false
-        });
-        getObservationReport(); // Refresh the products list
+        })
       })
       .catch((err) => console.log(err));
-    event.target.reset();
-  };
 
-  const handleDeleteReport = (_id) => {
+      event.target.reset();
+  };
+  
+
+  const handleArchive = (_id) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You will not be able to recover this product!',
+      text: 'You will not be able to recover this task!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
@@ -119,15 +127,14 @@ const ObservationReport = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         http
-          .delete(`/observation-report/delete/${_id}`)
+          .put(`/task/archive/${_id}`)
           .then((res) => {
-            console.log(res);
-            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
-            getObservationReport(); // Refresh the products list
+            Swal.fire('Deleted!', 'Task has been deleted.', 'success');
+            getTasks(); // Refresh the products list
           })
           .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Your product is safe :)', 'error');
+        Swal.fire('Cancelled', 'Your task is safe :)', 'error');
       }
     });
   };
@@ -135,17 +142,17 @@ const ObservationReport = () => {
   const handleEditReport = (params, event) => {
     const { id, field, props } = params;
     const { value } = event.target;
-    const newReports = reports.map((report) => {
+    const newTasks = tasks.map((report) => {
       if (report.id === id) {
         return { ...report, [field]: value };
       }
-      return report;
+      return tasks;
     });
-    setReports(newReports);
+    setTasks(newTasks);
   };
 
-  const handleEditDialogOpen = (report) => {
-    setEditReport(report);
+  const handleEditDialogOpen = (tasks) => {
+    setEditTask(tasks);
     setEditDialogOpen(true);
   };
 
@@ -154,22 +161,26 @@ const ObservationReport = () => {
   };
 
   const handleEditDialogSave = () => {
-    const editedReport = {
-      animalName: document.getElementById("editAnimalName").value, // Update animalID instead of animalName
-      staffName: document.getElementById("editStaffName").value,
-      reportDescription: document.getElementById("editReportDescription").value,
-      dateReported: document.getElementById("editDateReported").value,
+    const editedTask = {
+      _id: document.getElementById("editHiddenId").value,
+      taskName: document.getElementById("editTaskName").value,
+      staffName: document.getElementById("editStaffName").value, 
+      taskDescription: document.getElementById("editTaskDescription").value,
+      taskDueDate: document.getElementById("editTaskDueDate").value,
+      // taskStatus: document.getElementById("editTaskStatus").value,
+      // taskAccomplishDate: document.getElementById("editTaskAccomplishDate").value,
     };
   
     http
-      .put(`/observation-report/edit/${editReport._id}`, editedReport)
+      .put(`/task/edit/${editedTask._id}`, editedTask)
       .then((res) => {
-        const updatedReports = reports.map((report) =>
-          report._id === editReport._id ? { ...report, ...editedReport } : report
+        const updatedTasks = tasks.map((task) =>
+          tasks._id === editTask._id ? { ...task, ...editedTask } : task
         );
-        setReports(updatedReports);
+        setTasks(updatedTasks);
         setEditDialogOpen(false);
-        Swal.fire('Success', 'Product updated successfully!', 'success').then(()=>window.location.reload());
+        Swal.fire('Success', 'Product updated successfully!', 'success');
+        getTasks();
       })
       .catch((err) => console.log(err));
   };
@@ -219,12 +230,12 @@ const ObservationReport = () => {
         aria-describedby="modal-modal-description"
       >
       <Box sx={style}>
-    <Form onSubmit={handleAddReport}>
+    <Form onSubmit={handleAddTask}>
     <Box marginBottom="10px">
           <InputLabel >Task Name</InputLabel>
             <TextField
                 placeholder="Input Task Name..."
-                name="reportDescription"
+                name="taskName"
                 variant="filled"
                 fullWidth
                 required
@@ -234,7 +245,7 @@ const ObservationReport = () => {
         <Box marginBottom="10px">
         <InputLabel>Staff</InputLabel>
               <Select
-                name="staffID"
+                name="staffId"
                 native
                 fullWidth
                 required
@@ -248,35 +259,22 @@ const ObservationReport = () => {
                 })}          
               </Select>
         </Box>
-        <Box marginBottom="10px">
-            <InputLabel >Task ID</InputLabel>
-              <TextField
-                  placeholder="Input Task ID..."
-
-                  name="taskID"
-                  variant="filled"
-                  fullWidth
-                  required
-                  type="number" 
-                />
-        </Box>
 
         <Box marginBottom="10px">
             <InputLabel >Task Description</InputLabel>
               <TextField
                   placeholder="Input Task Description..."
-                  name="reportDescription"
+                  name="taskDescription"
                   variant="filled"
                   fullWidth
                   required
                 />
         </Box>
 
-
         <Box marginBottom="10px">
             <InputLabel >Task Due Date</InputLabel>
               <TextField
-                  name="dateReported"
+                  name="taskDueDate"
                   placeholder="Input Task Description..."
 
                   variant="filled"
@@ -326,13 +324,13 @@ const ObservationReport = () => {
     }}
   >
     <DataGrid
-      rows={reports}
+      rows={tasks}
       columns={[ 
-        { field: "taskID",headerName: "Task ID", flex: 0.3 },
+        { field: "id",headerName: "#", flex: 0.3 },
         { field: "taskName",headerName: "Task Name", flex: 1 },
         { field: "staffName", headerName: "Staff Name", flex: 1 },  
         { field: "taskDescription", headerName: "Task Description", flex: 1 },
-        { field: "dueDate", headerName: "Due Date", flex: 0.7 },  
+        { field: "taskDueDate", headerName: "Due Date", flex: 0.7 },  
         { field: "taskStatus", headerName: "Task Status", flex: 1 },  
          { 
           field: "actions",
@@ -341,7 +339,7 @@ const ObservationReport = () => {
              filterable: false, 
               renderCell: (params) => 
               (<div> 
-               <Button  className="btn btn-sm mx-1" variant="primary" onClick={() => handleDeleteReport(params.row._id)}>
+               <Button  className="btn btn-sm mx-1" variant="primary" onClick={() => handleArchive(params.row._id)}>
                  <FaArchive />
                   </Button> 
                 <Button className="mx-1" variant="warning" size="sm" onClick={() => handleEditDialogOpen(params.row)}>
@@ -364,63 +362,57 @@ const ObservationReport = () => {
     <DialogTitle>Edit Report</DialogTitle>
     <DialogContent>
       <Form onSubmit={handleEditReport}>
+      <Form.Control
+          id='editHiddenId'
+          type='hidden'
+          defaultValue={editTask ? editTask._id : ""}
+        />
   
-        <Box marginBottom="10px">
-        <InputLabel >Animal</InputLabel>
-        <Select
-            id="editAnimalName"
-            defaultValue={editReport ? editReport.animalID : ""}
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select an Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                )
-            })}          
-          </Select>
-    </Box>
-    <Form.Group className="mb-3" controlId="editReportDescription">
-         
-        </Form.Group>
-         <Box marginBottom="10px">
-    <InputLabel>Staff</InputLabel>
-          <Select
-            id="editStaffName"
-            native
-            fullWidth
-            required
-            defaultValue={editReport ? editReport.staffID : ""}
-            variant="filled"
-          >
-            <option value="" >Select a Staff</option>
-            {staffList.map((val) => {
-                return (
-                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
-                )
-            })}          
-          </Select>
-    </Box>
+      <Form.Group className="mb-3" controlId="editTaskName">
+        <Form.Label>Task Name</Form.Label>
+        <Form.Control
+          type='text'
+          placeholder="Enter task name"
+          defaultValue={editTask ? editTask.taskName : ""}
+          required
+        />
+      </Form.Group>
 
-        <Form.Group className="mb-3" controlId="editReportDescription">
-          <Form.Label>Report Description</Form.Label>
+      <Form.Group className="mb-3" controlId="editTaskStaffName">
+        <InputLabel>Staff</InputLabel>
+        <Select
+          id="editStaffName"
+          native
+          fullWidth
+          required
+          defaultValue={editTask ? editTask.staffId : ""}
+          variant="filled"
+        >
+          <option value="" >Select a Staff</option>
+          {staffList.map((val) => {
+              return (
+                <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
+              )
+          })}          
+        </Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="editTaskDescription">
+          <Form.Label>Task Description</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}
-            placeholder="Enter report description"
-            defaultValue={editReport ? editReport.reportDescription : ""}
+            placeholder="Enter task description"
+            defaultValue={editTask ? editTask.taskDescription : ""}
             required
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="editDateReported">
-          <Form.Label>Date Reported</Form.Label>
+        <Form.Group className="mb-3" controlId="editTaskDueDate">
+          <Form.Label>Due Date</Form.Label>
           <Form.Control
             type="date"
-            defaultValue={editReport ? editReport.dateReported : ""}
+            defaultValue={editTask ? editTask.taskDueDate : ""}
             required
           />
         </Form.Group>
@@ -439,4 +431,4 @@ const ObservationReport = () => {
 );
 };
 
-export default ObservationReport;
+export default Task;

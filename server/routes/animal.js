@@ -53,4 +53,24 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update animal"));
 });
 
+router.put("/archive/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: true
+    })
+    .then(() => {
+        res.send("Animal archived successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to archive Animal"));
+});
+
+router.put("/restore/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: false
+    })
+    .then(() => {
+        res.send("Animal restored successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to restore Animal"));
+});
+
 module.exports = router;

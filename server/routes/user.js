@@ -66,6 +66,20 @@ router.get("/view/:staffId", async (req, res) => {
         .catch((err) => res.status(400).json({ error: err.message }));
 });
 
+router.get("/view-email/:email", async (req, res) => {
+    const { email } = req.params;
+    User.findOne({ email })
+        .select('lastName firstName email contactNum username')
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json(user);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
+
+
 router.put("/edit/:id", async (req, res) => {
     User.findByIdAndUpdate({ _id: req.params.id }, {
         lastName: req.body.lastName, 
@@ -90,6 +104,26 @@ router.put("/change-password/:id", async (req, res) => {
         res.send("Password changed successfully");
     })
     .catch((err) => res.send(err + "\nFailed to change password"));
+});
+
+router.put("/archive/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: true
+    })
+    .then(() => {
+        res.send("Account archived successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to archive Account"));
+});
+
+router.put("/restore/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: false
+    })
+    .then(() => {
+        res.send("Account restored successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to restore Account"));
 });
 
 module.exports = router;

@@ -25,10 +25,7 @@ router.post("/user", async (req, res) => {
         const jwtData = {
             _id: user.id,
             username: user.username,
-            email: user.email,
-            lastName: user.lastName,
-            firstName: user.firstName,
-            contactNum: user.contactNum}
+            email: user.email}
         const token = jwt.sign(jwtData, process.env.JWTSECRET, {expiresIn: "1h"})
 
         res.send(token);

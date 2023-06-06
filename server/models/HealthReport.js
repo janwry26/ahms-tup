@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
 const healthReportSchema = new mongoose.Schema({
-    animalID: { type: String, required: true },
-    staffID: { type: String, required: true },
+    animalID: { type: Number, required: true },
+    staffID: { type: Number, required: true },
     healthDescription: { type: String, required: true },
     nextCheckupDate: { type: Date, required: true },
     medication: { type: String, required: true },

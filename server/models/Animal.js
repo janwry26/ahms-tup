@@ -10,6 +10,7 @@ const animalSchema = new mongoose.Schema({
     gender: { type: String, required: true },
     age: { type: String, required: true },
     birthDate: { type: Date, required: true },
+    isArchived: { type: Boolean }
 });
 
 module.exports = mongoose.model("animals_collection", animalSchema);

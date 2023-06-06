@@ -20,15 +20,19 @@ const Topbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const [anchorElNotification, setAnchorElNotification] = useState(null);
+
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token);
     setCurrentUser(decoded);
-    console.log(decoded);
     if (decoded.username === "Admin" || decoded.username === "Super Admin") {
       setIsAdmin(true);
     } else {
       setIsAdmin(false);
+      http.get(`/user/view-email/${decoded.email}`)
+        .then((res) => {
+          setCurrentUser(res.data);
+        })
     }
   };
 
@@ -181,7 +185,7 @@ const Topbar = () => {
             <Typography variant="subtitle1">Username:</Typography>
             <TextField value={currentUser.username} fullWidth variant="outlined" disabled />
           </Box>
-          {currentUser && (
+          {!isAdmin && (
             <Box>
               <Typography variant="subtitle1">Name:</Typography>
               <TextField
@@ -196,7 +200,7 @@ const Topbar = () => {
             <Typography variant="subtitle1">Email:</Typography>
             <TextField value={currentUser.email} fullWidth variant="outlined" disabled />
           </Box>
-          {currentUser && (
+          {!isAdmin && (
             <Box>
               <Typography variant="subtitle1">Contact:</Typography>
               <TextField value={currentUser.contactNum} fullWidth variant="outlined" disabled />
@@ -205,7 +209,7 @@ const Topbar = () => {
           {isAdmin && (
             <Box>
               <Typography variant="subtitle1">Acc Type:</Typography>
-              <TextField value={isAdmin.accType} fullWidth variant="outlined" disabled />
+              <TextField value={currentUser.username} fullWidth variant="outlined" disabled />
             </Box>
           )}
         </DialogContent>

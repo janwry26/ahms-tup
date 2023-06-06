@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     contactNum: { type: String },
     username: { type: String, required: true },
     password: { type: String, required: true },
+    isArchived: { type: Boolean }
 });
 
 module.exports = mongoose.model("userAccounts", userSchema);

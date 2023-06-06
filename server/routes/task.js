@@ -4,9 +4,9 @@ const Task = require("../models/Task");
 
 router.post("/add", async (req, res) => {
 
-    const { staffID, taskDescription, taskStatus, taskAccomplishDate } = req.body;
+    const { taskName, staffID, taskDescription, taskDueDate, taskStatus, taskAccomplishDate } = req.body;
 
-    const task = new Task({  staffID, taskDescription, taskStatus, taskAccomplishDate });
+    const task = new Task({ taskName, staffID, taskDescription, taskDueDate, taskStatus, taskAccomplishDate });
     await task.save()
     .then(() => {
         res.send("Task added");
@@ -17,15 +17,17 @@ router.post("/add", async (req, res) => {
 });
 
 router.get("/view", async (req, res) => {
-    Task.find()
-        .then((items) => res.json(items))
-        .catch((err) => res.status(400).json("Error: " + err));
+    Task.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
+      .then((items) => res.json(items))
+      .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.put("/edit/:id", async (req, res) => {
     Task.findByIdAndUpdate({ _id: req.params.id }, {
+        taskName: req.body.taskName,
         staffID: req.body.staffID, 
-        taskDescription: req.body.taskDescription, 
+        taskDescription: req.body.taskDescription,
+        taskDueDate: req.body.taskDueDate,
         taskStatus: req.body.taskStatus, 
         taskAccomplishDate: req.body.taskAccomplishDate
     })
@@ -33,6 +35,26 @@ router.put("/edit/:id", async (req, res) => {
         res.send("Task updated successfully");
     })
     .catch((err) => res.send(err + "\nFailed to update task"));
+});
+
+router.put("/archive/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: true
+    })
+    .then(() => {
+        res.send("Task archived successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to archive task"));
+});
+
+router.put("/restore/:id", async (req, res) => {
+    Task.findByIdAndUpdate({ _id: req.params.id }, {
+        isArchived: false
+    })
+    .then(() => {
+        res.send("Task restored successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to restore task"));
 });
 
 router.delete('/delete/:id', async (req, res) => {
