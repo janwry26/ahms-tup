@@ -111,14 +111,13 @@ const MortalityReport = () => {
     event.target.reset();
   };
   
-
   const handleDeleteReport = (_id) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this product!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Yes, archive it!',
       cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {

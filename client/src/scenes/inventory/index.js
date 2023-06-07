@@ -74,10 +74,10 @@ const Inventory = () => {
   const handleDeleteProduct = (_id) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You will not be able to recover this product!',
+      text: 'Your product will be archive',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Yes, archive it!',
       cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
@@ -86,7 +86,7 @@ const Inventory = () => {
           .put(`/inventory/archive/${_id}`)
           .then((res) => {
             console.log(res);
-            Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+            Swal.fire('Archived!', 'Your product has been archived.', 'success');
             getProducts(); // Refresh the products list
           })
           .catch((err) => console.log(err));

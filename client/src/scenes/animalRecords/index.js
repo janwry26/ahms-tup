@@ -98,7 +98,7 @@ const AnimalRecords = () => {
           .put(`/animal/archive/${_id}`)
           .then((res) => {
             console.log(res);
-            Swal.fire('Deleted!', 'Animal record has beed archived.', 'success');
+            Swal.fire('Archived!', 'Animal record has beed archived.', 'success');
             getAnimalRecord(); // Refresh the products list
           })
           .catch((err) => console.log(err));

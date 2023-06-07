@@ -167,7 +167,7 @@ const MedicalHistory = () => {
       text: 'The Animal Medical History Will Be Archived',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Yes, archive it!',
       cancelButtonText: 'No, cancel!',
       reverseButtons: true,
     }).then((result) => {
