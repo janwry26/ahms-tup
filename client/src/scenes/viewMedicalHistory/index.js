@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Button,TextField } from "@mui/material";
+import { Box, Typography, Button, TextField, Modal,InputLabel } from "@mui/material";
 import { FaSearch } from "react-icons/fa";
 import Autocomplete from "@mui/material/Autocomplete";
 import { DataGrid } from "@mui/x-data-grid";
@@ -8,15 +8,38 @@ import Header from "../../components/Header";
 import { formatDate } from "../../utils/formatDate";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
 const ViewMedicalHistory = () => {
   const [searchAnimalName, setSearchAnimalName] = useState("");
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [reports, setReports] = useState([]);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [animalNames, setAnimalNames] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false); // New state for modal visibility
+  const [selectedHistory, setSelectedHistory] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const getUniqueAnimalNames = (reports) => {
+    const animalNamesSet = new Set(
+      reports.map((report) => report.animalName.toLowerCase())
+    );
+    return Array.from(animalNamesSet);
+  };
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -67,7 +90,7 @@ const ViewMedicalHistory = () => {
           Promise.all(reportPromises)
             .then((reports) => {
               setReports(reports);
-              setAnimalNames(reports.map((report) => report.animalName));
+              setAnimalNames(getUniqueAnimalNames(reports));
             })
             .catch((err) => console.log(err));
         })
@@ -76,6 +99,13 @@ const ViewMedicalHistory = () => {
 
     getHealthReport();
   }, []);
+
+  const handleVisibilityIconClick = (params) => {
+    // setIsModalVisible(!isModalVisible);
+    const history = params.row; // Get the row data from the params object
+    setSelectedHistory(history); // Store the selected row data in state
+    setIsModalVisible(true); // Show the modal
+  };
 
   const columns = [
     { field: "animalName", headerName: "Animal Name", flex: 1 },
@@ -92,10 +122,10 @@ const ViewMedicalHistory = () => {
       renderCell: (params) => (
         <div>
           <Button
-          className="btn btn-sm mx-1"
+            className="btn btn-sm mx-1"
             variant="primary"
-           
             style={{ padding: "6px 12px" }}
+            onClick={() => handleVisibilityIconClick(params)}
           >
             <VisibilityIcon />
           </Button>
@@ -149,7 +179,7 @@ const ViewMedicalHistory = () => {
       </form>
 
       {showMedicalHistory && (
-          <Box
+        <Box
           m="40px 0 0 0"
           height="75vh"
           margin="0 auto"
@@ -187,6 +217,86 @@ const ViewMedicalHistory = () => {
             disableSelectionOnClick
           />
         </Box>
+      )}
+
+      {isModalVisible && selectedHistory && (
+        <Modal open={isModalVisible} onClose={handleVisibilityIconClick}>
+       <Box sx={style}>
+        <InputLabel sx={{fontSize:"20px", color:"#5cc0af", textAlign:"center"}} >Medical History</InputLabel>
+              <Typography variant="subtitle1" mb={1}>
+                Animal Name
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.animalName}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+              <Typography variant="subtitle1" mb={1}>
+                Staff Name
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.staffName}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+              <Typography variant="subtitle1" mb={1}>
+                Health Description
+              </Typography>
+              <TextField
+                multiline
+                value={selectedHistory.healthDescription}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+              <Typography variant="subtitle1" mb={1}>
+                Next Checkup Date
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.nextCheckupDate}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+              <Typography variant="subtitle1" mb={1}>
+                Medication
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.medication}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+              <Typography variant="subtitle1" mb={1}>
+                Vaccination Status
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.vaccineStatus}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+
+              />
+            </Box>
+        </Modal>
       )}
     </Box>
   );
