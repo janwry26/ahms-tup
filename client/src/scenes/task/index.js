@@ -72,7 +72,7 @@ const Task = () => {
                 taskDescription: task.taskDescription,
                 taskDueDate: formatDate(task.taskDueDate),
                 taskStatus: task.taskStatus, 
-                taskAccomplishDate: formatDate(task.taskAccomplishDate)
+                taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
               };
             });
         });
@@ -197,7 +197,7 @@ const Task = () => {
         http
           .put(`/task/archive/${_id}`)
           .then((res) => {
-            Swal.fire('Success', 'Task updated successfully!', 'success').then(()=>window.location.reload());
+            Swal.fire('Success', 'Task archived successfully!', 'success').then(()=>window.location.reload());
             getTasks(); // Refresh the products list
           })
           .catch((err) => console.log(err));
