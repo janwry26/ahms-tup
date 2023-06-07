@@ -31,6 +31,7 @@ const Task = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   let decoded;
   let admin;
+  let stid;
 
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
@@ -39,86 +40,89 @@ const Task = () => {
     if (decoded.username === "Admin" || decoded.username === "Super Admin") {
       setIsAdmin(true);
       admin = true;
+      getTasks();
     } else {
       setIsAdmin(false);
       admin = false;
 
       http.get(`/user/view-staff/${decoded._id}`)
         .then((res) => {
-          getTasks(res.data.staffId);
+          stid = res.data.staffId;
+          getTasks();
         })
         .catch((err) => console.log(err));
     }
   }
 
-  const getTasks = async (stid) => {
+  const getTasksAdmin = () => {
+    http.get(`task/view`)
+    .then((res) => {
+      const requestPromises = res.data.map((task, key) => {
+        const staffRequest = http.get(`/user/view/${task.staffID}`);
+
+        return Promise.all([staffRequest])
+          .then(([staffRes]) => {
+            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+            return {
+              id: key+1,
+              _id: task._id,
+              taskName: task.taskName,
+              staffId: task.staffID,
+              staffName: staffName,
+              taskDescription: task.taskDescription,
+              taskDueDate: formatDate(task.taskDueDate),
+              taskStatus: task.taskStatus, 
+              taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
+            };
+          });
+      });
+
+      Promise.all(requestPromises)
+        .then((task) => {
+          setTasks(task);
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+  }
+
+  const getTasksUser = () => {
+    http.get(`task/view-user/${stid}`)
+    .then((res) => {
+      const requestPromises = res.data.map((task, key) => {
+        const staffRequest = http.get(`/user/view/${task.staffID}`);
+
+        return Promise.all([staffRequest])
+          .then(([staffRes]) => {
+            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+
+            return {
+              id: key+1,
+              _id: task._id,
+              taskName: task.taskName,
+              staffId: task.staffID,
+              staffName: staffName,
+              taskDescription: task.taskDescription,
+              taskDueDate: formatDate(task.taskDueDate),
+              taskStatus: task.taskStatus, 
+              taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
+            };
+          });
+      });
+
+      Promise.all(requestPromises)
+        .then((task) => {
+          setTasks(task);
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+  }
+
+  const getTasks = async () => {
     await http.put(`task/overdue/${stid}`);
-    if (admin) {
-      http.get(`task/view`)
-      .then((res) => {
-        const requestPromises = res.data.map((task, key) => {
-          const staffRequest = http.get(`/user/view/${task.staffID}`);
-
-          return Promise.all([staffRequest])
-            .then(([staffRes]) => {
-              const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-
-              return {
-                id: key+1,
-                _id: task._id,
-                taskName: task.taskName,
-                staffId: task.staffID,
-                staffName: staffName,
-                taskDescription: task.taskDescription,
-                taskDueDate: formatDate(task.taskDueDate),
-                taskStatus: task.taskStatus, 
-                taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
-              };
-            });
-        });
-
-        Promise.all(requestPromises)
-          .then((task) => {
-            setTasks(task);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-    } else {
-      http.get(`task/view-user/${stid}`)
-      .then((res) => {
-        const requestPromises = res.data.map((task, key) => {
-          const staffRequest = http.get(`/user/view/${task.staffID}`);
-
-          return Promise.all([staffRequest])
-            .then(([staffRes]) => {
-              const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-
-              return {
-                id: key+1,
-                _id: task._id,
-                taskName: task.taskName,
-                staffId: task.staffID,
-                staffName: staffName,
-                taskDescription: task.taskDescription,
-                taskDueDate: formatDate(task.taskDueDate),
-                taskStatus: task.taskStatus, 
-                taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
-              };
-            });
-        });
-
-        Promise.all(requestPromises)
-          .then((task) => {
-            setTasks(task);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-    }
-
-    // http.get(`task/view-user/${stid}`)
-    
+    admin ? getTasksAdmin() : getTasksUser();   
   }
 
   const getAnimals = () => {
@@ -144,9 +148,8 @@ const Task = () => {
       await getAnimals();
       await getStaffs();
       await getCurrentUser();
-      getTasks();
     };
-  
+    
     fetchData();
   }, []);
 
@@ -198,7 +201,6 @@ const Task = () => {
           .put(`/task/archive/${_id}`)
           .then((res) => {
             Swal.fire('Success', 'Task archived successfully!', 'success').then(()=>window.location.reload());
-            getTasks(); // Refresh the products list
           })
           .catch((err) => console.log(err));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -248,7 +250,6 @@ const Task = () => {
         setTasks(updatedTasks);
         setEditDialogOpen(false);
         Swal.fire('Success', 'Task updated successfully!', 'success').then(() => window.location.reload());
-        getTasks();
       })
       .catch((err) => console.log(err));
   };
