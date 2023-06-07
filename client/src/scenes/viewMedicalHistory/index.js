@@ -18,6 +18,11 @@ const ViewMedicalHistory = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const getUniqueAnimalNames = (reports) => {
+    const animalNamesSet = new Set(reports.map((report) => report.animalName.toLowerCase()));
+    return Array.from(animalNamesSet);
+  };
+
   const handleSearch = (event) => {
     event.preventDefault();
     const animalName = event.target.animalName.value;
@@ -67,7 +72,7 @@ const ViewMedicalHistory = () => {
           Promise.all(reportPromises)
             .then((reports) => {
               setReports(reports);
-              setAnimalNames(reports.map((report) => report.animalName));
+              setAnimalNames(getUniqueAnimalNames(reports));
             })
             .catch((err) => console.log(err));
         })
