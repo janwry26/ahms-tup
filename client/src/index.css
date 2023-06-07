@@ -5,6 +5,9 @@ body {
   box-sizing: border-box;
 }
 
+*{
+  user-select: none;
+}
 #root,
 .App,
 .content{
