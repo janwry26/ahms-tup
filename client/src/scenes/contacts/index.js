@@ -11,20 +11,17 @@ import http from "../../utils/http";
 
 
 const Contacts = () => {
-  const [teamData, setTeamData] = useState({});
+  const [teamData, setTeamData] = useState([]);
   const getTeam = () => {
     http.get("/admin/view")
-      // .then((res) => setTeamData(res.data));
       .then((res) => {
-        const teamData = res.data.map((team,key)=> ({
-          id: key+1,
+        const teamData = res.data.map((team, key) => ({
+          id: key + 1,
           _id: team._id,
-         
           email: team.email,
           accType: team.accType,
         }));
-        setTeamData(teamData)
-        // Process the response data and set it in the state
+        setTeamData(teamData);
       })
       .catch((err) => console.log(err));
   };
