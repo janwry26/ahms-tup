@@ -165,7 +165,7 @@ const Dashboard = () => {
               title="Inventory"
               subtitle="Access Here"
               progress={`${progress}`}
-              increase={`${totalItems.toString()} total of items`} // Show total number of items
+              increase={<span style={{ fontWeight: "bold",color: "#ffffff" }}>{`${totalItems.toString()} total of items`}</span>}
               icon={
                 <InventoryIcon
                   sx={{ color: colors.greenAccent[500], fontSize: "26px" }}
@@ -197,7 +197,7 @@ const Dashboard = () => {
             title="Animal Records"
             subtitle="Access Here"
             progress={`${progress}`}
-            increase={`${totalAnimal.toString()} total of animals`} // Show total number of animals
+            increase={<span style={{fontWeight: "bold", color: "#ffffff" }}>{`${totalAnimal.toString()} total of animals`}</span>}
             icon={
               <PetsIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -230,7 +230,9 @@ const Dashboard = () => {
             title="Observation Report"
             subtitle="Access Here"
             progress={`${progress}`}
-            increase={`${totalObserved.toString()} animal reports`} // Show total number of items
+            // increase={`${totalObserved.toString()} animal reports`} // Show total number of items
+            increase={<span style={{ fontWeight: "bold",color: "#ffffff" }}>{`${totalObserved.toString()} animal reports`}</span>}
+
             icon={
               <PreviewIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -262,7 +264,9 @@ const Dashboard = () => {
             title="Medical History"
             subtitle="Access Here"
             progress={`${progress}`}
-            increase={`${totalMedical.toString()} medical reports`} // Show total number of items
+            // increase={`${totalMedical.toString()} medical reports`} // Show total number of items
+            increase={<span style={{ fontWeight: "bold",color: "#ffffff" }}>{`${totalMedical.toString()} medical reports`}</span>}
+
             icon={
               <MedicalInformationIcon 
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -275,7 +279,7 @@ const Dashboard = () => {
         {/* ROW 2 */}
         <Box
          className="row1"
-          gridColumn="span 8"
+          gridColumn="span 7"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
         >
@@ -292,7 +296,7 @@ const Dashboard = () => {
         </Box>
         <Box
          className="row1"
-          gridColumn="span 4"
+          gridColumn="span 5"
           gridRow="span 4"
           backgroundColor={colors.primary[400]}
         >
@@ -313,7 +317,7 @@ const Dashboard = () => {
         {/* ROW 3 */}
         <Box
          className="row1"
-          gridColumn="span 8"
+          gridColumn="span 7"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           p="30px"
