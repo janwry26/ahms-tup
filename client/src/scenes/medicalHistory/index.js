@@ -411,13 +411,11 @@ const MedicalHistory = () => {
           <Box marginBottom="10px">
             <InputLabel >Animal Name</InputLabel>
             <Select
-            id="editAnimalName"
-            defaultValue={editReport ? editReport.animalID : ""}
+            name="animalID"
             native
             fullWidth
             required
             variant="filled"
-            disabled
           >
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {

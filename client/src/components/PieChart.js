@@ -74,15 +74,14 @@ const PieChart = () => {
       }}
       arcLinkLabelsSkipAngle={10}
       arcLinkLabelsTextColor={colors.grey[100]}
-      arcLinkLabelsThickness={2}
+      arcLinkLabelsThickness={4}
       arcLinkLabelsColor={{ from: "color" }}
+      arc
       enableArcLabels={true}
       arcLabelsRadiusOffset={0.4}
       arcLabelsSkipAngle={7}
-      arcLabelsTextColor={{
-        from: "color",
-        modifiers: [["darker", 2]],
-      }}
+      arcLabelsTextColor="#ffffff"
+      
       defs={[
         {
           id: "dots",
@@ -97,7 +96,7 @@ const PieChart = () => {
           id: "lines",
           type: "patternLines",
           background: "inherit",
-          color: "rgba(255, 255, 255, 0.986)",
+          color: "#FFF5EE",
           rotation: -45,
           lineWidth: 6,
           spacing: 10,
@@ -113,7 +112,7 @@ const PieChart = () => {
           itemsSpacing: 0,
           itemWidth: 100,
           itemHeight: 18,
-          itemTextColor: "#fff",
+          itemTextColor: "#FFF5EE",
           itemDirection: "left-to-right",
           itemOpacity: 1,
           symbolSize: 18,
