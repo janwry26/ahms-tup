@@ -412,24 +412,19 @@ const MedicalHistory = () => {
             <InputLabel >Animal Name</InputLabel>
             <Select
             id="editAnimalName"
+            defaultValue={editReport ? editReport.animalID : ""}
             native
             fullWidth
             required
-            defaultValue={editReport ? editReport.animalID : ""}
             variant="filled"
+            disabled
           >
-            <option value="">Select an Animal</option>
+            <option value="" >Select an Animal</option>
             {animalList.map((val) => {
-              const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
-              if (isAnimalInTable) {
-                return null; // Hide the option if the animal name is already in the table
-              }
-              return (
-                <option value={val.animalID} key={val.animalID}>
-                  {val.animalName}
-                </option>
-              );
-            })}
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
           </Select>
 
             </Box>

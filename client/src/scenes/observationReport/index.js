@@ -363,6 +363,7 @@ const ObservationReport = () => {
             fullWidth
             required
             variant="filled"
+            disabled
           >
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {
