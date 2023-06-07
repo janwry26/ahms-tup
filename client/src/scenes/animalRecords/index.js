@@ -20,6 +20,9 @@ const AnimalRecords = () => {
   const [species, setSpecies] = useState('');
   const [gender, setGender] = useState('');
   const [open, setOpen] = React.useState(false);
+  const [nameTakenError, setNameTakenError] = useState("");
+
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -53,34 +56,74 @@ const AnimalRecords = () => {
     getAnimalRecord();
   },[])
 
+  // const handleAddRecord = (event) => {
+  //   event.preventDefault();
+  //   http
+  //     .post('/animal/add', {
+  //       animalName: event.target.animalName.value,
+  //       species: event.target.species.value,
+  //       age: event.target.age.value,
+  //       gender: event.target.gender.value,
+  //       breedType: event.target.breedType.value,
+  //       weight: event.target.weight.value,
+  //       birthDate: event.target.birthDate.value,
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //       Swal.fire({
+  //         title: 'Success',
+  //         text: 'Animal recorded successfully',
+  //         icon: 'success',
+  //         timer: 700, // Show the alert for 2 seconds
+  //         showConfirmButton: false
+  //       });
+  //       getAnimalRecord(); // Refresh the products list
+  //       handleClose()
+  //       setGender('');
+  //       setSpecies('');
+  //     })
+  //     .catch((err) => console.log(err));
+  //   event.target.reset();
+  // };
+  
   const handleAddRecord = (event) => {
     event.preventDefault();
-    http
-      .post('/animal/add', {
-        animalName: event.target.animalName.value,
+    const animalName = event.target.animalName.value.toLowerCase();
+
+    // Check if the animal name is already taken (case-sensitive)
+    const isNameTaken = records.some((record) => record.animalName.toLowerCase() === animalName);
+    if (isNameTaken) {
+      setNameTakenError("The animal name is already taken. Please choose a different name.");
+    } else {
+      http
+        .post('/animal/add', {
+          animalName: event.target.animalName.value,
         species: event.target.species.value,
         age: event.target.age.value,
         gender: event.target.gender.value,
         breedType: event.target.breedType.value,
         weight: event.target.weight.value,
         birthDate: event.target.birthDate.value,
-      })
-      .then((res) => {
-        console.log(res);
-        Swal.fire({
-          title: 'Success',
-          text: 'Animal recorded successfully',
-          icon: 'success',
-          timer: 700, // Show the alert for 2 seconds
-          showConfirmButton: false
-        });
-        getAnimalRecord(); // Refresh the products list
-        handleClose()
-        setGender('');
-        setSpecies('');
-      })
-      .catch((err) => console.log(err));
-    event.target.reset();
+        })
+        .then((res) => {
+          Swal.fire({
+            title: 'Success',
+            text: 'Animal recorded successfully',
+            icon: 'success',
+            timer: 700, // Show the alert for 2 seconds
+            showConfirmButton: false
+          })
+
+          getAnimalRecord(); // Refresh the products list
+          handleClose();
+          setGender('');
+          setSpecies('');
+        })
+        .catch((err) => console.log(err));
+
+      event.target.reset();
+      setNameTakenError(""); // Clear the error message
+    }
   };
 
   const handleDeleteRecord = (_id) => {
@@ -200,6 +243,9 @@ const AnimalRecords = () => {
       >
       <Box sx={style}>
       <Form onSubmit={handleAddRecord}>
+      {Boolean(nameTakenError) && (
+          <div className="text-danger mt-2">{nameTakenError}</div>
+        )}
       <Box marginBottom="10px">
       <InputLabel >Name</InputLabel>
           <TextField

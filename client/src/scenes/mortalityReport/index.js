@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
 import { formatDate } from "../../utils/formatDate";
-
+import Autocomplete from '@mui/material/Autocomplete';
 const MortalityReport = () => {
   const [reports, setReports] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -229,26 +229,15 @@ const MortalityReport = () => {
       <Form onSubmit={handleAddReport}>
       <Box marginBottom="10px">
       <InputLabel >Animal</InputLabel>
-      <Select
-          name="animalID"
-          native
-          fullWidth
-          required
-          variant="filled"
-        >
-          <option value="">Select an Animal</option>
-          {animalList.map((val) => {
-            const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
-            if (isAnimalInTable) {
-              return null; // Hide the option if the animal name is already in the table
-            }
-            return (
-              <option value={val.animalID} key={val.animalID}>
-                {val.animalName}
-              </option>
-            );
-          })}
-        </Select>
+      <Autocomplete
+        name="animalID"
+        options={animalList.filter((val) => !reports.some((report) => report.animalName === val.animalName))}
+        getOptionLabel={(val) => val.animalName}
+        fullWidth
+        required
+        variant="filled"
+        renderInput={(params) => <TextField {...params} label="Select an Animal" />}
+        />
 
       </Box>
 
@@ -319,7 +308,7 @@ const MortalityReport = () => {
             />
           </Box>
           <Box marginBottom="10px">
-        <InputLabel>Staff</InputLabel>
+        <InputLabel>Administered by</InputLabel>
           <Select
             name="staffID"
             native
@@ -496,7 +485,7 @@ const MortalityReport = () => {
               />
             </Form.Group>
             <Box marginBottom="10px">
-          <InputLabel>Staff</InputLabel>
+          <InputLabel>Administered by</InputLabel>
             <Select
             
               id="editStaffName"
@@ -506,7 +495,7 @@ const MortalityReport = () => {
               defaultValue={editReport ? editReport.staffID : ""}
               variant="filled"
             >
-              <option value="" >Select a Staff</option>
+              <option value="" >Administered by</option>
               {staffList.map((val) => {
                   return (
                     <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
