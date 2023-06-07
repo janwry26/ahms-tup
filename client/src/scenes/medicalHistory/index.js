@@ -233,25 +233,19 @@ const MedicalHistory = () => {
         <Box marginBottom="10px">
           <InputLabel>Animal</InputLabel>
           <Select
-          name="animalID"
-          native
-          fullWidth
-          required
-          variant="filled"
-        >
-          <option value="">Select an Animal</option>
-          {animalList.map((val) => {
-            const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
-            if (isAnimalInTable) {
-              return null; // Hide the option if the animal name is already in the table
-            }
-            return (
-              <option value={val.animalID} key={val.animalID}>
-                {val.animalName}
-              </option>
-            );
-          })}
-        </Select>
+            name="animalID"
+            native
+            fullWidth
+            required
+            variant="filled"
+          >
+            <option value="" >Select an Animal</option>
+            {animalList.map((val) => {
+                return (
+                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                )
+            })}          
+          </Select>
         </Box>     
 
         <Box marginBottom="10px">
