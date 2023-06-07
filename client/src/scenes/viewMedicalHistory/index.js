@@ -17,6 +17,7 @@ const ViewMedicalHistory = () => {
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [animalNames, setAnimalNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // New state for modal visibility
+  const [selectedHistory, setSelectedHistory] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -99,8 +100,11 @@ const ViewMedicalHistory = () => {
     getHealthReport();
   }, []);
 
-  const handleVisibilityIconClick = () => {
-    setIsModalVisible(!isModalVisible);
+  const handleVisibilityIconClick = (params) => {
+    // setIsModalVisible(!isModalVisible);
+    const history = params.row; // Get the row data from the params object
+    setSelectedHistory(history); // Store the selected row data in state
+    setIsModalVisible(true); // Show the modal
   };
 
   const columns = [
@@ -121,7 +125,7 @@ const ViewMedicalHistory = () => {
             className="btn btn-sm mx-1"
             variant="primary"
             style={{ padding: "6px 12px" }}
-            onClick={handleVisibilityIconClick}
+            onClick={() => handleVisibilityIconClick(params)}
           >
             <VisibilityIcon />
           </Button>
@@ -215,7 +219,7 @@ const ViewMedicalHistory = () => {
         </Box>
       )}
 
-      {isModalVisible && (
+      {isModalVisible && selectedHistory && (
         <Modal open={isModalVisible} onClose={handleVisibilityIconClick}>
        <Box sx={style}>
         <InputLabel sx={{fontSize:"20px", color:"#5cc0af", textAlign:"center"}} >Medical History</InputLabel>
@@ -224,7 +228,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={history.animalName}
+                value={selectedHistory.animalName}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -236,7 +240,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={history.staffName}
+                value={selectedHistory.staffName}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -248,7 +252,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 multiline
-                value={history.healthDescription}
+                value={selectedHistory.healthDescription}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -260,7 +264,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={history.nextCheckupDate}
+                value={selectedHistory.nextCheckupDate}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -272,7 +276,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={history.medication}
+                value={selectedHistory.medication}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -284,7 +288,7 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={history.vaccineStatus}
+                value={selectedHistory.vaccineStatus}
                 variant="filled"
                 fullWidth
                 readOnly
