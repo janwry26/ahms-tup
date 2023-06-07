@@ -232,7 +232,7 @@ const Task = () => {
     const editedTask = {
       _id: document.getElementById("editHiddenId").value,
       taskName: document.getElementById("editTaskName").value,
-      staffName: document.getElementById("editStaffName").value, 
+      // staffName: document.getElementById("editStaffName").value, 
       taskDescription: document.getElementById("editTaskDescription").value,
       taskDueDate: document.getElementById("editTaskDueDate").value,
       // taskStatus: document.getElementById("editTaskStatus").value,
@@ -502,7 +502,7 @@ const Task = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="editTaskStaffName">
+      {/* <Form.Group className="mb-3" controlId="editTaskStaffName">
         <InputLabel>Staff</InputLabel>
         <Select
           id="editStaffName"
@@ -519,7 +519,7 @@ const Task = () => {
               )
           })}          
         </Select>
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group className="mb-3" controlId="editTaskDescription">
           <Form.Label>Task Description</Form.Label>

@@ -101,6 +101,7 @@ const ObservationReport = () => {
           showConfirmButton: false
         });
         getObservationReport(); // Refresh the products list
+        handleClose();
       })
       .catch((err) => console.log(err));
     event.target.reset();
@@ -322,7 +323,7 @@ const ObservationReport = () => {
       columns={[ 
         { field: "animalName",headerName: "Animal Name", flex: 1 },
 
-        { field: "staffName", headerName: "Staff Name", flex: 1 },  
+        { field: "staffName", headerName: "Reported By", flex: 1 },  
         { field: "reportDescription", headerName: "Description", flex: 1 },
         { field: "dateReported", headerName: "Date Reported", flex: 1 },  
          { 

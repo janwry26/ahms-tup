@@ -105,6 +105,7 @@ const MortalityReport = () => {
           showConfirmButton: false
         });
         getMortalityReport(); // Refresh the products list
+        handleClose();
       })
       .catch((err) => console.log(err));
     event.target.reset();

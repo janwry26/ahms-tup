@@ -64,6 +64,7 @@ const Inventory = () => {
           showConfirmButton: false
         });
         getProducts(); // Refresh the products list
+        handleClose();
       })
       .catch((err) => console.log(err));
     event.target.reset();

@@ -106,6 +106,7 @@ const MedicalHistory = () => {
           showConfirmButton: false
         });
         getHealthReport(); // Refresh the products list
+        handleClose();
       })
       .catch((err) => console.log(err));
     event.target.reset();
@@ -232,19 +233,25 @@ const MedicalHistory = () => {
         <Box marginBottom="10px">
           <InputLabel>Animal</InputLabel>
           <Select
-            name="animalID"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select an Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                )
-            })}          
-          </Select>
+          name="animalID"
+          native
+          fullWidth
+          required
+          variant="filled"
+        >
+          <option value="">Select an Animal</option>
+          {animalList.map((val) => {
+            const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
+            if (isAnimalInTable) {
+              return null; // Hide the option if the animal name is already in the table
+            }
+            return (
+              <option value={val.animalID} key={val.animalID}>
+                {val.animalName}
+              </option>
+            );
+          })}
+        </Select>
         </Box>     
 
         <Box marginBottom="10px">
@@ -401,25 +408,31 @@ const MedicalHistory = () => {
         <DialogContent>
           <Form onSubmit={handleEditReport}>
         
-        <Box marginBottom="10px">
-          <InputLabel>Animal</InputLabel>
-          <Select
+          <Box marginBottom="10px">
+            <InputLabel >Animal Name</InputLabel>
+            <Select
             id="editAnimalName"
             native
             fullWidth
             required
             defaultValue={editReport ? editReport.animalID : ""}
-
             variant="filled"
           >
-            <option value="" >Select an Animal</option>
+            <option value="">Select an Animal</option>
             {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                )
-            })}          
+              const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
+              if (isAnimalInTable) {
+                return null; // Hide the option if the animal name is already in the table
+              }
+              return (
+                <option value={val.animalID} key={val.animalID}>
+                  {val.animalName}
+                </option>
+              );
+            })}
           </Select>
-        </Box>     
+
+            </Box>
 
              <Box marginBottom="10px">
               <InputLabel>Staff</InputLabel>

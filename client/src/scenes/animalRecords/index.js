@@ -75,6 +75,7 @@ const AnimalRecords = () => {
           showConfirmButton: false
         });
         getAnimalRecord(); // Refresh the products list
+        handleClose()
         setGender('');
         setSpecies('');
       })
@@ -279,7 +280,7 @@ const AnimalRecords = () => {
 
 
         <Box marginBottom="10px">
-        <InputLabel>Species</InputLabel>
+        <InputLabel>Gender</InputLabel>
         <TextField
           select
           value={gender}
@@ -302,7 +303,7 @@ const AnimalRecords = () => {
                   <TextField
                   placeholder="Input breed type"
                     name="breedType"
-                    native
+                    
                     fullWidth
                     required
                     variant="filled"
