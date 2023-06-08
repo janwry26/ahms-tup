@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "build": "echo 'No build step required for server-side code'"
+    "build": "npm install && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +18,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
-    "mongoose": "^6.9.0",
-    "nodemon": "^2.0.20"
+    "mongoose": "^6.11.1",
+    "nodemon": "^2.0.12"
   }
 }
