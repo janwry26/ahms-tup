@@ -32,6 +32,10 @@ app.use("/api/report", reportRoutes);
 app.use("/api/mortality-report", mortalityReportRoutes);
 app.use("/api/observation-report", observationReportRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hello to ahms-server API");
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
 });

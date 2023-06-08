@@ -1,4 +1,6 @@
 .vercel
-/package-lock.json
-/.env
-/node_modules
+
+server/.env
+server/package-lock.json
+server/node_modules
+client/.env
