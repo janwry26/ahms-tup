@@ -330,7 +330,7 @@ const Sidebar = () => {
             Records
             </Typography>
             <Item
-              title="Animal Records"
+              title="Animal Details"
               to="/dashboard/animal"
               icon={<PetsIcon />}
               selected={selected}
