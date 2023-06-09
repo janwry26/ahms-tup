@@ -27,7 +27,9 @@ class Navbar extends Component {
         currentRoute === '/dashboard/animal' ||
         currentRoute === '/dashboard/medical' ||
         currentRoute === '/dashboard/adminForm' ||
-        currentRoute === '/dashboard/view-medical-history' 
+        currentRoute === '/dashboard/view-medical-history' ||
+        currentRoute === '/dashboard/task-history' 
+
 
 
 

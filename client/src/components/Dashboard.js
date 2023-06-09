@@ -22,6 +22,7 @@ import Mortality from "../scenes/mortalityReport"
 import AnimalRecords from "../scenes/animalRecords";
 import MedicalHistory from "../scenes/medicalHistory"
 import ViewMedicalHistory from '../scenes/viewMedicalHistory'
+import TaskHistory from "../scenes/taskHistory";
 function DashboardMain() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -44,6 +45,7 @@ function DashboardMain() {
             <Route path="/bar" element={<Bar />} />
             <Route path="/pie" element={<Pie />} />
             <Route path="/task" element={<Task />} />
+            <Route path="/task-history" element={<TaskHistory/>} />
             <Route path="/inventory1" element={<Inventory />} />
             <Route path="/observation" element={<Observation />} />
             <Route path="/mortality" element={<Mortality />} />

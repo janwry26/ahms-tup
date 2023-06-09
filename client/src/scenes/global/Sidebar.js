@@ -17,13 +17,11 @@ import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PreviewIcon from '@mui/icons-material/Preview';
-import { ListItemButton, ListItemIcon, ListItemText, Collapse, List } from "@mui/material";
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import PetsIcon from '@mui/icons-material/Pets';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import pf1 from "../../assets/images/random-profiles/pf1.jpg";
 import pf2 from "../../assets/images/random-profiles/pf2.jpg";
 import pf3 from "../../assets/images/random-profiles/pf3.jpg";
@@ -289,9 +287,16 @@ const Sidebar = () => {
              Task
             </Typography>
             <Item
-              title="Task"
+              title="Task Records"
               to="/dashboard/task"
               icon={<AddTaskIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+              <Item
+              title="Task History"
+              to="/dashboard/task-history"
+              icon={<ListAltIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -331,24 +336,22 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+             <Item
+              title="Medical Records"
+              to="/dashboard/medical"
+              icon={<MedicalInformationIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="View Medical Hisotry"
+              to="/dashboard/view-medical-history"
+              icon={<WorkHistoryIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             
-            <ListItemButton component={Link} to="/dashboard/medical" onClick={handleMedicalClick} style={{ width: '200px', marginLeft: '12px',}}>
-            <ListItemIcon>
-              <MedicalInformationIcon />
-            </ListItemIcon>
-            <ListItemText primary="Medical History" />
-            {medicalOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={medicalOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton component={Link} to="/dashboard/view-medical-history" style={{  marginLeft: '12px', }}>
-                <ListItemIcon>
-                  <WorkHistoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="View Medical History"/>
-              </ListItemButton>
-            </List>
-          </Collapse>
+           
 
               {/* ... */}
           </Box>
