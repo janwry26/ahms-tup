@@ -31,15 +31,14 @@ h2 {
   
   
 }
-.forgot a{
+.linkForgot{
+  text-decoration: none;
+}
+.forgot {
   margin-top: 10px;
   color: rgb(255, 5, 5);
-  text-decoration: none;
+}
 
-}
-.forgot a:hover{
-  color: rgb(7, 7, 248);
-}
 
 .login-box .user-box {
   position: relative;
@@ -133,7 +132,10 @@ Button.btnDashBoard:hover{
   align-items: center;
   z-index: 9999;
 }
-
+.forgot-message{
+  color: #fff;
+  margin-bottom: 2rem;
+}
 .loaderLogin{
   font-size: 48px;
   color: #FFF;

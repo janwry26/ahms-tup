@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 import http from '../utils/http';
 import Swal from 'sweetalert2';
@@ -106,7 +106,7 @@ function Login({ user }) {
               <FaEye className="password-toggle" onClick={togglePasswordVisibility} />
             )}
           </div>
-          <p className='forgot'><a href='#'>Forgot password</a></p>
+         <Link className='linkForgot' to="/forgot"> <p className='forgot'>Forgot password</p></Link>
           <center>
             <button className="btnSignin" onClick={validation}>
               Sign in
