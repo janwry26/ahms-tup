@@ -106,6 +106,7 @@ function Login({ user }) {
               <FaEye className="password-toggle" onClick={togglePasswordVisibility} />
             )}
           </div>
+          <p className='forgot'><a href='#'>Forgot password</a></p>
           <center>
             <button className="btnSignin" onClick={validation}>
               Sign in
