@@ -135,19 +135,23 @@ const Form = () => {
               sx={{ gridColumn: "span 2" }}
             />
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Last Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helpertext={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
-              />
+          <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Last Name"
+                  onBlur={handleBlur}
+                  onChange={(e) => {
+                    handleChange(e);
+                    values.password = e.target.value; // Update the password field value
+                    values.confirmPassword = e.target.value; // Update the confirm password field value
+                  }}
+                  value={values.lastName}
+                  name="lastName"
+                  error={!!touched.lastName && !!errors.lastName}
+                  helperText={touched.lastName && errors.lastName}
+                  sx={{ gridColumn: "span 2" }}
+                />
               <TextField
                 fullWidth
                 variant="filled"
@@ -195,7 +199,7 @@ const Form = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
+                type="number"
                 label="Contact Number"
                 onBlur={handleBlur}
                 onChange={handleChange}

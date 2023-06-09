@@ -344,7 +344,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
              <Item
-              title="View Medical Hisotry"
+              title="Medical History"
               to="/dashboard/view-medical-history"
               icon={<WorkHistoryIcon />}
               selected={selected}
