@@ -137,4 +137,16 @@ router.put("/restore/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to restore Account"));
 });
 
+//Change Password
+router.put("/change-password/:id", async (req, res) => {
+    const password = bcrypt.hashSync(req.body.password, 10);
+    User.findByIdAndUpdate({ _id: req.params.id }, {
+        password
+    })
+    .then(() => {
+        res.send("Password changed successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to change password"));
+});
+
 module.exports = router;
