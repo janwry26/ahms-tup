@@ -4,9 +4,9 @@ const Inventory = require("../models/Inventory");
 
 router.post("/add", async (req, res) => {
 
-    const { itemName, itemType, itemDescription, quantity, expDate } = req.body;
+    const { category,itemName, itemType, unitOfMeasure, manufacturer, supplier, dateAdded, itemDescription, quantity, expDate } = req.body;
 
-    const inventory = new Inventory({  itemName, itemType, itemDescription, quantity, expDate });
+    const inventory = new Inventory({ category, itemName, itemType,unitOfMeasure, manufacturer, supplier, dateAdded, itemDescription, quantity, expDate });
     await inventory.save()
     .then(() => {
         res.send("Item added to the inventory");
@@ -24,8 +24,13 @@ router.get("/view", async (req, res) => {
 
 router.put("/edit/:id", async (req, res) => {
     Inventory.findByIdAndUpdate({ _id: req.params.id }, {
+        category: req.body.category,
         itemName: req.body.itemName, 
         itemType: req.body.itemType,
+        unitOfMeasure: req.body.unitOfMeasure,
+        manufacturer: req.body.manufacturer,
+        supplier: req.body.supplier,
+        dateAdded: req.body.dateAdded,
         itemDescription: req.body.itemDescription, 
         quantity: req.body.quantity, 
         expDate: req.body.expDate

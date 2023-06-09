@@ -28,6 +28,11 @@ const Inventory = () => {
           const products = res.data.map((product, key) => ({
             id: key+1,
             _id: product._id,
+            category: product.category,
+            unitOfMeasure: product.unitOfMeasure,
+            manufacturer: product.manufacturer,
+            supplier:product.supplier,
+            dateAdded: product.dateAdded,
             expDate: product.expDate,
             itemDescription: product.itemDescription,
             itemName: product.itemName,
@@ -48,11 +53,17 @@ const Inventory = () => {
     event.preventDefault();
     http
       .post('/inventory/add', {
+       category: event.target.category.value,
+        unitOfMeasure: event.target.unitOfMeasure.value,
+        manufacturer: event.target.manufacturer.value,
+        supplier: event.target.supplier.value,
         itemName: event.target.name.value,
         itemType: event.target.type.value,
         itemDescription: event.target.description.value,
         quantity: event.target.quantity.value,
         expDate: event.target.expDate.value,
+        dateAdded: event.target.dateAdded.value,
+
       })
       .then((res) => {
         console.log(res);
@@ -131,6 +142,11 @@ const Inventory = () => {
 
   const handleEditDialogSave = () => {
     const editedProduct = {
+      category:document.getElementById("editCategory").value,
+      unitOfMeasure:document.getElementById("editUnitOfMeasure").value,
+      manufacturer:document.getElementById("editManufacturer").value,
+      supplier:document.getElementById("editSupplier").value,
+      dateAdded:document.getElementById("editDateAdded").value,
       itemName: document.getElementById("editName").value,
       itemType: document.getElementById("editType").value,
       itemDescription: document.getElementById("editDescription").value,
@@ -174,7 +190,7 @@ const Inventory = () => {
     <Box m="20px" width="80%" margin="0 auto" className="reload-animation">
       <Header
         title="INVENTORY"
-        subtitle="Inventory for medicines"
+        subtitle="Manage list of Inventory"
         fontSize="36px"
         mt="20px"
       />
@@ -187,8 +203,24 @@ const Inventory = () => {
       >
       <Box sx={style}>
       <Form onSubmit={handleAddProduct}>
+
+      <Box marginBottom="10px">
+               <InputLabel>Category of Inventory</InputLabel>
+                  <Select
+                    name="category"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Supplies">Supplies</option>
+                    <option value="Food">Food</option>
+                  </Select>
+                </Box>
            <Box marginBottom="10px">
-               <InputLabel >Medicine</InputLabel>
+               <InputLabel >Item Name</InputLabel>
              <TextField
                     placeholder="Input item name..."
                     name="name"
@@ -197,9 +229,8 @@ const Inventory = () => {
                     required
                   />
            </Box>
-
            <Box marginBottom="10px">
-               <InputLabel>Type</InputLabel>
+               <InputLabel>Item Type</InputLabel>
                   <Select
                     name="type"
                     native
@@ -207,16 +238,52 @@ const Inventory = () => {
                     required
                     variant="filled"
                   >
-                    <option value="">Select Type of medecine</option>
-                    <option value="Diazepam">Diazepam</option>
-                    <option value="Meloxicam">Meloxicam</option>
-                    <option value="Doxycycline">Doxycycline</option>
-                    <option value="Ivermectin">Ivermectin</option>
-                    <option value="Methimazole">Methimazole</option>
-                    <option value="Enrofloxacin">Enrofloxacin</option>
+                    <option value="">Select Item Type</option>
+                    <option value="Drops">Drops</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Animal Food">Animal Food</option>
+                    <option value="Supply">Supply</option>
                   </Select>
                 </Box>
 
+                <Box marginBottom="10px">
+                  <InputLabel>Unit of measure</InputLabel>
+                  <TextField
+                    placeholder="Input unit of measure"
+                    name="unitOfMeasure"
+                    variant="filled"
+                    fullWidth
+                    required
+                  />
+                </Box>
+                <Box marginBottom="10px">
+                <InputLabel>Manufacturer</InputLabel>
+                  <Select
+                    name="manufacturer"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                  >
+                    <option value="">Select Manufacturer</option>
+                    <option value="Trenchant Trading Incorporated">Trenchant Trading Incorporated</option>
+                  </Select>
+                </Box>
+                <Box marginBottom="10px">
+                <InputLabel>Supplier</InputLabel>
+                  <Select
+                    name="supplier"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                  >
+                    <option value="">Select Supplier</option>
+                    <option value="City General Services Office">City General Services Office</option>
+                  </Select>
+                </Box>
                 <Box marginBottom="10px">
                   <InputLabel>Description</InputLabel>
                   <TextField
@@ -239,12 +306,21 @@ const Inventory = () => {
                     required
                   />
                   </Box>
+                  <Box marginBottom="10px">
+                <InputLabel>Date Added</InputLabel>
 
+                   <TextField
+                    name="dateAdded"
+                    type="date"
+                    variant="filled"
+                    fullWidth
+                    required
+                  />
+                  </Box>
                   <Box marginBottom="10px">
                 <InputLabel>Expiration Date</InputLabel>
 
                    <TextField
-                    placeholder="Expiration Date"
                     name="expDate"
                     type="date"
                     variant="filled"
@@ -297,8 +373,12 @@ const Inventory = () => {
           rows={products}
           columns={[
             { field: "id", headerName: "#", flex: 0.3 },
-            { field: "itemName", headerName: "Name", flex: 1 },
-            { field: "itemType", headerName: "Type", flex: 1 },
+            { field: "category", headerName: "Category", flex: 1 },
+            { field: "itemName", headerName: "Item Name", flex: 1 },
+            { field: "itemType", headerName: "Item Type", flex: 1 },
+            { field: "unitOfMeasure", headerName: "Unit of measure", flex: 1 },
+            { field: "manufacturer", headerName: "Manufacturer", flex: 2 },
+            { field: "supplier", headerName: "Supplier", flex: 2 },
             { field: "itemDescription", headerName: "Description", flex: 1 },
             {
               field: "quantity",
@@ -306,8 +386,10 @@ const Inventory = () => {
               type: "number",
               headerAlign: "left",
               align: "left",
-              flex: 1,
+              flex: 0.5,
             },
+            { field: "dateAdded", headerName: "Date added", flex: 1 },
+
             { field: "expDate", headerName: "Expiration Date", flex: 1 },
             {
               field: "actions",
@@ -334,7 +416,7 @@ const Inventory = () => {
                   </Button>
                 </div>
               ),
-              flex:0.5,
+              flex:1,
             },
           ]}
           components={{ Toolbar: GridToolbar }}
@@ -343,72 +425,132 @@ const Inventory = () => {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onClose={handleEditDialogClose}>
-      <DialogTitle>Edit Product</DialogTitle>
-<DialogContent>
-  <Form onSubmit={handleEditProduct} >
-    <Form.Group className="mb-3" controlId="editName">
-      <Form.Label>Name</Form.Label>
-      <Form.Control
-        type="text"
-        placeholder="Enter product name"
-        defaultValue={editProduct ? editProduct.itemName : ""}
-        required
-      />
-    </Form.Group>
+            <DialogTitle>Edit Product</DialogTitle>
+      <DialogContent>
+        <Form onSubmit={handleEditProduct} >
 
-    <Form.Group className="mb-3" controlId="editType">
-    <Form.Label>Type of medicines</Form.Label>
-    <Form.Control
-        type="text"
-        placeholder="Enter product type"
-        defaultValue={editProduct ? editProduct.itemType : ""}
-        required
-      />
-  </Form.Group>
+            <Form.Group controlId="editCategory">
+            <Form.Label>Edit Category</Form.Label>
+            <Form.Control
+              as="select"
+              defaultValue={editProduct ? editProduct.category : ""}
+              required
+            >
+              <option value="" disabled>Select Category</option>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Supplies">Supplies</option>
+                    <option value="Food">Food</option>
+            </Form.Control>
+          </Form.Group>
+            <Form.Group className="mb-3" controlId="editName">
+              <Form.Label>Item Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter product name"
+                defaultValue={editProduct ? editProduct.itemName : ""}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="editType">
+            <Form.Label>Edit Type Of Item</Form.Label>
+            <Form.Control
+              as="select"
+              defaultValue={editProduct ? editProduct.itemType : ""}
+              required
+            >
+              <option value="">Select Unit of Measure</option>
+              <option value="Drops">Drops</option>
+              <option value="Capsule">Capsule</option>
+              <option value="Tablet">Tablet</option>
+              <option value="Syrup">Syrup</option>
+              <option value="Animal Food">Animal Food</option>
+              <option value="Supply">Supply</option>
+            </Form.Control>
+          </Form.Group>
 
-    <Form.Group className="mb-3" controlId="editDescription">
-      <Form.Label>Description</Form.Label>
-      <Form.Control
-        type="text"
-        placeholder="Enter product description"
-        defaultValue={editProduct ? editProduct.itemDescription : ""}
-        required
-      />
-    </Form.Group>
+                <Form.Group className="mb-3" controlId="editUnitOfMeasure">
+              <Form.Label>Edit Unit Of Measure</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Edit Unit Of Measure" 
+                defaultValue={editProduct ? editProduct.unitOfMeasure: ""}
+                required
+              />
+            </Form.Group>
+  
+                 <Form.Group controlId="editManufacturer">
+                  <Form.Label>Edit Manufacturer</Form.Label>
+                  <Form.Control
+                    as="select"
+                    defaultValue={editProduct ? editProduct.manufacturer : ""}
+                    required
+                  >
+                   <option value="" disabled>Select Manufacturer</option>
+                    <option value="Trenchant Trading Incorporated">Trenchant Trading Incorporated</option>
+                  </Form.Control>
+                </Form.Group>
+                
+                <Form.Group controlId="editSupplier">
+                  <Form.Label>Edit Supplier</Form.Label>
+                  <Form.Control
+                    as="select"
+                    defaultValue={editProduct ? editProduct.supplier : ""}
+                    required
+                  >
+                    <option value="">Select Supplier</option>
+                    <option value="City General Services Office">City General Services Office</option>
+                  </Form.Control>
+                </Form.Group>
+          <Form.Group className="mb-3" controlId="editDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter product description"
+              defaultValue={editProduct ? editProduct.itemDescription : ""}
+              required
+            />
+          </Form.Group>
 
-    <Form.Group className="mb-3" controlId="editQuantity">
-      <Form.Label>Quantity</Form.Label>
-      <Form.Control
-        type="number"
-        placeholder="Enter product quantity"
-        defaultValue={editProduct ? editProduct.quantity : ""}
-        min="0"
-        step="1"
-        required
-      />
-    </Form.Group>
-
-    <Form.Group className="mb-3" controlId="editExpDate">
-      <Form.Label>Expiration Date</Form.Label>
-      <Form.Control
-        type="date"
-        defaultValue={editProduct ? editProduct.expDate : ""}
-        required
-      />
-    </Form.Group>
-  </Form>
-</DialogContent>
-<DialogActions>
-  <Button variant="warning" onClick={handleEditDialogClose}>
-    Cancel
-  </Button>
-  <Button variant="danger" onClick={handleEditDialogSave} type="submit">
-    Save
-  </Button>
-</DialogActions>
-      </Dialog>
-    </Box>
-  );
-};
+          <Form.Group className="mb-3" controlId="editQuantity">
+            <Form.Label>Quantity</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter product quantity"
+              defaultValue={editProduct ? editProduct.quantity : ""}
+              min="0"
+              step="1"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="editDateAdded">
+            <Form.Label>Date Added</Form.Label>
+            <Form.Control
+              type="date"
+              defaultValue={editProduct ? editProduct.dateAdded : ""}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="editExpDate">
+            <Form.Label>Expiration Date</Form.Label>
+            <Form.Control
+              type="date"
+              defaultValue={editProduct ? editProduct.expDate : ""}
+              required
+            />
+          </Form.Group>
+        </Form>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="warning" onClick={handleEditDialogClose}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={handleEditDialogSave} type="submit">
+          Save
+        </Button>
+      </DialogActions>
+            </Dialog>
+          </Box>
+        );
+      };
 
 export default Inventory;
