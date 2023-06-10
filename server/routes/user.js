@@ -138,9 +138,9 @@ router.put("/restore/:id", async (req, res) => {
 });
 
 //Change Password
-router.put("/change-password/:id", async (req, res) => {
+router.put("/change-password/:email", async (req, res) => {
     const password = bcrypt.hashSync(req.body.password, 10);
-    User.findByIdAndUpdate({ _id: req.params.id }, {
+    User.findOneAndUpdate({ email: req.params.email }, {
         password
     })
     .then(() => {
