@@ -7,12 +7,15 @@ import Home from "../Home";
 import Login from "../Login";
 import Logout from "../Logout";
 import Admin from "../SuperAdmin"
+import Forgot from "../Forgot";
 const Routing = ({user, admin}) => {
     return (
         <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/zootopia' element={<Admin admin={admin} />} />
             <Route path='/login' element={<Login user={user} />} />
+            <Route path='/forgot' element={<Forgot />} />
+
             <Route element={<PrivateRoute user={user} />}>
                 <Route path='/dashboard/*' element={<Dashboard />} />
             </Route>

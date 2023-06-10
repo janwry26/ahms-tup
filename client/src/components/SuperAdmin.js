@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import http from '../utils/http';
 import Swal from 'sweetalert2';
 import '../styles/login.css';
@@ -100,7 +100,7 @@ function SuperAdminLogin({ admin }) {
               <FaEye className="password-toggle" onClick={togglePasswordVisibility} />
             )}
           </div>
-          <p className='forgot'><a href='#'>Forgot password</a></p>
+          <Link className='linkForgot' to="/forgot"> <p className='forgot'>Forgot password</p></Link>
           <center>
             <button className="btnSignin" onClick={handleSubmit}>
               Sign in

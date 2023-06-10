@@ -14,7 +14,7 @@ router.get("/", auth, async (req, res) => {
 
 // Register User
 router.post("/register", async (req, res) => {
-    const { lastName, firstName, email, contact, username } = req.body;
+    const { lastName, firstName, email, contact, username,role } = req.body;
     const password = bcrypt.hashSync(req.body.password, 10);
 
     try {
@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
             contactNum: contact,
             username,
             password,
+            role,
         });
         await user.save();
 
@@ -97,7 +98,8 @@ router.put("/edit/:id", async (req, res) => {
         firstName: req.body.firstName,
         email: req.body.email, 
         contactNum: req.body.contactNum, 
-        username: req.body.username
+        username: req.body.username,
+        role: req.body.role
     })
     .then((doc) => {
         console.log(doc);

@@ -372,7 +372,6 @@ const Inventory = () => {
         className="table"
           rows={products}
           columns={[
-            { field: "id", headerName: "#", flex: 0.3 },
             { field: "category", headerName: "Category", flex: 1 },
             { field: "itemName", headerName: "Item Name", flex: 1 },
             { field: "itemType", headerName: "Item Type", flex: 1 },
