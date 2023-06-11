@@ -22,12 +22,12 @@ router.get("/view/:animalID", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-    const {  breedType, species, birthDate,quantity} = req.body;
+    const {  breedType, species, birthDate,quantity,habitat} = req.body;
     
     try {
         const animalID = await getNextCounterValue("animals_collection", "count");
 
-        let animal = new Animal({ animalID,  breedType, species, birthDate,quantity });
+        let animal = new Animal({ animalID,  breedType, species, birthDate,quantity,habitat });
         await animal.save();
 
         res.send("animalID #" + animalID + " has been recorded");
@@ -47,7 +47,8 @@ router.put("/edit/:id", async (req, res) => {
         // gender: req.body.gender, 
         // age: req.body.age,
         quantity: req.body.quantity,
-        birthDate: req.body.birthDate
+        birthDate: req.body.birthDate,
+        habitat:req.body.birthDate,
     })
     .then(() => {
         res.send("Animal updated successfully");

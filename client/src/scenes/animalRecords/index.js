@@ -39,12 +39,9 @@ const AnimalRecords = () => {
             id: key+1,
             _id: record._id,
             animalID: record.animalID,
-            // animalName: record.animalName,
             species: record.species,
-            age: record.age,
-            gender: record.gender,             
+            habitat:record.habitat,
             breedType: record.breedType,
-            weight: record.weight,
             quantity: record.quantity,
             birthDate: formatDate(record.birthDate),
           }));
@@ -103,7 +100,7 @@ const AnimalRecords = () => {
         // age: event.target.age.value,
         // gender: event.target.gender.value,
         breedType: event.target.breedType.value,
-        // weight: event.target.weight.value,
+        habitat: event.target.habitat.value,
         quantity: event.target.quantity.value,
         birthDate: event.target.birthDate.value,
         })
@@ -181,6 +178,7 @@ const AnimalRecords = () => {
           breedType: document.getElementById("editBreedType").value,
           quantity: document.getElementById("editQuantity").value,
           birthDate: document.getElementById("editBirthDate").value,
+          habitat: document.getElementById("editHabitat").value,
     };
   
     http
@@ -257,9 +255,9 @@ const AnimalRecords = () => {
       </Box>
   
             <Box marginBottom="10px">
-               <InputLabel>Breed Type</InputLabel>
+               <InputLabel>Scientific Name</InputLabel>
                   <TextField
-                  placeholder="Input breed type"
+                  placeholder="Input scientific name"
                     name="breedType"
                     
                     fullWidth
@@ -267,7 +265,17 @@ const AnimalRecords = () => {
                     variant="filled"
                  />
                 </Box>
-    
+                <Box marginBottom="10px">
+               <InputLabel>Habitat</InputLabel>
+                  <TextField
+                   placeholder="Input habitat"
+                    name="habitat"
+                    fullWidth
+                    required
+                    variant="filled"
+                 />
+                </Box>
+
       
             <Box marginBottom="10px">
             <InputLabel >Quantity</InputLabel>
@@ -340,8 +348,8 @@ const AnimalRecords = () => {
             // { field: "age", headerName: "Age", flex: 1 },
             // { field: "gender", headerName: "Gender", flex: 1 },
             // { field: "animalID", headerName: "Animal ID", flex: 1 },
-            { field: "breedType", headerName: "Breed Type", flex: 1 },
-            // { field: "weight", headerName: "Weight", flex: 0.6 },
+            { field: "breedType", headerName: "Scientific Name", flex: 1 },
+            { field: "habitat", headerName: "Habitat", flex: 0.6 },
             { field: "quantity", headerName: "Quantity", flex: 1 },
             { field: "birthDate", headerName: "Date Added", flex: 1 },
             {
@@ -404,6 +412,15 @@ const AnimalRecords = () => {
                 type="number"
                 placeholder="Enter quantity"
                 defaultValue={editRecord ? editRecord.quantity : ""}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="editHabitat">
+              <Form.Label>Habitat</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="edit habitat"
+                defaultValue={editRecord ? editRecord.habitat : ""}
                 required
               />
             </Form.Group>
