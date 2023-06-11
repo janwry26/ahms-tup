@@ -48,7 +48,7 @@ router.put("/edit/:id", async (req, res) => {
         // age: req.body.age,
         quantity: req.body.quantity,
         birthDate: req.body.birthDate,
-        habitat:req.body.birthDate,
+        habitat:req.body.habitat,
     })
     .then(() => {
         res.send("Animal updated successfully");
