@@ -461,7 +461,7 @@ const MedicalHistory = () => {
             { field: "healthDescription", headerName: "Case", flex: 1 },
             { field: "medication", headerName: "Treatment", flex: 1 },
             { field: "animalHealth", headerName: "Animal Health", flex: 1 },
-            { field: "nextCheckupDate", headerName: "Next Checkup Date", flex: 1 },
+            { field: "nextCheckupDate", headerName: "Remarks", flex: 1 },
             { field: "staffName", headerName: "Reported By", flex: 1 },
             { field: "veterinarian", headerName: "Veterinarian", flex: 1 },
             {

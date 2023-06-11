@@ -27,31 +27,33 @@ const ViewMedicalHistory = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 500,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+  
   };
+  
 
   const getUniqueAnimalNames = (reports) => {
     const animalNamesSet = new Set(
-      reports.map((report) => report.animalName.toLowerCase())
+      reports.map((report) => report.nickname.toLowerCase())
     );
     return Array.from(animalNamesSet);
   };
 
   const handleSearch = (event) => {
     event.preventDefault();
-    const animalName = event.target.animalName.value;
-    setSearchAnimalName(animalName);
-    getMedicalHistory(animalName);
+    const nickname = event.target.nickname.value;
+    setSearchAnimalName(nickname);
+    getMedicalHistory(nickname);
     event.target.reset();
   };
 
-  const getMedicalHistory = (animalName) => {
+  const getMedicalHistory = (nickname) => {
     const filteredReports = reports.filter((report) =>
-      report.animalName.toLowerCase().includes(animalName.toLowerCase())
+      report.nickname.toLowerCase().includes(nickname.toLowerCase())
     );
     setMedicalHistory(filteredReports);
     setShowMedicalHistory(true);
@@ -63,25 +65,40 @@ const ViewMedicalHistory = () => {
         .get("/health-report/view")
         .then((res) => {
           const reportPromises = res.data.map((report, key) => {
-            const animalRequest = http.get(`/animal/view/${report.animalID}`);
+            const animalRequest = http.get(`/health-report/view/${report.animalID}`);
             const staffRequest = http.get(`/user/view/${report.staffID}`);
 
             return Promise.all([animalRequest, staffRequest]).then(
               ([animalRes, staffRes]) => {
-                const animalName = animalRes.data.animalName;
+                const nickname = animalRes.data.nickname;
                 const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
 
                 return {
+                  // id: key + 1,
+                  // _id: report._id,
+                  // animalID: report.animalID,
+                  // enclosure:report.enclosure,
+                  // dateObserved: report.dateObserved,
+                  // age: report.age,
+                  // staffID: report.staffID,
+                  // nickname: nickname,
+                  // staffName: staffName,
                   id: key + 1,
                   _id: report._id,
                   animalID: report.animalID,
                   staffID: report.staffID,
-                  animalName: animalName,
                   staffName: staffName,
+                  enclosure : report.enclosure,
+                  nickname: report.nickname,
+                  age: report.age,
+                  dateObserved: formatDate(report.dateObserved),
                   healthDescription: report.healthDescription,
-                  nextCheckupDate: formatDate(report.nextCheckupDate),
+                  nextCheckupDate: report.nextCheckupDate,
                   medication: report.medication,
                   vaccineStatus: report.vaccineStatus,
+                  veterinarian: report.veterinarian,
+                  animalHealth: report.animalHealth,
+                 
                 };
               }
             );
@@ -108,11 +125,16 @@ const ViewMedicalHistory = () => {
   };
 
   const columns = [
-    { field: "animalName", headerName: "Animal Name", flex: 1 },
-    { field: "staffName", headerName: "Staff Name", flex: 1 },
-    { field: "healthDescription", headerName: "Health Description", flex: 1 },
-    { field: "nextCheckupDate", headerName: "Next Checkup Date", flex: 1 },
-    { field: "medication", headerName: "Medication", flex: 1 },
+    { field: "nickname", headerName: "Animal Name", flex: 1 },
+    { field: "enclosure", headerName: "Enclosure", flex: 1 },
+    { field: "dateObserved", headerName: "Date of Observation", flex: 1 },
+    { field: "age", headerName: "Age", flex: 0.8 },
+    { field: "healthDescription", headerName: "Case", flex: 1 },
+    { field: "medication", headerName: "Treatment", flex: 1 },
+    { field: "animalHealth", headerName: "Animal Health", flex: 1 },
+    { field: "nextCheckupDate", headerName: "Remarks", flex: 1 },
+    { field: "staffName", headerName: "Reported By", flex: 1 },
+    { field: "veterinarian", headerName: "Veterinarian", flex: 1 },
     { field: "vaccineStatus", headerName: "Vaccination Status", flex: 1 },
     {
       field: "actions",
@@ -151,7 +173,7 @@ const ViewMedicalHistory = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  name="animalName"
+                  name="nickname"
                   label="Animal Name"
                   placeholder="Enter animal name"
                   variant="filled"
@@ -228,13 +250,47 @@ const ViewMedicalHistory = () => {
               </Typography>
               <TextField
                 type="text"
-                value={selectedHistory.animalName}
+                value={selectedHistory.nickname}
                 variant="filled"
                 fullWidth
                 readOnly
                 disabled
               />
 
+
+            <Typography variant="subtitle1" mb={1}>
+               Enclosure
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.enclosure}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+              <Typography variant="subtitle1" mb={1}>
+               Date of observation
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.dateObserved}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+              <Typography variant="subtitle1" mb={1}>
+                age
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.age}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
               <Typography variant="subtitle1" mb={1}>
                 Staff Name
               </Typography>
@@ -246,13 +302,35 @@ const ViewMedicalHistory = () => {
                 readOnly
                 disabled
               />
-
               <Typography variant="subtitle1" mb={1}>
-                Health Description
+               case
               </Typography>
               <TextField
-                multiline
+                type="text"
                 value={selectedHistory.healthDescription}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+              
+              <Typography variant="subtitle1" mb={1}>
+                Treatment
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.medication}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+                <Typography variant="subtitle1" mb={1}>
+               Animal Health
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.animalHealth}
                 variant="filled"
                 fullWidth
                 readOnly
@@ -260,7 +338,20 @@ const ViewMedicalHistory = () => {
               />
 
               <Typography variant="subtitle1" mb={1}>
-                Next Checkup Date
+               Veterinarian
+              </Typography>
+              <TextField
+                type="text"
+                value={selectedHistory.veterinarian}
+                variant="filled"
+                fullWidth
+                readOnly
+                disabled
+              />
+
+
+              <Typography variant="subtitle1" mb={1}>
+               Remarks
               </Typography>
               <TextField
                 type="text"
@@ -271,17 +362,6 @@ const ViewMedicalHistory = () => {
                 disabled
               />
 
-              <Typography variant="subtitle1" mb={1}>
-                Medication
-              </Typography>
-              <TextField
-                type="text"
-                value={selectedHistory.medication}
-                variant="filled"
-                fullWidth
-                readOnly
-                disabled
-              />
 
               <Typography variant="subtitle1" mb={1}>
                 Vaccination Status
