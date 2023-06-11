@@ -39,12 +39,13 @@ const AnimalRecords = () => {
             id: key+1,
             _id: record._id,
             animalID: record.animalID,
-            animalName: record.animalName,
+            // animalName: record.animalName,
             species: record.species,
             age: record.age,
             gender: record.gender,             
             breedType: record.breedType,
             weight: record.weight,
+            quantity: record.quantity,
             birthDate: formatDate(record.birthDate),
           }));
           setRecords(records);
@@ -88,21 +89,22 @@ const AnimalRecords = () => {
   
   const handleAddRecord = (event) => {
     event.preventDefault();
-    const animalName = event.target.animalName.value.toLowerCase();
+    const animalName = event.target.species.value.toLowerCase();
 
     // Check if the animal name is already taken (case-sensitive)
-    const isNameTaken = records.some((record) => record.animalName.toLowerCase() === animalName);
+    const isNameTaken = records.some((record) => record.species.toLowerCase() === species);
     if (isNameTaken) {
       setNameTakenError("The animal name is already taken. Please choose a different name.");
     } else {
       http
         .post('/animal/add', {
-          animalName: event.target.animalName.value,
+          // animalName: event.target.animalName.value,
         species: event.target.species.value,
-        age: event.target.age.value,
-        gender: event.target.gender.value,
+        // age: event.target.age.value,
+        // gender: event.target.gender.value,
         breedType: event.target.breedType.value,
-        weight: event.target.weight.value,
+        // weight: event.target.weight.value,
+        quantity: event.target.quantity.value,
         birthDate: event.target.birthDate.value,
         })
         .then((res) => {
@@ -175,12 +177,9 @@ const AnimalRecords = () => {
 
   const handleEditDialogSave = () => {
     const editedRecord = {
-          animalName: document.getElementById("editAnimalName").value,
           species: document.getElementById("editSpecies").value,
-          age: document.getElementById("editAge").value,
-          gender: document.getElementById("editGender").value,
           breedType: document.getElementById("editBreedType").value,
-          weight: document.getElementById("editWeight").value,
+          quantity: document.getElementById("editQuantity").value,
           birthDate: document.getElementById("editBirthDate").value,
     };
   
@@ -247,102 +246,15 @@ const AnimalRecords = () => {
           <div className="text-danger mt-2">{nameTakenError}</div>
         )}
       <Box marginBottom="10px">
-      <InputLabel >Name</InputLabel>
+      <InputLabel >Common Name</InputLabel>
           <TextField
-              placeholder="Input animal name..."
-              name="animalName"
+              placeholder="Input animal common name..."
+              name="species"
               variant="filled"
               fullWidth
               required
             />
       </Box>
-      <Box marginBottom="10px">
-        <InputLabel>Species</InputLabel>
-        <TextField
-          select
-          value={species}
-          name="species"
-          variant="filled"
-          fullWidth
-          required
-          SelectProps={{ displayEmpty: true }}
-        InputLabelProps={{ shrink: true }}
-        onChange={handleSpeciesChange}
-        >
-          <MenuItem value="" disabled> Select species</MenuItem>  
-          <MenuItem value="lion">Lion</MenuItem>
-          <MenuItem value="tiger">Tiger</MenuItem>
-          <MenuItem value="giraffe">Giraffe</MenuItem>
-          <MenuItem value="elephant">Elephant</MenuItem>
-          <MenuItem value="zebra">Zebra</MenuItem>
-          <MenuItem value="crocodile">Crocodile</MenuItem>
-          <MenuItem value="orangutan">Orangutan</MenuItem>
-          <MenuItem value="chimpanzee">Chimpanzee</MenuItem>
-          <MenuItem value="gorilla">Gorilla</MenuItem>
-          <MenuItem value="penguin">Penguin</MenuItem>
-          <MenuItem value="flamingo">Flamingo</MenuItem>
-          <MenuItem value="kangaroo">Kangaroo</MenuItem>
-          <MenuItem value="hippopotamus">Hippopotamus</MenuItem>
-          <MenuItem value="snake">Snake</MenuItem>
-          <MenuItem value="owl">Owl</MenuItem>
-          <MenuItem value="parrot">Parrot</MenuItem>
-          <MenuItem value="macaw">Macaw</MenuItem>
-          <MenuItem value="monkey">Monkey</MenuItem>
-          <MenuItem value="bear">Bear</MenuItem>
-          <MenuItem value="turtle">Turtle</MenuItem>
-          <MenuItem value="cheetah">Cheetah</MenuItem>
-          <MenuItem value="rhinoceros">Rhinoceros</MenuItem>
-          <MenuItem value="leopard">Leopard</MenuItem>
-          <MenuItem value="koala">Koala</MenuItem>
-          <MenuItem value="meerkat">Meerkat</MenuItem>
-          <MenuItem value="ostrich">Ostrich</MenuItem>
-          <MenuItem value="peacock">Peacock</MenuItem>
-          <MenuItem value="hyena">Hyena</MenuItem>
-          <MenuItem value="red-panda">Red Panda</MenuItem>
-          <MenuItem value="squirrel-monkey">Squirrel Monkey</MenuItem>
-          <MenuItem value="gibbon">Gibbon</MenuItem>
-          <MenuItem value="toucan">Toucan</MenuItem>
-          <MenuItem value="camel">Camel</MenuItem>
-          <MenuItem value="llama">Llama</MenuItem>
-          <MenuItem value="wallaby">Wallaby</MenuItem>
-          <MenuItem value="otter">Otter</MenuItem>
-          <MenuItem value="seal">Seal</MenuItem>
-          <MenuItem value="wolf">Wolf</MenuItem>
-          <MenuItem value="reptiles">Reptiles</MenuItem>
-        </TextField>
-      </Box>
-
-      <Box marginBottom="10px">
-      <InputLabel >Animal Age</InputLabel>
-          <TextField
-              placeholder="Input animal age..."
-              name="age"
-              variant="filled"
-              fullWidth
-              required
-              type="number"
-            />
-      </Box>
-
-
-        <Box marginBottom="10px">
-        <InputLabel>Gender</InputLabel>
-        <TextField
-          select
-          value={gender}
-          name="gender"
-          variant="filled"
-          fullWidth
-          required
-          SelectProps={{ displayEmpty: true }}
-        InputLabelProps={{ shrink: true }}
-        onChange={handleGenderChange}
-        >
-          <MenuItem value="" disabled> Select Gender</MenuItem>  
-          <MenuItem value="male">Male</MenuItem>
-          <MenuItem value="female">Female</MenuItem>
-          </TextField>
-          </Box>
   
             <Box marginBottom="10px">
                <InputLabel>Breed Type</InputLabel>
@@ -357,20 +269,20 @@ const AnimalRecords = () => {
                 </Box>
     
       
-                <Box marginBottom="10px">
-            <InputLabel >Animal Weight</InputLabel>
+            <Box marginBottom="10px">
+            <InputLabel >Quantity</InputLabel>
                 <TextField
-                    placeholder="Input animal weight in kg..."
-                    name="weight"
+                    placeholder="Input animal quantity..."
+                    name="quantity"
                     variant="filled"
+                    type='number'
                     fullWidth
                     required
                   />
             </Box>
             <Box marginBottom="10px">
-            <InputLabel >Animal Birth Date</InputLabel>
+            <InputLabel >Animal Date Added</InputLabel>
                 <TextField
-                    placeholder="Input animal birthday..."
                     name="birthDate"
                     variant="filled"
                     fullWidth
@@ -423,14 +335,15 @@ const AnimalRecords = () => {
 
           rows={records}
           columns={[
-            { field: "animalName", headerName: "Animal name", flex: 1 },
-            { field: "species", headerName: "Species", flex: 1 },
-            { field: "age", headerName: "Age", flex: 1 },
-            { field: "gender", headerName: "Gender", flex: 1 },
+            // { field: "animalName", headerName: "Animal name", flex: 1 },
+            { field: "species", headerName: "Common name", flex: 1 },
+            // { field: "age", headerName: "Age", flex: 1 },
+            // { field: "gender", headerName: "Gender", flex: 1 },
             // { field: "animalID", headerName: "Animal ID", flex: 1 },
             { field: "breedType", headerName: "Breed Type", flex: 1 },
-            { field: "weight", headerName: "Weight", flex: 0.6 },
-            { field: "birthDate", headerName: "Birth Date", flex: 1 },
+            // { field: "weight", headerName: "Weight", flex: 0.6 },
+            { field: "quantity", headerName: "Quantity", flex: 1 },
+            { field: "birthDate", headerName: "Date Added", flex: 1 },
             {
               field: "actions",
               headerName: "Actions",
@@ -469,59 +382,28 @@ const AnimalRecords = () => {
         <DialogContent>
           <Form onSubmit={handleEditRecord}>
 
-          <Form.Group className="mb-3" controlId="editAnimalName">
-              <Form.Label>Animal Name</Form.Label>
-              <Form.Control
-               name="editAnimalName"
-                type="text"
-                placeholder="Enter animal name"
-                defaultValue={editRecord ? editRecord.animalName : ""}
-                required
-              />
-            </Form.Group>
             <Form.Group className="mb-3" controlId="editSpecies">
-              <Form.Label>Species</Form.Label>
+              <Form.Label>Common Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter species"
+                placeholder="Enter common name"
                 defaultValue={editRecord ? editRecord.species : ""}
                 required
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="editAge">
-              <Form.Label>Age</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter age"
-                defaultValue={editRecord ? editRecord.age : ""}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="editGender">
-              <Form.Label>Gender</Form.Label>
-              <Form.Control as="select" defaultValue={editRecord ? editRecord.gender : ""} required>
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </Form.Control>
-            </Form.Group>
-
            <Form.Group className="mb-3" controlId="editBreedType">
             <Form.Label>Breed Type</Form.Label>
             <Form.Control type="text" placeholder="input breed type" defaultValue={editRecord ? editRecord.breedType : ""} required>
-              
             </Form.Control>
           </Form.Group>
-
-
-            <Form.Group className="mb-3" controlId="editWeight">
-              <Form.Label>Weight</Form.Label>
+            
+            <Form.Group className="mb-3" controlId="editQuantity">
+              <Form.Label>Quantity</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter weight"
-                defaultValue={editRecord ? editRecord.weight : ""}
+                type="number"
+                placeholder="Enter quantity"
+                defaultValue={editRecord ? editRecord.quantity : ""}
                 required
               />
             </Form.Group>
