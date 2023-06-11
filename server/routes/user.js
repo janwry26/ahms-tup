@@ -73,7 +73,7 @@ router.get("/view-email/:email", async (req, res) => {
         .select('lastName firstName email contactNum username')
         .then((user) => {
             if (!user) {
-                return res.status(404).json({ error: "User not found" });
+                return res.send("User not found");
             }
             res.json(user);
         })
@@ -108,16 +108,16 @@ router.put("/edit/:id", async (req, res) => {
     .catch((err) => res.send(err + "\nFailed to update Account"));
 });
 
-router.put("/change-password/:id", async (req, res) => {
-    const newPassword = bcrypt.hashSync(req.body.newPassword, 10);
+// router.put("/change-password/:id", async (req, res) => {
+//     const newPassword = bcrypt.hashSync(req.body.newPassword, 10);
 
-    User.findByIdAndUpdate({ _id: req.params.id }, { password: newPassword })
-    .then((doc) => {
-        console.log(doc);
-        res.send("Password changed successfully");
-    })
-    .catch((err) => res.send(err + "\nFailed to change password"));
-});
+//     User.findByIdAndUpdate({ _id: req.params.id }, { password: newPassword })
+//     .then((doc) => {
+//         console.log(doc);
+//         res.send("Password changed successfully");
+//     })
+//     .catch((err) => res.send(err + "\nFailed to change password"));
+// });
 
 router.put("/archive/:id", async (req, res) => {
     User.findByIdAndUpdate({ _id: req.params.id }, {
@@ -137,6 +137,18 @@ router.put("/restore/:id", async (req, res) => {
         res.send("Account restored successfully");
     })
     .catch((err) => res.send(err + "\nFailed to restore Account"));
+});
+
+//Change Password
+router.put("/change-password/:email", async (req, res) => {
+    const password = bcrypt.hashSync(req.body.password, 10);
+    User.findOneAndUpdate({ email: req.params.email }, {
+        password
+    })
+    .then(() => {
+        res.send("Password changed successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to change password"));
 });
 
 module.exports = router;

@@ -8,6 +8,7 @@ import Login from "../Login";
 import Logout from "../Logout";
 import Admin from "../SuperAdmin"
 import Forgot from "../Forgot";
+import ChangePass from "../ChangePass";
 const Routing = ({user, admin}) => {
     return (
         <Routes>
@@ -15,6 +16,7 @@ const Routing = ({user, admin}) => {
             <Route path='/zootopia' element={<Admin admin={admin} />} />
             <Route path='/login' element={<Login user={user} />} />
             <Route path='/forgot' element={<Forgot />} />
+            <Route path='/change-pass' element={<ChangePass />} />
 
             <Route element={<PrivateRoute user={user} />}>
                 <Route path='/dashboard/*' element={<Dashboard />} />

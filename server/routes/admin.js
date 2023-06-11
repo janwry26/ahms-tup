@@ -46,6 +46,18 @@ router.get("/view", async (req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/view-email/:email", async (req, res) => {
+    const { email } = req.params;
+    Admin.findOne({ email })
+        .then((user) => {
+            if (!user) {
+                return res.send("User not found");
+            }
+            res.json(user);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
+
 router.put("/archive/:id", async (req, res) => {
     Admin.findByIdAndUpdate({ _id: req.params.id }, {
         isArchived: true
@@ -64,6 +76,18 @@ router.put("/restore/:id", async (req, res) => {
         res.send("Account restored successfully");
     })
     .catch((err) => res.send(err + "\nFailed to restore Account"));
+});
+
+//Change Password
+router.put("/change-password/:email", async (req, res) => {
+    const password = bcrypt.hashSync(req.body.password, 10);
+    Admin.findOneAndUpdate({ email: req.params.email }, {
+        password
+    })
+    .then(() => {
+        res.send("Password changed successfully");
+    })
+    .catch((err) => res.send(err + "\nFailed to change password"));
 });
 
 module.exports = router;
