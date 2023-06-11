@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select,MenuItem } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -333,15 +333,24 @@ const Task = () => {
       <Box sx={style}>
     <Form onSubmit={handleAddTask}>
     <Box marginBottom="10px">
-          <InputLabel >Task Name</InputLabel>
-            <TextField
-                placeholder="Input Task Name..."
-                name="taskName"
-                variant="filled"
-                fullWidth
-                required
-              />
-      </Box>
+      <InputLabel>Task Name</InputLabel>
+      <Select
+        name="taskName"
+        variant="filled"
+        fullWidth
+        required
+        selectEmpty
+      >
+        <MenuItem value="" disabled>Select task</MenuItem>
+        <MenuItem value="Clean comfortable cages">Clean comportable cages</MenuItem>
+        <MenuItem value="Disinfect enclosures">Disinfect enclosures</MenuItem>
+        <MenuItem value="Transports food and water in their cages">Transports food and water in their cages</MenuItem>
+        <MenuItem value="Reports serious conditions">Reports serious conditions</MenuItem>
+        <MenuItem value="Answers visitor questions">Answers visitor questions</MenuItem>
+        <MenuItem value="Ensuring habitats are safe">Ensuring habitats are safe</MenuItem>
+        <MenuItem value="Train and exercise the animals">Train and exercise the animals</MenuItem>
+      </Select>
+    </Box>
 
         <Box marginBottom="10px">
         <InputLabel>Staff</InputLabel>
