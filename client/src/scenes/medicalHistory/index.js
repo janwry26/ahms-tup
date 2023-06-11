@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select, MenuItem } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -32,7 +32,7 @@ const MedicalHistory = () => {
 
         return Promise.all([animalRequest, staffRequest])
           .then(([animalRes, staffRes]) => {
-            const animalName = animalRes.data.animalName;
+            const species = animalRes.data.species;
             const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
 
             return {
@@ -40,12 +40,19 @@ const MedicalHistory = () => {
               _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
-              animalName: animalName,
+              species: species,
               staffName: staffName,
+              enclosure : report.enclosure,
+              nickname: report.nickname,
+              age: report.age,
+              dateObserved: formatDate(report.dateObserved),
               healthDescription: report.healthDescription,
-              nextCheckupDate: formatDate(report.nextCheckupDate),
+              nextCheckupDate: report.nextCheckupDate,
               medication: report.medication,
               vaccineStatus: report.vaccineStatus,
+              veterinarian: report.veterinarian,
+              animalHealth: report.animalHealth,
+
             };
           });
       });
@@ -89,12 +96,18 @@ const MedicalHistory = () => {
     event.preventDefault();
     http
       .post('/health-report/add', {
+        enclosure: event.target.enclosure.value,
+        nickname: event.target.nickname.value,
+         dateObserved: event.target.dateObserved.value,
+        age :event.target.age.value,
         animalID: event.target.animalID.value,
         staffID: event.target.staffID.value,
         healthDescription: event.target.healthDescription.value,
         nextCheckupDate: event.target.nextCheckupDate.value,
         medication: event.target.medication.value,
         vaccineStatus: event.target.vaccineStatus.value,
+        veterinarian :event.target.veterinarian.value,
+        animalHealth:event.target.animalHealth.value
       })
       .then((res) => {
         console.log(res);
@@ -139,12 +152,18 @@ const MedicalHistory = () => {
 
   const handleEditDialogSave = () => {
     const editedReport = {
-      animalID: document.getElementById("editAnimalName").value,
+      // animalID: document.getElementById("editSpecies").value,
+      nickname: document.getElementById("editNickname").value,
+      enclosure: document.getElementById("editEnclosure").value,
+      age: document.getElementById("editAge").value,
+      dateObserved: document.getElementById("editDateObserved").value,
+      veterinarian: document.getElementById("editVeterinarian").value,
       staffID: document.getElementById("editStaffName").value,
       healthDescription: document.getElementById("editHealthDescription").value,
-     nextCheckupDate: document.getElementById("editNextCheckupDate").value,
+     nextCheckupDate: document.getElementById("editRemarks").value,
       medication: document.getElementById("editMedication").value,
       vaccineStatus: document.getElementById("editVaccinationStatus").value,
+      animalHealth: document.getElementById("editAnimalHealth").value,
     };
   
     http
@@ -190,6 +209,7 @@ const MedicalHistory = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    height: 'auto',
     width: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
@@ -230,8 +250,19 @@ const MedicalHistory = () => {
       >
       <Box sx={style}>
       <Form onSubmit={handleAddReport}>
+
+      <Box marginBottom="10px">
+          <InputLabel >Nickname</InputLabel>
+            <TextField
+                placeholder="Input animal nickname..."
+                name="nickname"
+                variant="filled"
+                fullWidth
+                required
+              />
+        </Box>
         <Box marginBottom="10px">
-          <InputLabel>Animal</InputLabel>
+          <InputLabel>Common Name</InputLabel>
           <Select
             name="animalID"
             native
@@ -242,11 +273,100 @@ const MedicalHistory = () => {
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {
                 return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                  <option value={val.animalID} key={val.animalID}>{val.species}</option>
                 )
             })}          
           </Select>
         </Box>     
+        <Box marginBottom="10px">
+          <InputLabel >Enclosure</InputLabel>
+            <TextField
+                placeholder="Input enclosure..."
+                name="enclosure"
+                variant="filled"
+                fullWidth
+                required
+              />
+        </Box>
+        <Box marginBottom="10px">
+        <InputLabel >Date of Observation</InputLabel>
+          <TextField
+              placeholder="Input next checkup date..."
+              name="dateObserved"
+              variant="filled"
+              fullWidth
+              required
+              type="date"
+            />
+        </Box>
+        <Box marginBottom="10px">
+            <InputLabel>Animal Age</InputLabel>
+            <Select
+              name="age"
+              variant="filled"
+              fullWidth
+              required
+              displayEmpty
+            >
+              <MenuItem value="" disabled>Select animal age</MenuItem>
+
+              <MenuItem value="newborn">Newborn</MenuItem>
+              <MenuItem value="juvenile">Juvenile</MenuItem>
+              <MenuItem value="adult">Adult</MenuItem>
+              <MenuItem value="elderly">Elderly</MenuItem>
+            </Select>
+        </Box>
+        <Box marginBottom="10px">
+            <InputLabel>Animal Health</InputLabel>
+            <Select
+              name="animalHealth"
+              variant="filled"
+              fullWidth
+              required
+              displayEmpty
+            >
+              <MenuItem value="" disabled>Select animal health</MenuItem>
+
+              <MenuItem value="Normal">Normal</MenuItem>
+              <MenuItem value="Mild">Mild</MenuItem>
+              <MenuItem value="Critical">Critical</MenuItem>
+            </Select>
+        </Box>
+
+        
+        <Box marginBottom="10px">
+          <InputLabel >Case</InputLabel>
+            <TextField
+                placeholder="Input health description..."
+                name="healthDescription"
+                variant="filled"
+                fullWidth
+                required
+              />
+        </Box>
+        <Box marginBottom="10px">
+        <InputLabel >Treatment</InputLabel>
+          <TextField
+              placeholder="Only veterinarian can access on edit"
+              name="medication"
+              variant="filled"
+              fullWidth
+              required
+              disabled
+            />
+        </Box>
+            
+        <Box marginBottom="10px">
+        <InputLabel >Remarks</InputLabel>
+          <TextField
+              placeholder="Input remarks..."
+              name="nextCheckupDate"
+              variant="filled"
+              fullWidth
+              required
+              type="text"
+            />
+        </Box>
 
         <Box marginBottom="10px">
           <InputLabel>Staff</InputLabel>
@@ -265,37 +385,15 @@ const MedicalHistory = () => {
             })}          
           </Select>
         </Box>
-
         <Box marginBottom="10px">
-          <InputLabel >Health Description</InputLabel>
-            <TextField
-                placeholder="Input health description..."
-                name="healthDescription"
-                variant="filled"
-                fullWidth
-                required
-              />
-        </Box>
-
-        <Box marginBottom="10px">
-        <InputLabel >Next Checkup Date</InputLabel>
+        <InputLabel >Veterinarian</InputLabel>
           <TextField
-              placeholder="Input next checkup date..."
-              name="nextCheckupDate"
+              placeholder="Input veterinarian..."
+              name="veterinarian"
               variant="filled"
               fullWidth
               required
-              type="date"
-            />
-        </Box>
-        <Box marginBottom="10px">
-        <InputLabel >Animal Medication</InputLabel>
-          <TextField
-              placeholder="Input animal medication..."
-              name="medication"
-              variant="filled"
-              fullWidth
-              required
+              type="text"
             />
         </Box>
         <Box marginBottom="10px">
@@ -355,11 +453,17 @@ const MedicalHistory = () => {
         <DataGrid
           rows={reports}
           columns={[
-            { field: "animalName", headerName: "Animal Name", flex: 1 },
-            { field: "staffName", headerName: "Staff Name", flex: 1 },
-            { field: "healthDescription", headerName: "Health Description", flex: 1 },
+            { field: "nickname", headerName: "Nickname", flex: 1 },
+            { field: "species", headerName: "Common Name", flex: 1 },
+            { field: "enclosure", headerName: "Enclosure", flex: 1 },
+            { field: "dateObserved", headerName: "Date of Observation", flex: 1 },
+            { field: "age", headerName: "Age", flex: 0.8 },
+            { field: "healthDescription", headerName: "Case", flex: 1 },
+            { field: "medication", headerName: "Treatment", flex: 1 },
+            { field: "animalHealth", headerName: "Animal Health", flex: 1 },
             { field: "nextCheckupDate", headerName: "Next Checkup Date", flex: 1 },
-            { field: "medication", headerName: "Medication", flex: 1 },
+            { field: "staffName", headerName: "Reported By", flex: 1 },
+            { field: "veterinarian", headerName: "Veterinarian", flex: 1 },
             {
               field: "vaccineStatus",
               headerName: "Vaccination Status",
@@ -389,7 +493,7 @@ const MedicalHistory = () => {
                   </Button>
                 </div>
               ),
-              flex: 0.5,
+              flex: 0.7,
             },
           ]}
           components={{ Toolbar: GridToolbar }}
@@ -403,23 +507,117 @@ const MedicalHistory = () => {
           <Form onSubmit={handleEditReport}>
         
           <Box marginBottom="10px">
-            <InputLabel >Animal Name</InputLabel>
+          <Form.Group className="mb-3" controlId="editNickname">
+              <Form.Label>Nickname</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter health description"
+                defaultValue={editReport ? editReport.nickname: ""}
+                required
+              />
+            </Form.Group>
+            </Box>
+          {/* <Box marginBottom="10px">
+            <InputLabel >Common name</InputLabel>
             <Select
             name="animalID"
             native
             fullWidth
             required
+            disabled
             variant="filled"
+            defaultValue={editReport ? editReport.species: ""}
+
           >
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {
                 return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                  <option value={val.animalID} key={val.animalID}>{val.species}</option>
                 )
             })}          
           </Select>
+            </Box> */}
 
-            </Box>
+     
+          <Form.Group className="mb-3" controlId="editEnclosure">
+              <Form.Label>Enclosure</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter health description"
+                defaultValue={editReport ? editReport.enclosure : ""}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="editDateObserved">
+              <Form.Label>Date of Observation</Form.Label>
+              <Form.Control
+                type="date"
+                defaultValue={editReport ? editReport.dateObserved : ""}
+                required
+              />
+            </Form.Group>
+            {/* <Form.Group className="mb-3" controlId="editAge">
+              <Form.Label>Age</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Edit animal age"
+                defaultValue={editReport ? editReport.age : ""}
+                required
+              />
+            </Form.Group> */}
+             <Form.Group className="mb-3" controlId="editAge">
+            <Form.Label>Animal Age</Form.Label>
+            <Form.Select defaultValue={editReport ? editReport.age : ""} required>
+              <option value="">Select animal age</option>
+              <option value="newborn">New Born</option>
+              <option value="juvenile">Juvenile</option>
+              <option value="adult">Adult</option>
+              <option value="elderly">Elderly</option>
+            </Form.Select>
+            
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="editAnimalHealth">
+            <Form.Label>Animal Health</Form.Label>
+            <Form.Select defaultValue={editReport ? editReport.animalHealth : ""} required>
+              <option value="">Select animal health</option>
+              <option value="normal">Normal</option>
+              <option value="mild">Mild</option>
+              <option value="critical">Critical</option>
+            </Form.Select>
+            
+          </Form.Group>
+            <Form.Group className="mb-3" controlId="editHealthDescription">
+              <Form.Label>Case</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Edit case"
+                defaultValue={editReport ? editReport.healthDescription : ""}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="editRemarks">
+              <Form.Label>Remarks</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="edit remarks"
+                defaultValue={editReport ? editReport.nextCheckupDate : ""}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="editMedication">
+              <Form.Label>Medication</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter medication"
+                defaultValue={editReport ? editReport.medication : ""}
+                required
+              />
+            </Form.Group>
+
+           
+
 
              <Box marginBottom="10px">
               <InputLabel>Staff</InputLabel>
@@ -441,34 +639,17 @@ const MedicalHistory = () => {
               </Select>
             </Box>
 
-            <Form.Group className="mb-3" controlId="editHealthDescription">
-              <Form.Label>Health Description</Form.Label>
+            
+            <Form.Group className="mb-3" controlId="editVeterinarian">
+              <Form.Label>Veterinarian</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter health description"
-                defaultValue={editReport ? editReport.healthDescription : ""}
+                defaultValue={editReport ? editReport.veterinarian : ""}
                 required
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="editNextCheckupDate">
-              <Form.Label>Next Checkup Date</Form.Label>
-              <Form.Control
-                type="date"
-                defaultValue={editReport ? editReport.nextCheckupDate : ""}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="editMedication">
-              <Form.Label>Medication</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter medication"
-                defaultValue={editReport ? editReport.medication : ""}
-                required
-              />
-            </Form.Group>
+           
 
             <Form.Group className="mb-3" controlId="editVaccinationStatus">
             <Form.Label>Vaccination Status</Form.Label>

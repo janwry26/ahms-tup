@@ -4,9 +4,9 @@ const HealthReport = require("../models/HealthReport");
 
 router.post("/add", async (req, res) => {
 
-    const { animalID, staffID, healthDescription, nextCheckupDate, medication, vaccineStatus  } = req.body;
+    const { animalID, staffID,enclosure,dateObserved, age,nickname, healthDescription, nextCheckupDate, medication, vaccineStatus,veterinarian,animalHealth,  } = req.body;
 
-    const healthReport = new HealthReport({  animalID, staffID, healthDescription, nextCheckupDate, medication, vaccineStatus });
+    const healthReport = new HealthReport({  animalID, staffID, healthDescription, nextCheckupDate, medication, vaccineStatus,enclosure,dateObserved, age,nickname,animalHealth, veterinarian});
     await healthReport.save()
     .then(() => {
         res.send("Health Report added");
@@ -24,12 +24,18 @@ router.get("/view", async (req, res) => {
 
 router.put("/edit/:id", async (req, res) => {
     HealthReport.findByIdAndUpdate({ _id: req.params.id }, {
+        enclosure: req.body.enclosure,
+        nickname: req.body.nickname,
+        age:req.body.age,
+        dateObserved:req.body.dateObserved,
         animalID: req.body.animalID, 
+        animalHealth: req.body.animalHealth,
         staffID: req.body.staffID, 
         healthDescription: req.body.healthDescription, 
         nextCheckupDate: req.body.nextCheckupDate, 
         medication: req.body.medication, 
-        vaccineStatus: req.body.vaccineStatus
+        vaccineStatus: req.body.vaccineStatus,
+        veterinarian: req.body.veterinarian
     })
     .then(() => {
         res.send("Health Report updated successfully");
