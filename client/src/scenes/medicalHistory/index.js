@@ -236,8 +236,8 @@ const MedicalHistory = () => {
   return (
     <Box m="20px" width="80%" margin="0 auto">
       <Header
-        title="MEDICAL HISTORY"
-        subtitle="Manage medical history reports"
+        title="MEDICAL RECORDS"
+        subtitle="Manage medical records"
         fontSize="36px"
         mt="20px"
       />

@@ -226,7 +226,7 @@ const AnimalRecords = () => {
   return (
     <Box m="20px" width="80%" margin="0 auto">
       <Header
-        title="ANIMAL RECORDS"
+        title="ANIMAL INFORMATION"
         subtitle="Manage animal records"
         fontSize="36px"
         mt="20px"
