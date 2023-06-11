@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Typography,Modal,InputLabel,Button,TextField } from "@mui/material";
 import http from "../../utils/http";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid,GridToolbar } from "@mui/x-data-grid";
 import { formatDate } from "../../utils/formatDate";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
@@ -251,7 +251,9 @@ if (isLoading) {
           columns={columns}
           autoPageSize
           disableSelectionOnClick
+          components={{ Toolbar: GridToolbar }}
         />
+
       </Box>
     </Box>
   );

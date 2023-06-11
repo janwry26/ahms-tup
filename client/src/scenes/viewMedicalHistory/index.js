@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Typography, Button, TextField, Modal,InputLabel } from "@mui/material";
 import { FaSearch } from "react-icons/fa";
 import Autocomplete from "@mui/material/Autocomplete";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import http from "../../utils/http";
 import Header from "../../components/Header";
 import { formatDate } from "../../utils/formatDate";
@@ -237,6 +237,8 @@ const ViewMedicalHistory = () => {
             columns={columns}
             autoPageSize
             disableSelectionOnClick
+           components={{ Toolbar: GridToolbar }}
+
           />
         </Box>
       )}
