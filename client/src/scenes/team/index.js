@@ -24,6 +24,7 @@ const Team = () => {
           email: team.email,
           contactNum: team.contactNum,
           staffId: team.staffId,
+          role:team.role,
         }));
         setTeamData(teamData)
         // Process the response data and set it in the state
@@ -98,6 +99,11 @@ const Team = () => {
     {
       field: "username",
       headerName: "Username",
+      flex: 1,
+    },
+    {
+      field: "role",
+      headerName: "Role",
       flex: 1,
     },
     {
