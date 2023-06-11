@@ -16,6 +16,7 @@ const healthReportRoutes = require("./routes/healthReport");
 const reportRoutes = require("./routes/report");
 const mortalityReportRoutes = require("./routes/mortalityReport");
 const observationReportRoutes = require("./routes/observationReport");
+const pushNotificationRoutes = require("./routes/pushNotification");
 
 app.use(express.json());
 app.use(cors());
@@ -31,6 +32,7 @@ app.use("/api/health-report", healthReportRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/mortality-report", mortalityReportRoutes);
 app.use("/api/observation-report", observationReportRoutes);
+app.use("/api/push-notification", pushNotificationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello to ahms-server API");
