@@ -2,24 +2,42 @@ import React, { useState, useEffect } from 'react';
 import '../styles/login.css';
 import http from '../utils/http';
 import Swal from 'sweetalert2';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function ChangePass() {
 
+  const navigate = useNavigate();
+  const location = useLocation();
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmPassword] = useState('');
+  let email = localStorage.getItem('email');
+  const queryParams = new URLSearchParams(location.search);
+  let account_type = queryParams.get('account_type');
 
-  const validation = async () => {
+  useEffect(() => {
+    // Do something with the paramValue
+    console.log(account_type);
+  }, [location.search]);
+
+  const validation = async (e) => {
+    e.preventDefault();
     if (password === confirmpassword) {
-      await http.get(`/api/admin/change-pass`,{
+      await http.put(`/${account_type}/change-password/${email}`,{
         password
       })
       .then((res) => {
-        console.log(res);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Successfully changed password',
+        })
+        .then(() => account_type == 'user' ? navigate('/login') : navigate('/zootopia'));
       })
     } else {
       Swal.fire({
         icon: 'error',
-        title: 'Passwords do not match',
+        title: 'Error',
+        text: 'Passwords do not match',
       })
     }
   }

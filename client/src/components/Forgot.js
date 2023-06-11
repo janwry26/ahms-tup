@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 function Forgot() {
 
   const [email, setEmail] = useState('');
+  let userType;
   const [isLoading, setIsLoading] = useState(false);
   const systemName = "AHMS";
 
@@ -18,6 +19,7 @@ function Forgot() {
       const userResponse = await http.get(`/user/view-email/${submitted_email}`);
       const adminResponse = await http.get(`/admin/view-email/${submitted_email}`);
       if (userResponse.data != 'User not found' || adminResponse.data != 'User not found') {
+        userResponse.data != 'User not found' ? userType = 'user' : userType = 'admin';
         return true;
       } else {
         await Swal.fire({
@@ -73,37 +75,56 @@ function Forgot() {
 
     await sendEmail(email_data);
 
-    const { value: submitted_code } = await Swal.fire({
+    Swal.fire({
       title: 'Reset code was sent to your email address',
-      input: 'number',
-      inputLabel: 'Password',
-      inputPlaceholder: 'Enter the reset code',
-      inputAttributes: {
-        maxlength: 6
-      }
-    })
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      html: `
+        <div>
+          <input id="resetCodeInput" class="swal2-input" style="margin-bottom: 10px; placeholder='Enter Reset Code'">
+        </div>
+        <div>
+          <button id="cancelButton" class="swal2-cancel swal2-styled">Cancel</button>
+          <button id="submitButton" class="swal2-confirm swal2-styled">Submit</button>
+        </div>
+      `,
+      didOpen: () => {
+        const cancelButton = Swal.getPopup().querySelector('#cancelButton');
+        const submitButton = Swal.getPopup().querySelector('#submitButton');
+        const resetCodeInput = Swal.getPopup().querySelector('#resetCodeInput');
     
-    if (submitted_code == code) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Reset Code Confirmed',
-        timer: 1500
-      }).then(() => {
-        navigate('/change-pass');
-      })
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid reset code',
-      })
-    }
+        cancelButton.addEventListener('click', () => {
+          Swal.close();
+        });
+    
+        submitButton.addEventListener('click', async () => {
+          const submitted_code = resetCodeInput.value;
+          
+          if (submitted_code === code) {
+            localStorage.setItem('email', submitted_email);
+            Swal.fire({
+              icon: 'success',
+              title: 'Reset Code Confirmed',
+              timer: 1500
+            }).then(() => {
+              navigate(`/change-pass?account_type=${userType}`);
+            });
+          } else {
+            Swal.showValidationMessage('Invalid reset code');
+          }
+        });
+      }
+    });
+    
+    
+              
+    
   }
 
   function sendEmail(emailParams) {
     emailjs.send('ahms_server', 'ahms_forgot_password', emailParams, 'BwZ_bncOp4Uto8vK9')
-      .then((result) => {
-          console.log(result.text);
-      })
       .catch((error) => {
           console.log(error.text);
       });
