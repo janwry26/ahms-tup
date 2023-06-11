@@ -22,6 +22,17 @@ router.get("/view", async (req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/view/:animalID", async (req, res) => {
+    const { animalID } = req.params;
+    HealthReport.findOne({ animalID })
+        .then((animal) => {
+            if (!animal) {
+                return res.status(404).json({ error: "Animal not found" });
+            }
+            res.json(animal);
+        })
+        .catch((err) => res.status(400).json({ error: err.message }));
+});
 router.put("/edit/:id", async (req, res) => {
     HealthReport.findByIdAndUpdate({ _id: req.params.id }, {
         enclosure: req.body.enclosure,

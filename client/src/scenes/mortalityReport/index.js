@@ -28,20 +28,19 @@ const MortalityReport = () => {
     http.get('/mortality-report/view')
     .then((res) => {
       const reportPromises = res.data.map((report, key) => {
-        const animalRequest = http.get(`/animal/view/${report.animalID}`);
+        const animalRequest = http.get(`/health-report/view/${report.animalID}`);
         const staffRequest = http.get(`/user/view/${report.staffID}`);
-
+        console.log(animalRequest)
         return Promise.all([animalRequest, staffRequest])
           .then(([animalRes, staffRes]) => {
-            const animalName = animalRes.data.animalName;
+            const nickname = animalRes.data.nickname;
             const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-
             return {
               id: key+1,
              _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
-              animalName: animalName,
+              nickname: nickname,
               staffName: staffName,
               casueOfDeath: report.casueOfDeath,
               deathDate: formatDate(report.deathDate),
@@ -62,7 +61,7 @@ const MortalityReport = () => {
 
   const getAnimals = () => {
     
-    http.get('/animal/view')
+    http.get('/health-report/view')
         .then((res) => {
           setAnimalList(res.data);
         })
@@ -238,13 +237,13 @@ const MortalityReport = () => {
         >
           <option value="">Select an Animal</option>
           {animalList.map((val) => {
-            const isAnimalInTable = reports.some((report) => report.animalName === val.animalName);
+            const isAnimalInTable = reports.some((report) => report.nickname === val.nickname);
             if (isAnimalInTable) {
               return null; // Hide the option if the animal name is already in the table
             }
             return (
               <option value={val.animalID} key={val.animalID}>
-                {val.animalName}
+                {val.nickname}
               </option>
             );
           })}
@@ -378,7 +377,7 @@ const MortalityReport = () => {
         <DataGrid
           rows={reports}
           columns={[
-            { field: "animalName", headerName: "Animal Name", flex: 1 },
+            { field: "nickname", headerName: "Animal Name", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
             { field: "staffName", headerName: "Reported By", flex: 1 },
@@ -456,7 +455,7 @@ const MortalityReport = () => {
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {
                 return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                  <option value={val.animalID} key={val.animalID}>{val.nickname}</option>
                 )
             })}          
           </Select>
