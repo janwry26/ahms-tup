@@ -33,7 +33,7 @@ const ObservationReport = () => {
 
         return Promise.all([animalRequest, staffRequest])
           .then(([animalRes, staffRes]) => {
-            const animalName = animalRes.data.animalName;
+            const species = animalRes.data.species;
             const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
 
             return {
@@ -41,7 +41,7 @@ const ObservationReport = () => {
               _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
-              animalName: animalName,
+             species:species,
               staffName: staffName,
               reportDescription: report.reportDescription,
               dateReported: formatDate(report.dateReported),
@@ -221,7 +221,7 @@ const ObservationReport = () => {
       <Box sx={style}>
   <Form onSubmit={handleAddReport}>
     <Box marginBottom="10px">
-        <InputLabel >Animal</InputLabel>
+        <InputLabel >Common Name</InputLabel>
         <Select
             name="animalID"
             native
@@ -232,7 +232,7 @@ const ObservationReport = () => {
             <option value="" >Select an Animal</option>
             {animalList.map((val) => {
                 return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
+                  <option value={val.animalID} key={val.animalID}>{val.species}</option>
                 )
             })}          
           </Select>
@@ -321,7 +321,7 @@ const ObservationReport = () => {
     <DataGrid
       rows={reports}
       columns={[ 
-        { field: "animalName",headerName: "Animal Name", flex: 1 },
+        { field: "species",headerName: "Common Name", flex: 1 },
 
         { field: "staffName", headerName: "Reported By", flex: 1 },  
         { field: "reportDescription", headerName: "Description", flex: 1 },
