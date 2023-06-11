@@ -182,6 +182,7 @@ const Form = () => {
                 <MenuItem value="Zookeeper">Zookeeper</MenuItem>
                 <MenuItem value="Veterinarian">Veterinarian</MenuItem>
                 <MenuItem value="Zoologist">Zoologist</MenuItem>
+                <MenuItem value="Foreman">Foreman</MenuItem>
               </Select>
               <TextField
                 fullWidth
