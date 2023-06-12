@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import "../../styles/loader.css"
+import { format } from "date-fns";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 
@@ -47,11 +48,11 @@ const ViewCompletedTasks = () => {
                       staffId: task.staffID,
                       staffName: staffName,
                       taskDescription: task.taskDescription,
-                      taskDueDate: formatDate(task.taskDueDate),
+                      taskDueDate: format(new Date(task.taskDueDate), "MMMM d, yyyy"),
                       taskStatus: task.taskStatus,
                       taskAccomplishDate: task.taskAccomplishDate === "" || task.taskAccomplishDate === null
                         ? ""
-                        : formatDate(task.taskAccomplishDate),
+                        : format(new Date(task.taskAccomplishDate), "MMMM d, yyyy"),
                     };setselected
                   })
                   .catch((err) => console.log(err));

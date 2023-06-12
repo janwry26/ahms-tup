@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import {  InputLabel, Select } from "@mui/material";
+import { format } from "date-fns";
 import http from "../../utils/http";
 import "../../styles/loader.css"
 const Inventory = () => {
@@ -32,8 +33,8 @@ const Inventory = () => {
             unitOfMeasure: product.unitOfMeasure,
             manufacturer: product.manufacturer,
             supplier:product.supplier,
-            dateAdded: product.dateAdded,
-            expDate: product.expDate,
+            dateAdded: format(new Date(product.dateAdded), "MMMM d, yyyy"),
+            expDate: format(new Date(product.expDate), "MMMM d, yyyy"),
             itemDescription: product.itemDescription,
             itemName: product.itemName,
             itemType: product.itemType,
@@ -52,19 +53,22 @@ const Inventory = () => {
   const handleAddProduct = (event) => {
     event.preventDefault();
     http
-      .post('/inventory/add', {
-       category: event.target.category.value,
-        unitOfMeasure: event.target.unitOfMeasure.value,
-        manufacturer: event.target.manufacturer.value,
-        supplier: event.target.supplier.value,
-        itemName: event.target.name.value,
-        itemType: event.target.type.value,
-        itemDescription: event.target.description.value,
-        quantity: event.target.quantity.value,
-        expDate: event.target.expDate.value,
-        dateAdded: event.target.dateAdded.value,
-
-      })
+    .post('/inventory/add', {
+      category: event.target.category.value,
+      unitOfMeasure: event.target.unitOfMeasure.value,
+      manufacturer: event.target.manufacturer.value,
+      supplier: event.target.supplier.value,
+      itemName: event.target.name.value,
+      itemType: event.target.type.value,
+      itemDescription: event.target.description.value,
+      quantity: event.target.quantity.value,
+      expDate: event.target.expDate.value,
+      dateAdded: new Date().toLocaleDateString("en-US", { 
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    })
       .then((res) => {
         console.log(res);
         Swal.fire({
@@ -146,7 +150,6 @@ const Inventory = () => {
       unitOfMeasure:document.getElementById("editUnitOfMeasure").value,
       manufacturer:document.getElementById("editManufacturer").value,
       supplier:document.getElementById("editSupplier").value,
-      dateAdded:document.getElementById("editDateAdded").value,
       itemName: document.getElementById("editName").value,
       itemType: document.getElementById("editType").value,
       itemDescription: document.getElementById("editDescription").value,
@@ -306,17 +309,15 @@ const Inventory = () => {
                     required
                   />
                   </Box>
-                  <Box marginBottom="10px">
+                  {/* <Box marginBottom="10px">
                 <InputLabel>Date Added</InputLabel>
-
                    <TextField
                     name="dateAdded"
                     type="date"
                     variant="filled"
                     fullWidth
-                    required
-                  />
-                  </Box>
+                    required/>
+                  </Box> */}
                   <Box marginBottom="10px">
                 <InputLabel>Expiration Date</InputLabel>
 
@@ -521,14 +522,14 @@ const Inventory = () => {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="editDateAdded">
+          {/* <Form.Group className="mb-3" controlId="editDateAdded">
             <Form.Label>Date Added</Form.Label>
             <Form.Control
               type="date"
               defaultValue={editProduct ? editProduct.dateAdded : ""}
               required
             />
-          </Form.Group>
+          </Form.Group> */}
           <Form.Group className="mb-3" controlId="editExpDate">
             <Form.Label>Expiration Date</Form.Label>
             <Form.Control

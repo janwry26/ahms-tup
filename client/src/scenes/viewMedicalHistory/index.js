@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import { formatDate } from "../../utils/formatDate";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
+import { format } from "date-fns";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const ViewMedicalHistory = () => {
@@ -91,7 +92,7 @@ const ViewMedicalHistory = () => {
                   enclosure : report.enclosure,
                   nickname: report.nickname,
                   age: report.age,
-                  dateObserved: formatDate(report.dateObserved),
+                  dateObserved: format(new Date(report.dateObserved), "MMMM d, yyyy"),
                   healthDescription: report.healthDescription,
                   nextCheckupDate: report.nextCheckupDate,
                   medication: report.medication,

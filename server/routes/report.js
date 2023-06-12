@@ -18,7 +18,10 @@ router.post("/add", async (req, res) => {
 
 router.get("/view", async (req, res) => {
     Report.find()
-        .then((items) => res.json(items))
+        .then((items) => {
+            console.log(items)
+            res.json(items)
+        })
         .catch((err) => res.status(400).json("Error: " + err));
 });
 

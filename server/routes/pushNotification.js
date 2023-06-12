@@ -141,4 +141,3 @@ module.exports = router;
 //   return items.map(item => `${item.name} (Expiration Date: ${item.expirationDate})`).join('\n');
 // }
 
-module.exports = router;

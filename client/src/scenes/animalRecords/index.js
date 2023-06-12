@@ -11,6 +11,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
 
 const AnimalRecords = () => {
@@ -43,7 +44,7 @@ const AnimalRecords = () => {
             habitat:record.habitat,
             breedType: record.breedType,
             quantity: record.quantity,
-            birthDate: formatDate(record.birthDate),
+            birthDate: format(new Date(record.birthDate), "MMMM d, yyyy"),
           }));
           setRecords(records);
         })
@@ -102,7 +103,11 @@ const AnimalRecords = () => {
         breedType: event.target.breedType.value,
         habitat: event.target.habitat.value,
         quantity: event.target.quantity.value,
-        birthDate: event.target.birthDate.value,
+        birthDate: new Date().toLocaleDateString("en-US", { 
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
         })
         .then((res) => {
           Swal.fire({
@@ -177,7 +182,7 @@ const AnimalRecords = () => {
           species: document.getElementById("editSpecies").value,
           breedType: document.getElementById("editBreedType").value,
           quantity: document.getElementById("editQuantity").value,
-          birthDate: document.getElementById("editBirthDate").value,
+          // birthDate: document.getElementById("editBirthDate").value,
           habitat: document.getElementById("editHabitat").value,
     };
   
@@ -286,16 +291,6 @@ const AnimalRecords = () => {
                     type='number'
                     fullWidth
                     required
-                  />
-            </Box>
-            <Box marginBottom="10px">
-            <InputLabel >Animal Date Added</InputLabel>
-                <TextField
-                    name="birthDate"
-                    variant="filled"
-                    fullWidth
-                    required
-                    type="date"
                   />
             </Box>
        
@@ -425,14 +420,6 @@ const AnimalRecords = () => {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="editBirthDate">
-              <Form.Label>Birth Date</Form.Label>
-              <Form.Control
-                type="date"
-                defaultValue={editRecord ? editRecord.birthDate : ""}
-                required
-              />
-            </Form.Group>
           </Form>
         </DialogContent>
         <DialogActions>
