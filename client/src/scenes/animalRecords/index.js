@@ -86,7 +86,7 @@ const AnimalRecords = () => {
   
   const handleAddRecord = (event) => {
     event.preventDefault();
-    const animalName = event.target.species.value.toLowerCase();
+    const species = event.target.species.value.toLowerCase();
 
     // Check if the animal name is already taken (case-sensitive)
     const isNameTaken = records.some((record) => record.species.toLowerCase() === species);
