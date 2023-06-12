@@ -13,6 +13,8 @@ import {  InputLabel, Select } from "@mui/material";
 import { format } from "date-fns";
 import http from "../../utils/http";
 import "../../styles/loader.css"
+import { formatDate } from "../../utils/formatDate";
+
 const Inventory = () => {
   const [products, setProducts] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -63,11 +65,7 @@ const Inventory = () => {
       itemDescription: event.target.description.value,
       quantity: event.target.quantity.value,
       expDate: event.target.expDate.value,
-      dateAdded: new Date().toLocaleDateString("en-US", { 
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
+      dateAdded: formatDate(event.target.dateAdded.value)
     })
       .then((res) => {
         console.log(res);
@@ -155,6 +153,7 @@ const Inventory = () => {
       itemDescription: document.getElementById("editDescription").value,
       quantity: document.getElementById("editQuantity").value,
       expDate: document.getElementById("editExpDate").value,
+      dateAdded: document.getElementById("editDateAdded").value,
     };
   
     http
@@ -309,7 +308,7 @@ const Inventory = () => {
                     required
                   />
                   </Box>
-                  {/* <Box marginBottom="10px">
+                  <Box marginBottom="10px">
                 <InputLabel>Date Added</InputLabel>
                    <TextField
                     name="dateAdded"
@@ -317,7 +316,7 @@ const Inventory = () => {
                     variant="filled"
                     fullWidth
                     required/>
-                  </Box> */}
+                  </Box>
                   <Box marginBottom="10px">
                 <InputLabel>Expiration Date</InputLabel>
 
@@ -522,14 +521,14 @@ const Inventory = () => {
               required
             />
           </Form.Group>
-          {/* <Form.Group className="mb-3" controlId="editDateAdded">
+          <Form.Group className="mb-3" controlId="editDateAdded">
             <Form.Label>Date Added</Form.Label>
             <Form.Control
               type="date"
               defaultValue={editProduct ? editProduct.dateAdded : ""}
               required
             />
-          </Form.Group> */}
+          </Form.Group>
           <Form.Group className="mb-3" controlId="editExpDate">
             <Form.Label>Expiration Date</Form.Label>
             <Form.Control

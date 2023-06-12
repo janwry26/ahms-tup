@@ -4,7 +4,7 @@ const Inventory = require("../models/Inventory");
 
 router.post("/add", async (req, res) => {
 
-    const { category,itemName, itemType, unitOfMeasure, manufacturer, supplier, itemDescription, quantity, expDate } = req.body;
+    const { category,itemName, itemType, unitOfMeasure, manufacturer, supplier, itemDescription,dateAdded, quantity, expDate } = req.body;
 
     const inventory = new Inventory({ category, itemName, itemType,unitOfMeasure, manufacturer, supplier, dateAdded, itemDescription, quantity, expDate });
     await inventory.save()
@@ -34,7 +34,8 @@ router.put("/edit/:id", async (req, res) => {
         supplier: req.body.supplier,
         itemDescription: req.body.itemDescription, 
         quantity: req.body.quantity, 
-        expDate: req.body.expDate
+        expDate: req.body.expDate,
+        dateAdded: req.body.dateAdded,
     })
     .then(() => {
         res.send("Item updated successfully");
