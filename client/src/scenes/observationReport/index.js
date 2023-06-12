@@ -11,6 +11,7 @@ import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
 
 
@@ -41,10 +42,10 @@ const ObservationReport = () => {
               _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
-             species:species,
+              species:species,
               staffName: staffName,
               reportDescription: report.reportDescription,
-              dateReported: formatDate(report.dateReported),
+              dateReported: format(new Date(report.dateReported), "MMMM d, yyyy"),
             };
           });
       });
@@ -89,7 +90,11 @@ const ObservationReport = () => {
         animalID: event.target.animalID.value,
         staffID: event.target.staffID.value,
         reportDescription: event.target.reportDescription.value,
-        dateReported: event.target.dateReported.value,
+        dateReported: new Date().toLocaleDateString("en-US", { 
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
       })
       .then((res) => {
         console.log(res);
@@ -158,7 +163,7 @@ const ObservationReport = () => {
       animalName: document.getElementById("editAnimalName").value, // Update animalID instead of animalName
       staffName: document.getElementById("editStaffName").value,
       reportDescription: document.getElementById("editReportDescription").value,
-      dateReported: document.getElementById("editDateReported").value,
+      // dateReported: document.getElementById("editDateReported").value,
     };
   
     http
@@ -268,7 +273,7 @@ const ObservationReport = () => {
             />
     </Box>
 
-    <Box marginBottom="10px">
+    {/* <Box marginBottom="10px">
         <InputLabel >Date Reported</InputLabel>
           <TextField
               name="dateReported"
@@ -277,7 +282,7 @@ const ObservationReport = () => {
               required
               type="date" 
             />
-    </Box>
+    </Box> */}
 
     <div className="d-grid gap-2" style={{marginTop:"-20px", marginBottom: "20px"}}>
       <Button className="btnDashBoard"  type="submit"  >
@@ -406,14 +411,14 @@ const ObservationReport = () => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="editDateReported">
+        {/* <Form.Group className="mb-3" controlId="editDateReported">
           <Form.Label>Date Reported</Form.Label>
           <Form.Control
             type="date"
             defaultValue={editReport ? editReport.dateReported : ""}
             required
           />
-        </Form.Group>
+        </Form.Group> */}
       </Form>
     </DialogContent>
     <DialogActions>

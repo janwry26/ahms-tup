@@ -11,6 +11,7 @@ import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
 
 const MedicalHistory = () => {
@@ -45,7 +46,7 @@ const MedicalHistory = () => {
               enclosure : report.enclosure,
               nickname: report.nickname,
               age: report.age,
-              dateObserved: formatDate(report.dateObserved),
+              dateObserved: format(new Date(report.dateObserved), "MMMM d, yyyy"),
               healthDescription: report.healthDescription,
               nextCheckupDate: report.nextCheckupDate,
               medication: report.medication,

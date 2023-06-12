@@ -14,6 +14,7 @@ import "../../styles/loader.css"
 import http from "../../utils/http";
 import { formatDate } from "../../utils/formatDate";
 import jwtDecode from 'jwt-decode';
+import { format } from "date-fns";
 
 
 const Task = () => {
@@ -71,9 +72,9 @@ const Task = () => {
               staffId: task.staffID,
               staffName: staffName,
               taskDescription: task.taskDescription,
-              taskDueDate: formatDate(task.taskDueDate),
+              taskDueDate: format(new Date(task.taskDueDate), "MMMM d, yyyy"),
               taskStatus: task.taskStatus, 
-              taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
+              taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : format(new Date(task.taskAccomplishDate), "MMMM d, yyyy"),
             };
           });
       });
@@ -104,7 +105,7 @@ const Task = () => {
               staffId: task.staffID,
               staffName: staffName,
               taskDescription: task.taskDescription,
-              taskDueDate: formatDate(task.taskDueDate),
+              taskDueDate: format(new Date(task.taskDueDate), "MMMM d, yyyy"),
               taskStatus: task.taskStatus, 
               taskAccomplishDate: task.taskAccomplishDate == "" || task.taskAccomplishDate == null ? "" : formatDate(task.taskAccomplishDate)
             };

@@ -11,6 +11,7 @@ import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import "../../styles/loader.css"
 import http from "../../utils/http";
+import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
 
 const MortalityReport = () => {
@@ -43,9 +44,9 @@ const MortalityReport = () => {
               nickname: nickname,
               staffName: staffName,
               casueOfDeath: report.casueOfDeath,
-              deathDate: formatDate(report.deathDate),
+              deathDate: format(new Date(report.deathDate), "MMMM d, yyyy"),
               deathTime: report.deathTime,
-              dateReported: formatDate(report.dateReported),
+              dateReported: format(new Date(report.dateReported), "MMMM d, yyyy"),
             };
           });
       });
@@ -92,7 +93,11 @@ const MortalityReport = () => {
         casueOfDeath: event.target.casueOfDeath.value,
         deathDate: event.target.deathDate.value,
         deathTime: event.target.deathTime.value,
-        dateReported: event.target.dateReported.value,
+        dateReported: new Date().toLocaleDateString("en-US", { 
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
       })
       .then((res) => {
         console.log(res);
@@ -164,7 +169,6 @@ const MortalityReport = () => {
       casueOfDeath: document.getElementById("editCauseOfDeath").value,
       deathDate: document.getElementById("editDeathDate").value,
       deathTime: document.getElementById("editDeathTime").value,
-      dateReported: document.getElementById("editDateReported").value,
     };
   
     http
@@ -305,7 +309,7 @@ const MortalityReport = () => {
             />
           </Box>
 
-          <Box marginBottom="10px">
+          {/* <Box marginBottom="10px">
           <InputLabel >Date Reported</InputLabel>
           <TextField
               placeholder="Input date reported..."
@@ -316,7 +320,7 @@ const MortalityReport = () => {
               type="date"
 
             />
-          </Box>
+          </Box> */}
           <Box marginBottom="10px">
         <InputLabel>Staff</InputLabel>
           <Select
@@ -485,7 +489,7 @@ const MortalityReport = () => {
                 required
               />
             </Form.Group>
-
+{/* 
             <Form.Group className="mb-3" controlId="editDateReported">
               <Form.Label>Date Reported</Form.Label>
               <Form.Control
@@ -493,7 +497,7 @@ const MortalityReport = () => {
                 defaultValue={editReport ? editReport.dateReported : ""}
                 required
               />
-            </Form.Group>
+            </Form.Group> */}
             <Box marginBottom="10px">
           <InputLabel>Staff</InputLabel>
             <Select

@@ -4,7 +4,7 @@ const Inventory = require("../models/Inventory");
 
 router.post("/add", async (req, res) => {
 
-    const { category,itemName, itemType, unitOfMeasure, manufacturer, supplier, dateAdded, itemDescription, quantity, expDate } = req.body;
+    const { category,itemName, itemType, unitOfMeasure, manufacturer, supplier, itemDescription, quantity, expDate } = req.body;
 
     const inventory = new Inventory({ category, itemName, itemType,unitOfMeasure, manufacturer, supplier, dateAdded, itemDescription, quantity, expDate });
     await inventory.save()
@@ -18,7 +18,9 @@ router.post("/add", async (req, res) => {
 
 router.get("/view", async (req, res) => {
     Inventory.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
-      .then((items) => res.json(items))
+      .then((items) => {
+        res.json(items)
+      })
       .catch((err) => res.status(400).json("Error: " + err));
 });
 
@@ -30,7 +32,6 @@ router.put("/edit/:id", async (req, res) => {
         unitOfMeasure: req.body.unitOfMeasure,
         manufacturer: req.body.manufacturer,
         supplier: req.body.supplier,
-        dateAdded: req.body.dateAdded,
         itemDescription: req.body.itemDescription, 
         quantity: req.body.quantity, 
         expDate: req.body.expDate
