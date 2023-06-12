@@ -40,6 +40,7 @@ const AnimalRecords = () => {
             id: key+1,
             _id: record._id,
             animalID: record.animalID,
+            species1: record.species1,
             species: record.species,
             habitat:record.habitat,
             breedType: record.breedType,
@@ -97,6 +98,7 @@ const AnimalRecords = () => {
       http
         .post('/animal/add', {
           // animalName: event.target.animalName.value,
+        species1: event.target.species1.value,
         species: event.target.species.value,
         // age: event.target.age.value,
         // gender: event.target.gender.value,
@@ -180,6 +182,7 @@ const AnimalRecords = () => {
   const handleEditDialogSave = () => {
     const editedRecord = {
           species: document.getElementById("editSpecies").value,
+          species1: document.getElementById("editSpecies1").value,
           breedType: document.getElementById("editBreedType").value,
           quantity: document.getElementById("editQuantity").value,
           // birthDate: document.getElementById("editBirthDate").value,
@@ -258,6 +261,23 @@ const AnimalRecords = () => {
               required
             />
       </Box>
+
+      <Box marginBottom="10px">
+               <InputLabel>Species</InputLabel>
+                  <Select
+                    name="species1"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                  >
+                    <option value="">Select Species</option>
+                    <option value="Mammal">Mammal</option>
+                    <option value="Avian">Avian</option>
+                    <option value="Reptile">Reptile</option>
+                    <option value="Aquatic">Aquatic</option>
+                  </Select>
+                </Box>
   
             <Box marginBottom="10px">
                <InputLabel>Scientific Name</InputLabel>
@@ -344,8 +364,9 @@ const AnimalRecords = () => {
             // { field: "gender", headerName: "Gender", flex: 1 },
             // { field: "animalID", headerName: "Animal ID", flex: 1 },
             { field: "breedType", headerName: "Scientific Name", flex: 1 },
-            { field: "habitat", headerName: "Habitat", flex: 0.6 },
-            { field: "quantity", headerName: "Quantity", flex: 1 },
+            { field: "habitat", headerName: "Habitat", flex: 1.5 },
+            { field: "species1", headerName: "Species", flex: 1 },
+            { field: "quantity", headerName: "Quantity", flex: 0.5 },
             { field: "birthDate", headerName: "Date Added", flex: 1 },
             {
               field: "actions",
@@ -372,7 +393,7 @@ const AnimalRecords = () => {
                   </Button>
                 </div>
               ),
-              flex: 0.5,
+              flex: 1,
             },
           ]}
           components={{ Toolbar: GridToolbar }}
@@ -400,7 +421,17 @@ const AnimalRecords = () => {
             <Form.Control type="text" placeholder="input breed type" defaultValue={editRecord ? editRecord.breedType : ""} required>
             </Form.Control>
           </Form.Group>
-            
+        =
+        <Form.Group className="mb-3" controlId="editSpecies1">
+            <Form.Label>Animal Health</Form.Label>
+            <Form.Select defaultValue={editRecord ? editRecord.species1 : ""} required>
+            <option value="">Select Species</option>
+                    <option value="Mammal">Mammal</option>
+                    <option value="Avian">Avian</option>
+                    <option value="Reptile">Reptile</option>
+                    <option value="Aquatic">Aquatic</option>
+            </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="editQuantity">
               <Form.Label>Quantity</Form.Label>
               <Form.Control

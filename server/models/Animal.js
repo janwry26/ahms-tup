@@ -6,9 +6,11 @@ const animalSchema = new mongoose.Schema({
     // animalName: { type: String, required: true},
     breedType: { type: String, required: true },
     species: { type: String, required: true },
+    species1: { type: String, required: true },
     // weight: { type: String, required: true}, 
     // gender: { type: String, required: true },
     // age: { type: String, required: true },
+    
     quantity: { type: Number, required: true },
     habitat: { type: String, required: true },
     birthDate: { type: Date, required: true },
