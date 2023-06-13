@@ -195,13 +195,13 @@ const Sidebar = () => {
             >
               Data
             </Typography>}
-            {isAdmin && <Item
+          <Item
               title="Employee Information"
               to="/dashboard/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />}
+            />
             {isAdmin && <Item
               title="Admin Information"
               to="/dashboard/contacts"
