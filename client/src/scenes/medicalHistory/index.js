@@ -349,12 +349,12 @@ const MedicalHistory = () => {
         <Box marginBottom="10px">
         <InputLabel >Treatment</InputLabel>
           <TextField
-              placeholder="Only veterinarian can access on edit"
+              placeholder="input treatment"
               name="medication"
               variant="filled"
               fullWidth
               required
-              disabled
+              // disabled
             />
         </Box>
             
@@ -371,7 +371,7 @@ const MedicalHistory = () => {
         </Box>
 
         <Box marginBottom="10px">
-          <InputLabel>Staff</InputLabel>
+          <InputLabel>Reported By</InputLabel>
           <Select
             name="staffID"
             native

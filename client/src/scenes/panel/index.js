@@ -60,7 +60,7 @@ const Dashboard = () => {
             birthDate: formatDate(record.birthDate),
           }));
 
-          const uniqueSpecies = [...new Set(records.map(record => record.animalName))]; 
+          const uniqueSpecies = [...new Set(records.map(record => record.species))]; 
           const totalSpecies = uniqueSpecies.length;
           setTotalAnimal(totalSpecies); 
         })
