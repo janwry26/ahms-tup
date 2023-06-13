@@ -254,14 +254,26 @@ const Inventory = () => {
                 </Box>
 
                 <Box marginBottom="10px">
-                  <InputLabel>Unit of measure</InputLabel>
-                  <TextField
-                    placeholder="Input unit of measure"
+               <InputLabel>Item Type</InputLabel>
+                  <Select
                     name="unitOfMeasure"
-                    variant="filled"
+                    native
                     fullWidth
                     required
-                  />
+                    variant="filled"
+                  >
+                    <option value="">Select Item Type</option>
+                    <option value="pcs">pcs</option>
+                    <option value="box">box</option>
+                    <option value="rolls">rolls</option>
+                    <option value="ampule">ampule</option>
+                    <option value="set">set</option>
+                    <option value="bot">bot</option>
+                    <option value="vial">vial</option>
+                    <option value="vials">vials</option>
+                    <option value="can">can</option>
+                   
+                  </Select>
                 </Box>
                 <Box marginBottom="10px">
                 <InputLabel>Manufacturer</InputLabel>
