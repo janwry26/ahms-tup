@@ -82,11 +82,6 @@ const Team = () => {
   }
   const columns = [
     {
-      field: "staffId",
-      headerName: "Staff ID",
-      flex: 0.4,
-    },
-    {
       field: "firstName",
       headerName: "First Name",
       flex: 1,

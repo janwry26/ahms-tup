@@ -51,7 +51,7 @@ const Contacts = () => {
     ); // Render the loader while loading
   }
   const columns = [
-    { field: "id", headerName: "Admin   ID", flex: 0.5 },
+   
    
     {
       field: "email",
