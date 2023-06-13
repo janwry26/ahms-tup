@@ -194,7 +194,7 @@ const Dashboard = () => {
             }}
           >
          <StatBox
-            title="Animal Records"
+            title="Animal Details"
             subtitle="Access Here"
             progress={`${progress}`}
             increase={<span style={{fontWeight: "bold", color: "#ffffff" }}>{`${totalAnimal.toString()} total of animals`}</span>}
@@ -261,7 +261,7 @@ const Dashboard = () => {
             }}
           >
           <StatBox
-            title="Medical History"
+            title="Medical Records"
             subtitle="Access Here"
             progress={`${progress}`}
             // increase={`${totalMedical.toString()} medical reports`} // Show total number of items
