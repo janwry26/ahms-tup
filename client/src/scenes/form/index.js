@@ -39,7 +39,8 @@ const Form = () => {
       });
   };
 
-  const phoneRegExp = /^09\d{9}$/;
+  const phoneRegExp = /^0[0-9]{10}$/;
+
 
   const checkoutSchema = yup.object().shape({
     firstName: yup.string().required("First Name is required"),
@@ -197,19 +198,19 @@ const Form = () => {
                 helpertext={touched.email && errors.email}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="number"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helpertext={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
+            <TextField
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Contact Number"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.contact}
+              name="contact"
+              error={!!touched.contact && !!errors.contact}
+              helperText={touched.contact && errors.contact}
+              sx={{ gridColumn: "span 4" }}
+            />
               <TextField
                 fullWidth
                 variant="filled"

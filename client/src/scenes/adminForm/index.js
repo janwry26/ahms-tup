@@ -52,7 +52,8 @@ const AdminForm = () => {
         });
       });
   };
-  const phoneRegExp = /^09\d{9}$/;
+  const phoneRegExp = /^0[0-9]{10}$/;
+
 
   const checkoutSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -138,18 +139,18 @@ const AdminForm = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
-                fullWidth
-                variant="filled"
-                type="number"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Contact Number"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.contact}
+              name="contact"
+              error={!!touched.contact && !!errors.contact}
+              helperText={touched.contact && errors.contact}
+              sx={{ gridColumn: "span 4" }}
+            />
               <TextField
                 fullWidth
                 variant="filled"
