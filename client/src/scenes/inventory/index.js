@@ -254,7 +254,7 @@ const Inventory = () => {
                 </Box>
 
                 <Box marginBottom="10px">
-               <InputLabel>Item Type</InputLabel>
+               <InputLabel>Unit Of Measure</InputLabel>
                   <Select
                     name="unitOfMeasure"
                     native
