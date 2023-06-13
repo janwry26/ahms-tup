@@ -232,10 +232,10 @@ const AnimalRecords = () => {
   </div> // Render the loader while loading
   }
   return (
-    <Box m="20px" width="80%" margin="0 auto">
+    <Box m="20px" width="98%" margin="0 auto">
       <Header
-        title="ANIMAL INFORMATION"
-        subtitle="Manage animal records"
+        title="ANIMAL DETAILS"
+        subtitle="Manage animal details"
         fontSize="36px"
         mt="20px"
       />
@@ -330,12 +330,14 @@ const AnimalRecords = () => {
         sx={{
           // Styling for the DataGrid
           "& .MuiDataGrid-root": {
+            fontSize: "16px",
             border: "none",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
           "& .MuiDataGrid-columnHeaders": {
+            fontSize: "18px",
             backgroundColor: colors.greenAccent[700],
             borderBottom: "none",
           },
@@ -350,6 +352,7 @@ const AnimalRecords = () => {
             color: `${colors.greenAccent[200]} !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            fontSize: "18px",
             color: `${colors.grey[100]} !important`,
           },
         }}
@@ -393,7 +396,7 @@ const AnimalRecords = () => {
                   </Button>
                 </div>
               ),
-              flex: 1,
+              flex: 0.7,
             },
           ]}
           components={{ Toolbar: GridToolbar }}

@@ -95,7 +95,7 @@ const Form = () => {
   }
 
   return (
-    <Box m="20px" width="80%" sx={{ margin: "0 auto" }}>
+    <Box m="20px" width="98%" sx={{ margin: "0 auto" }}>
       <Header title="CREATE USER" subtitle="Create a new user profile" />
 
       <Formik

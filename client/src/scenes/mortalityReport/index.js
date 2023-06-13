@@ -214,7 +214,7 @@ const MortalityReport = () => {
   </div> // Render the loader while loading
   }
   return (
-    <Box m="20px" width="80%" margin="0 auto" >
+    <Box m="20px" width="98%" margin="0 auto" >
       <Header
         title="MORTALITY REPORT"
         subtitle="Manage mortality reports"
@@ -354,12 +354,14 @@ const MortalityReport = () => {
         sx={{
           // Styling for the DataGrid
           "& .MuiDataGrid-root": {
+            fontSize: "16px",
             border: "none",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
           "& .MuiDataGrid-columnHeaders": {
+            fontSize: "18px",
             backgroundColor: colors.greenAccent[700],
             borderBottom: "none",
           },
@@ -374,6 +376,7 @@ const MortalityReport = () => {
             color: `${colors.greenAccent[200]} !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            fontSize: "18px",
             color: `${colors.grey[100]} !important`,
           },
         }}
@@ -433,7 +436,7 @@ const MortalityReport = () => {
                   </Button>
                 </div>
               ),
-              flex: 0.5,
+              flex: 0.7,
             },
           ]}
           components={{ Toolbar: GridToolbar }}

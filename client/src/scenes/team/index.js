@@ -133,19 +133,22 @@ const Team = () => {
   ];
 
   return (
-    <Box width="80%" margin="0 auto" className="reload-animation">
+    <Box width="98%" margin="0 auto" className="reload-animation">
       <Header title="Details of Employee" subtitle="Viewing of Employee" />
       <Box
         m={{ xs: "20px 0 0 0", md: "40px 0 0 0" }}
         height={{ xs: "60vh", md: "75vh" }}
         sx={{
+          // Styling for the DataGrid
           "& .MuiDataGrid-root": {
+            fontSize: "16px",
             border: "none",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
           "& .MuiDataGrid-columnHeaders": {
+            fontSize: "18px",
             backgroundColor: colors.greenAccent[700],
             borderBottom: "none",
           },
@@ -160,6 +163,7 @@ const Team = () => {
             color: `${colors.greenAccent[200]} !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            fontSize: "18px",
             color: `${colors.grey[100]} !important`,
           },
         }}

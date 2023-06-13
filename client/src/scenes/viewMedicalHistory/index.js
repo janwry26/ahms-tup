@@ -160,7 +160,7 @@ const ViewMedicalHistory = () => {
   ];
 
   return (
-    <Box m="20px" width="80%" margin="0 auto">
+    <Box m="20px" width="98%" margin="0 auto">
       <Header
         title="VIEW MEDICAL HISTORY"
         subtitle="View animal medical history by name"
@@ -210,12 +210,14 @@ const ViewMedicalHistory = () => {
           sx={{
             // Styling for the DataGrid
             "& .MuiDataGrid-root": {
+              fontSize: "16px",
               border: "none",
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
             },
             "& .MuiDataGrid-columnHeaders": {
+              fontSize: "18px",
               backgroundColor: colors.greenAccent[700],
               borderBottom: "none",
             },
@@ -230,6 +232,7 @@ const ViewMedicalHistory = () => {
               color: `${colors.greenAccent[200]} !important`,
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              fontSize: "18px",
               color: `${colors.grey[100]} !important`,
             },
           }}

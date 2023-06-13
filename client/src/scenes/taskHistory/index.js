@@ -122,7 +122,7 @@ if (isLoading) {
   ];
 
   return (
-    <Box m="20px" width="80%" margin="0 auto">
+    <Box m="20px" width="98%" margin="0 auto">
       <Header title="VIEW COMPLETED TASKS" />
 
       <Box
@@ -130,31 +130,34 @@ if (isLoading) {
         height="75vh"
         margin="0 auto"
         sx={{
-            // Styling for the DataGrid
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.greenAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              backgroundColor: colors.greenAccent[700],
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-          }}
+          // Styling for the DataGrid
+          "& .MuiDataGrid-root": {
+            fontSize: "16px",
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            fontSize: "18px",
+            backgroundColor: colors.greenAccent[700],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+          },
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: colors.greenAccent[700],
+          },
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            fontSize: "18px",
+            color: `${colors.grey[100]} !important`,
+          },
+        }}
       >
          {isModalVisible && selectedHistory && (
         <Modal open={isModalVisible} onClose={handleVisibilityIconClick}>

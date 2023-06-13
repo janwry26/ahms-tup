@@ -97,7 +97,7 @@ const Contacts = () => {
   ];
 
   return (
-    <Box m="20px" width="80%" margin="0 auto" className="reload-animation">
+    <Box m="20px" width="98%" margin="0 auto" className="reload-animation">
       <Header
         title="Details of Admin"
         subtitle="Viewing of Admin"
@@ -106,16 +106,16 @@ const Contacts = () => {
         m="40px 0 0 0"
         height="75vh"
         sx={{
+          // Styling for the DataGrid
           "& .MuiDataGrid-root": {
+            fontSize: "16px",
             border: "none",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
           "& .MuiDataGrid-columnHeaders": {
+            fontSize: "18px",
             backgroundColor: colors.greenAccent[700],
             borderBottom: "none",
           },
@@ -130,6 +130,7 @@ const Contacts = () => {
             color: `${colors.greenAccent[200]} !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            fontSize: "18px",
             color: `${colors.grey[100]} !important`,
           },
         }}

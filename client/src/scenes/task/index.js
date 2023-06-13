@@ -315,7 +315,7 @@ const Task = () => {
   </div> // Render the loader while loading
   }
   return (
-    <Box m="20px" width="80%" margin="0 auto" className="reload-animation">
+    <Box m="20px" width="98%" margin="0 auto" className="reload-animation">
       <Header
         title="Task Management"
         subtitle="Manage Task Pages"
@@ -410,12 +410,14 @@ const Task = () => {
     sx={{
       // Styling for the DataGrid
       "& .MuiDataGrid-root": {
+        fontSize: "16px",
         border: "none",
       },
       "& .MuiDataGrid-cell": {
         borderBottom: "none",
       },
       "& .MuiDataGrid-columnHeaders": {
+        fontSize: "18px",
         backgroundColor: colors.greenAccent[700],
         borderBottom: "none",
       },
@@ -430,6 +432,7 @@ const Task = () => {
         color: `${colors.greenAccent[200]} !important`,
       },
       "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+        fontSize: "18px",
         color: `${colors.grey[100]} !important`,
       },
     }}

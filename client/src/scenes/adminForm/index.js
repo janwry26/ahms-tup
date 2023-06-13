@@ -84,7 +84,7 @@ const AdminForm = () => {
   };
 
   return (
-    <Box m="20px" width="80%"
+    <Box m="20px" width="98%"
     sx={{margin: "0 auto"}}>
       <Header title="CREATE ADMIN" subtitle="Create a new admin profile" />
 
