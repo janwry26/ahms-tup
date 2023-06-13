@@ -14,7 +14,10 @@ function Home() {
               </p>
               <div className='btn-container'>
                <Link to="/login">
-                  <button type="button" className="btnLogin">LOGIN</button>
+                  <button type="button" className="btnLogin">LOGIN USER</button>
+              </Link>
+              <Link to="/zootopia">
+                  <button type="button" className="btnLogin">LOGIN ADMIN</button>
               </Link>
               </div>
             </div>
