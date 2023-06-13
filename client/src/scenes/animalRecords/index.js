@@ -424,7 +424,7 @@ const AnimalRecords = () => {
             <Form.Control type="text" placeholder="input breed type" defaultValue={editRecord ? editRecord.breedType : ""} required>
             </Form.Control>
           </Form.Group>
-        =
+        
         <Form.Group className="mb-3" controlId="editSpecies1">
             <Form.Label>Animal Health</Form.Label>
             <Form.Select defaultValue={editRecord ? editRecord.species1 : ""} required>
