@@ -13,6 +13,7 @@ import {  InputLabel, Select } from "@mui/material";
 import { format } from "date-fns";
 import http from "../../utils/http";
 import "../../styles/loader.css"
+import "../../styles/rows.css"
 import { formatDate } from "../../utils/formatDate";
 
 const Inventory = () => {
@@ -23,7 +24,8 @@ const Inventory = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  
+  const [selectedRow, setSelectedRow] = useState(null);
+
 
   const getProducts = () => {
     http.get('/inventory/view')
@@ -385,9 +387,36 @@ const Inventory = () => {
           },
         }}
       >
+
+        {selectedRow && (
+          <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+            <DialogTitle><h4>Full Details</h4></DialogTitle>
+            <DialogContent>
+             
+            <p>Category : <span>{selectedRow.category}</span></p>
+            <p>Item Name: <span>{selectedRow.itemName}</span></p>
+            <p>Item Type: <span>{selectedRow.itemType}</span></p>
+            <p>Unit of Measure: <span>{selectedRow.unitOfMeasure}</span></p>
+            <p>Manufacturer: <span>{selectedRow.manufacturer}</span></p>
+            <p>Supplier: <span>{selectedRow.supplier}</span></p>
+            <p>ItemDescription: <span>{selectedRow.itemDescription}</span></p>
+            <p>Quantity: <span>{selectedRow.quantity}</span></p>
+            <p>Date Added: <span>{selectedRow.dateAdded}</span></p>
+            <p>Expiration Date: <span>{selectedRow.expDate}</span></p>
+              
+              {/* Render other fields as needed */}
+            </DialogContent>
+          </Dialog>
+        )}
+
         <DataGrid
         className="table"
           rows={products}
+          onCellClick={(params, event) => {
+            if (event.target.classList.contains('MuiDataGrid-cell')) {
+              setSelectedRow(params.row);
+            }
+          }}
           columns={[
             { field: "category", headerName: "Category", flex: 1 },
             { field: "itemName", headerName: "Item Name", flex: 1 },

@@ -15,7 +15,7 @@ import http from "../../utils/http";
 import { formatDate } from "../../utils/formatDate";
 import jwtDecode from 'jwt-decode';
 import { format } from "date-fns";
-
+import "../../styles/rows.css"
 
 const Task = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -27,12 +27,14 @@ const Task = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [currentDate] = useState(new Date().toISOString().split("T")[0]);
-  
+  const [selectedRow, setSelectedRow] = useState(null);
+
   const [currentUser, setCurrentUser] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   let decoded;
   let admin;
   let stid;
+
 
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
@@ -437,8 +439,28 @@ const Task = () => {
       },
     }}
   >
+    {selectedRow && (
+  <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+    <DialogTitle>Full Details</DialogTitle>
+    <DialogContent>
+      <p>Task Name: <span>{selectedRow.taskName}</span></p>
+      <p>Staff Name: <span> {selectedRow.staffName}</span></p>
+      <p>Task Description: <span>{selectedRow.taskDescription}</span></p>
+      <p>Task Due Date: <span> {selectedRow.taskDueDate} </span></p>
+      <p>Task Status: <span>{selectedRow.taskStatus}</span></p>
+      <p>Task Accomplised Date: <span>{selectedRow.taskAccomplishDate}</span></p>
+      
+    </DialogContent>
+  </Dialog>
+)}
+
     {isAdmin && <DataGrid
       rows={tasks}
+      onCellClick={(params, event) => {
+        if (event.target.classList.contains('MuiDataGrid-cell')) {
+          setSelectedRow(params.row);
+        }
+      }}
       columns={[ 
         { field: "id",headerName: "#", flex: 0.3 },
         { field: "taskName",headerName: "Task Name", flex: 1 },
