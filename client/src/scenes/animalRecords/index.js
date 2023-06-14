@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import "../../styles/loader.css"
+import "../../styles/rows.css"
+
 import http from "../../utils/http";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
@@ -22,6 +24,7 @@ const AnimalRecords = () => {
   const [gender, setGender] = useState('');
   const [open, setOpen] = React.useState(false);
   const [nameTakenError, setNameTakenError] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
 
 
   const handleOpen = () => setOpen(true);
@@ -357,17 +360,36 @@ const AnimalRecords = () => {
           },
         }}
       >
+         {selectedRow && (
+          <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+            <DialogTitle><h4>Full Details</h4></DialogTitle>
+            <DialogContent>
+             
+            <p>Common Name : <span>{selectedRow.species}</span></p>
+            <p>Habitat : <span>{selectedRow.habitat}</span></p>
+            <p>Breed Type : <span>{selectedRow.breedType}</span></p>
+            <p>Species: <span>{selectedRow.species1}</span></p>
+            <p>Quantity: <span>{selectedRow.quantity}</span></p>
+            <p>Date Added: <span>{selectedRow.birthDate}</span></p>
+           
+              
+              {/* Render other fields as needed */}
+            </DialogContent>
+          </Dialog>
+        )}
+
         <DataGrid
 
           rows={records}
+          onCellClick={(params, event) => {
+            if (event.target.classList.contains('MuiDataGrid-cell')) {
+              setSelectedRow(params.row);
+            }
+          }}
           columns={[
-            // { field: "animalName", headerName: "Animal name", flex: 1 },
             { field: "species", headerName: "Common name", flex: 1 },
-            // { field: "age", headerName: "Age", flex: 1 },
-            // { field: "gender", headerName: "Gender", flex: 1 },
-            // { field: "animalID", headerName: "Animal ID", flex: 1 },
-            { field: "breedType", headerName: "Scientific Name", flex: 1 },
             { field: "habitat", headerName: "Habitat", flex: 1.5 },
+            { field: "breedType", headerName: "Scientific Name", flex: 1 },
             { field: "species1", headerName: "Species", flex: 1 },
             { field: "quantity", headerName: "Quantity", flex: 0.5 },
             { field: "birthDate", headerName: "Date Added", flex: 1 },
