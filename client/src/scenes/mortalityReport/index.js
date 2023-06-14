@@ -311,7 +311,7 @@ const MortalityReport = () => {
     </Box>
 
     <Box marginBottom="10px">
-      <InputLabel>Add more option</InputLabel>
+      <InputLabel>Add cause of death</InputLabel>
       <TextField
         variant='filled'
         value={newOption}
@@ -538,7 +538,7 @@ const MortalityReport = () => {
               <Form.Label>Date of</Form.Label>
               <Form.Control
                 type="date"
-                defaultValue={editReport ? editReport.deathDate : ""}
+                defaultValue={editReport ? formatDate(editReport.deathDate) : ""}
                 required
               />
             </Form.Group>

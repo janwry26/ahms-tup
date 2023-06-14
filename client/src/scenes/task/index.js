@@ -388,7 +388,7 @@ const Task = () => {
     </Box>
 
     <Box marginBottom="10px">
-      <InputLabel>New Option</InputLabel>
+      <InputLabel>Add task name</InputLabel>
       <TextField
         variant='filled'
         value={newOption}
@@ -618,7 +618,7 @@ const Task = () => {
           <Form.Label>Due Date</Form.Label>
           <Form.Control
             type="date"
-            defaultValue={editTask ? editTask.taskDueDate : ""}
+            defaultValue={editTask ? formatDate(editTask.taskDueDate) : ""}
             min={currentDate}
             required
           />
