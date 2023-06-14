@@ -142,7 +142,7 @@ function Forgot() {
     
       <div className="login-box">
         <h2>Forgot Password</h2>
-        <p className='forgot-message'> Forgot your password?, just input your email and click the forgot password!</p>
+        <p className='forgot-message'>If you've forgotten your password, simply enter your email address and select the "Forgot Password" option to proceed.</p>
         <form>
           <div className="user-box">
             <input
