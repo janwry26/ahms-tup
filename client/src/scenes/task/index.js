@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select,MenuItem } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select,MenuItem,Input} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -34,7 +34,42 @@ const Task = () => {
   let decoded;
   let admin;
   let stid;
-
+  
+  const [menuItems, setMenuItems] = useState([]);
+  useEffect(() => {
+    const storedMenuItems = localStorage.getItem('menuItems');
+    if (storedMenuItems) {
+      setMenuItems(JSON.parse(storedMenuItems));
+    } else {
+      setMenuItems([
+        { value: '', label: 'Select task' },
+        { value: 'Clean comfortable cages', label: 'Clean comfortable cages' },
+        { value: 'Disinfect enclosures', label: 'Disinfect enclosures' },
+        { value: 'Transports food and water in their cages', label: 'Transports food and water in their cages' },
+        { value: 'Reports serious conditions', label: 'Reports serious conditions' },
+        { value: 'Answers visitor questions', label: 'Answers visitor questions' },
+        { value: 'Ensuring habitats are safe', label: 'Ensuring habitats are safe' },
+        { value: 'Train and exercise the animals', label: 'Train and exercise the animals' },
+      ]);
+    }
+  }, []);
+  
+  const [newOption, setNewOption] = useState('');
+  useEffect(() => {
+    localStorage.setItem('menuItems', JSON.stringify(menuItems));
+  }, [menuItems]);
+  
+  const handleAddOption = () => {
+    if (newOption.trim() !== '') {
+      const option = {
+        value: newOption,
+        label: newOption,
+      };
+  
+      setMenuItems([...menuItems, option]);
+      setNewOption('');
+    }
+  };
 
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
@@ -344,16 +379,27 @@ const Task = () => {
         required
         selectEmpty
       >
-        <MenuItem value="" disabled>Select task</MenuItem>
-        <MenuItem value="Clean comfortable cages">Clean comportable cages</MenuItem>
-        <MenuItem value="Disinfect enclosures">Disinfect enclosures</MenuItem>
-        <MenuItem value="Transports food and water in their cages">Transports food and water in their cages</MenuItem>
-        <MenuItem value="Reports serious conditions">Reports serious conditions</MenuItem>
-        <MenuItem value="Answers visitor questions">Answers visitor questions</MenuItem>
-        <MenuItem value="Ensuring habitats are safe">Ensuring habitats are safe</MenuItem>
-        <MenuItem value="Train and exercise the animals">Train and exercise the animals</MenuItem>
+        {menuItems.map((item) => (
+          <MenuItem key={item.value} value={item.value}>
+            {item.label}
+          </MenuItem>
+        ))}
       </Select>
     </Box>
+
+    <Box marginBottom="10px">
+      <InputLabel>New Option</InputLabel>
+      <TextField
+        variant='filled'
+        value={newOption}
+        onChange={(e) => setNewOption(e.target.value)}
+        fullWidth
+      />
+      <Button onClick={handleAddOption} type="button" className="btn btn-success my-2">
+        Add Option
+      </Button>
+    </Box>
+
 
         <Box marginBottom="10px">
         <InputLabel>Staff</InputLabel>
