@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal'; 
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel, Select,MenuItem } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import "../../styles/loader.css"
+import "../../styles/rows.css"
 import http from "../../utils/http";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
@@ -21,7 +22,44 @@ const MortalityReport = () => {
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const [selectedAnimal, setSelectedAnimal] = useState(""); // Step 1
+  const [selectedRow, setSelectedRow] = useState(null);
+
+
+  const [menuItemsMortality, setMenuItemsMortality] = useState([]);
+  useEffect(() => {
+    const storedMenuItems = localStorage.getItem('menuItemsMortality');
+    if (storedMenuItems) {
+      setMenuItemsMortality(JSON.parse(storedMenuItems));
+    } else {
+      setMenuItemsMortality([
+        { value: '', label: 'Select cause of death' },
+        { value: 'Age related conditions', label: 'Age related conditions' },
+        { value: 'Disease', label: 'Disease' },
+        { value: 'Genetid Conditions', label: 'Genetid Conditions' },
+        { value: 'Trauma', label: 'Trauma' },
+        { value: 'Stress related factors', label: 'Stress related factors' },
+        { value: 'Reproductive problems', label: 'Reproductive problems' },
+        { value: 'Accidental Posioning', label: 'Accidental Posioning' },
+      ]);
+    }
+  }, []);
+  
+  const [newOption, setNewOption] = useState('');
+  useEffect(() => {
+    localStorage.setItem('menuItemsMortality', JSON.stringify(menuItemsMortality));
+  }, [menuItemsMortality]);
+  
+  const handleAddOption = () => {
+    if (newOption.trim() !== '') {
+      const option = {
+        value: newOption,
+        label: newOption,
+      };
+  
+      setMenuItemsMortality([...menuItemsMortality, option]);
+      setNewOption('');
+    }
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -254,37 +292,36 @@ const MortalityReport = () => {
         </Select>
 
       </Box>
-
      
-        <Box marginBottom="10px">
-          <InputLabel>Cause of Death</InputLabel>
-          <Select
-            name="casueOfDeath"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="">Select cause of death</option>
-            <option value="Age-related conditions">Age-related conditions</option>
-            <option value="Disease">Disease</option>
-            <option value="Genetic conditions">Genetic conditions</option>
-            <option value="Trauma">Trauma</option>
-            <option value="Stress-related factors">Stress-related factors</option>
-            <option value="Reproductive problems">Reproductive problems</option>
-            <option value="Nutritional imbalances">Nutritional imbalances</option>
-            <option value="Parasitic infections">Parasitic infections</option>
-            <option value="Accidental poisonings">Accidental poisonings</option>
-            <option value="Anesthesia-related complications">Anesthesia-related complications</option>
-            <option value="Respiratory infections">Respiratory infections</option>
-            <option value="Gastrointestinal disorders">Gastrointestinal disorders</option>
-            <option value="Cardiovascular diseases">Cardiovascular diseases</option>
-            <option value="Renal (kidney) failure">Renal (kidney) failure</option>
-            <option value="Neurological disorders">Neurological disorders</option>
-          </Select>
-        </Box>
+      <Box marginBottom="10px">
+      <InputLabel>Cause of death</InputLabel>
+      <Select
+        name="casueOfDeath"
+        variant="filled"
+        fullWidth
+        required
+        selectEmpty
+      >
+        {menuItemsMortality.map((item) => (
+          <MenuItem key={item.value} value={item.value}>
+            {item.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </Box>
 
-
+    <Box marginBottom="10px">
+      <InputLabel>Add more option</InputLabel>
+      <TextField
+        variant='filled'
+        value={newOption}
+        onChange={(e) => setNewOption(e.target.value)}
+        fullWidth
+      />
+      <Button onClick={handleAddOption} type="button" className="btn btn-success my-2">
+        Add Option
+      </Button>
+    </Box>
           <Box marginBottom="10px">
           <InputLabel >Date</InputLabel>
           <TextField
@@ -381,8 +418,30 @@ const MortalityReport = () => {
           },
         }}
       >
+
+         {selectedRow && (
+                <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+                  <DialogTitle><h4>Full Details</h4></DialogTitle>
+                  <DialogContent>
+                  
+                  <p>Nickname : <span>{selectedRow.nickname}</span></p>
+                  <p>Cause of Death : <span>{selectedRow.casueOfDeath}</span></p>
+                  <p>Death Date: <span>{selectedRow.deathDate}</span></p>
+                  <p>Time of Death: <span>{selectedRow.deathTime}</span></p>
+                  <p>Staff Name : <span>{selectedRow.staffName}</span></p>
+                
+                    
+                    {/* Render other fields as needed */}
+                  </DialogContent>
+                </Dialog>
+              )}
         <DataGrid
           rows={reports}
+          onCellClick={(params, event) => {
+            if (event.target.classList.contains('MuiDataGrid-cell')) {
+              setSelectedRow(params.row);
+            }
+          }}
           columns={[
             { field: "nickname", headerName: "Animal Name", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
@@ -476,7 +535,7 @@ const MortalityReport = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="editDeathDate">
-              <Form.Label>Date</Form.Label>
+              <Form.Label>Date of</Form.Label>
               <Form.Control
                 type="date"
                 defaultValue={editReport ? editReport.deathDate : ""}
