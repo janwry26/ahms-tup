@@ -21,6 +21,9 @@ const MedicalHistory = () => {
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -328,10 +331,11 @@ const MedicalHistory = () => {
               displayEmpty
             >
               <MenuItem value="" disabled>Select animal health</MenuItem>
-
+            
               <MenuItem value="Normal">Normal</MenuItem>
               <MenuItem value="Mild">Mild</MenuItem>
               <MenuItem value="Critical">Critical</MenuItem>
+              <MenuItem value="Deceased">Deceased</MenuItem>
             </Select>
         </Box>
 
@@ -454,9 +458,39 @@ const MedicalHistory = () => {
             color: `${colors.grey[100]} !important`,
           },
         }}
-      >
+      > 
+         {selectedRow && (
+          <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+            <DialogTitle><h4>Full Details</h4></DialogTitle>
+            <DialogContent>
+            <p>Nickname : <span>{selectedRow.nickname}</span></p>
+             
+            <p>Common Name : <span>{selectedRow.species}</span></p>
+            <p>Enclosure : <span>{selectedRow.enclosure}</span></p>
+            <p>Date of Observation : <span>{selectedRow.dateObserved}</span></p>
+            <p>Age: <span>{selectedRow.age}</span></p>
+            <p>Health Description: <span>{selectedRow.healthDescription}</span></p>
+            <p>Treatment: <span>{selectedRow.medication}</span></p>
+            <p>Animal Health: <span>{selectedRow.animalHealth}</span></p>
+            <p>Next Checkup Date: <span>{selectedRow.nextCheckupDate}</span></p>
+            <p>Reported By: <span>{selectedRow.staffName}</span></p>
+            <p>Veterinarian: <span>{selectedRow.veterinarian}</span></p>
+            <p>Vaccine Status: <span>{selectedRow.vaccineStatus}</span></p>
+           
+              
+              {/* Render other fields as needed */}
+            </DialogContent>
+          </Dialog>
+        )}
+
+
         <DataGrid
           rows={reports}
+          onCellClick={(params, event) => {
+            if (event.target.classList.contains('MuiDataGrid-cell')) {
+              setSelectedRow(params.row);
+            }
+          }}
           columns={[
             { field: "nickname", headerName: "Nickname", flex: 1 },
             { field: "species", headerName: "Common Name", flex: 1 },
