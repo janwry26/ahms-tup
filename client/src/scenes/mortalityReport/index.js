@@ -427,6 +427,7 @@ const MortalityReport = () => {
                   <DialogContent>
                   
                   <p>Nickname : <span>{selectedRow.nickname}</span></p>
+                  <p>Remaining Number Of Animals : <span>{selectedRow.quantity}</span></p>
                   <p>Cause of Death : <span>{selectedRow.casueOfDeath}</span></p>
                   <p>Death Date: <span>{selectedRow.deathDate}</span></p>
                   <p>Time of Death: <span>{selectedRow.deathTime}</span></p>
