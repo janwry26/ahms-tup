@@ -65,38 +65,51 @@ const MortalityReport = () => {
   const handleClose = () => setOpen(false);
   const getMortalityReport = () => {
     http.get('/mortality-report/view')
-    .then((res) => {
-      const reportPromises = res.data.map((report, key) => {
-        const animalRequest = http.get(`/health-report/view/${report.animalID}`);
-        const staffRequest = http.get(`/user/view/${report.staffID}`);
-        console.log(animalRequest)
-        return Promise.all([animalRequest, staffRequest])
-          .then(([animalRes, staffRes]) => {
-            const nickname = animalRes.data.nickname;
-            const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-            return {
-              id: key+1,
-             _id: report._id,
-              animalID: report.animalID,
-              staffID: report.staffID,
-              nickname: nickname,
-              staffName: staffName,
-              casueOfDeath: report.casueOfDeath,
-              deathDate: format(new Date(report.deathDate), "MMMM d, yyyy"),
-              deathTime: report.deathTime,
-              dateReported: format(new Date(report.dateReported), "MMMM d, yyyy"),
-            };
-          });
-      });
-
-      Promise.all(reportPromises)
-        .then((reports) => {
-          setReports(reports);
-        })
-        .catch((err) => console.log(err));
-    })
-    .catch((err) => console.log(err));
-  }
+      .then((res) => {
+        const reportPromises = res.data.map((report, key) => {
+          const animalRequest = http.get(`/health-report/view/${report.animalID}`);
+          const staffRequest = http.get(`/user/view/${report.staffID}`);
+          const commonRequest =  http.get(`/animal/view/${report.animalID}`);
+          const quantityRequest =  http.get(`/animal/view/${report.animalID}`);
+          
+          return Promise.all([animalRequest, staffRequest, commonRequest, quantityRequest])
+            .then(([animalRes, staffRes, commonRes, quantityRes]) => {
+              const nickname = animalRes.data.nickname;
+              const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
+              const commonName = commonRes.data.species;
+              let quantity = quantityRes.data.quantity;
+              
+              if (reports.some((report) => report.commonName === commonName)) {
+                // Subtract 1 from quantity if nickname is already in the table
+                quantity -= 1;
+              }
+              
+              return {
+                id: key + 1,
+                _id: report._id,
+                animalID: report.animalID,
+                staffID: report.staffID,
+                quantity: quantity,
+                nickname: nickname,
+                commonName: commonName,
+                staffName: staffName,
+                casueOfDeath: report.casueOfDeath,
+                deathDate: format(new Date(report.deathDate), "MMMM d, yyyy"),
+                deathTime: report.deathTime,
+                dateReported: format(new Date(report.dateReported), "MMMM d, yyyy"),
+              };
+            });
+        });
+  
+        Promise.all(reportPromises)
+          .then((reports) => {
+            setReports(reports);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+  };
+  
 
   const getAnimals = () => {
     
@@ -346,18 +359,6 @@ const MortalityReport = () => {
             />
           </Box>
 
-          {/* <Box marginBottom="10px">
-          <InputLabel >Date Reported</InputLabel>
-          <TextField
-              placeholder="Input date reported..."
-              name="dateReported"
-              variant="filled"
-              fullWidth
-              required
-              type="date"
-
-            />
-          </Box> */}
           <Box marginBottom="10px">
         <InputLabel>Staff</InputLabel>
           <Select
@@ -444,6 +445,8 @@ const MortalityReport = () => {
           }}
           columns={[
             { field: "nickname", headerName: "Animal Name", flex: 1 },
+            { field: "commonName", headerName: "Animal Name", flex: 1 },
+            { field: "quantity", headerName: "Remaining number of animals", flex: 1 },
             { field: "casueOfDeath", headerName: "Cause of Death", flex: 1 },
             { field: "deathDate", headerName: "Death Date", flex: 1 },
             { field: "staffName", headerName: "Reported By", flex: 1 },
