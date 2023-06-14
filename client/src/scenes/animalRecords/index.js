@@ -36,6 +36,49 @@ const AnimalRecords = () => {
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   }; 
+
+  const [menuItemsAnimal, setMenuItemsAnimal] = useState([]);
+      useEffect(() => {
+        const storedMenuItems = localStorage.getItem('menuItemsAnimal');
+        if (storedMenuItems) {
+          setMenuItemsAnimal(JSON.parse(storedMenuItems));
+        } else {
+          setMenuItemsAnimal([
+            { value: '', label: 'Select habitat' },
+            { value: 'Habitat D - Apex Predator', label: 'Habitat D - Apex Predator' },
+            { value: 'Habitat A - Elephant Enclosure', label: 'Habitat A - Elephant Enclosure' },
+            { value: 'Habitat J - Primates', label: 'Habitat J - Primates' },
+            { value: 'Hyena Enclosure', label: 'Hyena Enclosure' },
+            { value: 'Temporary Small Enclosure', label: 'Temporary Small Enclosure' },
+            { value: 'Habitat C - Savanna', label: 'Habitat C - Savanna' },
+            { value: 'Habitat G - Philippine Endemic', label: 'Habitat G - Philippine Endemic' },
+            { value: 'Center Island', label: 'Center Island' },
+            { value: 'Outside Quarantine', label: 'Outside Quarantine' },
+            { value: "Habitat B - Int'l Free Flight", label: "Habitat B - Int'l Free Flight"},
+            { value: 'Indoor Reptile Terrarium', label: 'Indoor Reptile Terrarium' },
+            { value: 'Horse Bond Pond', label: 'Horse Bond Pond' },
+            { value: 'Habitat I - Indoor Reptile', label: 'Habitat I - Indoor Reptile' }
+          ]);
+        }
+      }, []);
+      
+      const [newOption, setNewOption] = useState('');
+      useEffect(() => {
+        localStorage.setItem('menuItemsAnimal', JSON.stringify(menuItemsAnimal));
+      }, [menuItemsAnimal]);
+      
+      const handleAddOption = () => {
+        if (newOption.trim() !== '') {
+          const option = {
+            value: newOption,
+            label: newOption,
+          };
+      
+          setMenuItemsAnimal([...menuItemsAnimal, option]);
+          setNewOption('');
+        }
+      };
+
   const getAnimalRecord = () => {
     http.get('/animal/view')
         .then((res) => {
@@ -294,28 +337,58 @@ const AnimalRecords = () => {
                  />
                 </Box>
                 <Box marginBottom="10px">
-               <InputLabel>Habitat</InputLabel>
-                  <TextField
-                   placeholder="Input habitat"
-                    name="habitat"
+            <InputLabel>Habitat</InputLabel>
+            <Select
+              name="habitat"
+              variant="filled"
+              fullWidth
+              required
+              selectEmpty
+            >
+              {menuItemsAnimal.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+
+          <Box marginBottom="10px">
+            <InputLabel>Add habitat</InputLabel>
+            <TextField
+              variant='filled'
+              value={newOption}
+              onChange={(e) => setNewOption(e.target.value)}
+              fullWidth
+            />
+            <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
+              Add Option
+            </Button>
+          </Box>
+                <Box marginBottom="10px">
+                <InputLabel >Date</InputLabel>
+                <TextField
+                    placeholder="Input death date..."
+                    name="deathDate"
+                    variant="filled"
                     fullWidth
                     required
-                    variant="filled"
-                 />
+                    type="date"
+                  />
                 </Box>
 
-      
-            <Box marginBottom="10px">
-            <InputLabel >Quantity</InputLabel>
-                <TextField
-                    placeholder="Input animal quantity..."
-                    name="quantity"
-                    variant="filled"
-                    type='number'
-                    fullWidth
-                    required
-                  />
-            </Box>
+            
+                  <Box marginBottom="10px">
+                  <InputLabel >Quantity</InputLabel>
+                      <TextField
+                          placeholder="Input animal quantity..."
+                          name="quantity"
+                          variant="filled"
+                          type='number'
+                          fullWidth
+                          required
+                        />
+                  </Box>
        
 
         <div className="d-grid gap-2" style={{ marginTop: "-20px", marginBottom: "20px" }}>
