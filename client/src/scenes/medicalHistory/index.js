@@ -661,6 +661,7 @@ const MedicalHistory = () => {
               <option value="normal">Normal</option>
               <option value="mild">Mild</option>
               <option value="critical">Critical</option>
+              <option value="deceased">Deceased</option>
             </Form.Select>
             
           </Form.Group>
