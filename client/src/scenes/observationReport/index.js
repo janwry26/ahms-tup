@@ -22,6 +22,7 @@ const ObservationReport = () => {
   const [editReport, setEditReport] = useState(null);
   const [animalList, setAnimalList] = useState([]);
   const [staffList, setStaffList] = useState([]);
+  const [habitatList, setHabitatList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -34,17 +35,19 @@ const ObservationReport = () => {
       const reportPromises = res.data.map((report, key) => {
         const animalRequest = http.get(`/animal/view/${report.animalID}`);
         const staffRequest = http.get(`/user/view/${report.staffID}`);
+        const habitatRequest = http.get(`/animal/view/${report.animalID}`);
 
-        return Promise.all([animalRequest, staffRequest])
-          .then(([animalRes, staffRes]) => {
+        return Promise.all([animalRequest, habitatRequest,staffRequest])
+          .then(([animalRes,habitatRes, staffRes]) => {
             const species = animalRes.data.species;
             const staffName = `${staffRes.data.lastName}, ${staffRes.data.firstName}`;
-
+            const habitat = habitatRes.data.habitat
             return {
                id: key+1,
               _id: report._id,
               animalID: report.animalID,
               staffID: report.staffID,
+              habitat: habitat,
               species:species,
               staffName: staffName,
               reportDescription: report.reportDescription,
@@ -70,6 +73,14 @@ const ObservationReport = () => {
         })
         .catch((err) => console.log(err));
   }
+  const getHabitat = () => {
+    
+    http.get('/animal/view')
+        .then((res) => {
+          setHabitatList(res.data);
+        })
+        .catch((err) => console.log(err));
+  }
 
   const getStaffs = () => {
     
@@ -83,6 +94,7 @@ const ObservationReport = () => {
   useEffect(() => {
     getObservationReport();
     getAnimals();
+    getHabitat();
     getStaffs();
   },[])
 
@@ -246,6 +258,7 @@ const ObservationReport = () => {
           </Select>
     </Box>
 
+
     <Box marginBottom="10px">
     <InputLabel>Staff</InputLabel>
           <Select
@@ -353,10 +366,10 @@ const ObservationReport = () => {
       }}
       columns={[ 
         { field: "species",headerName: "Common Name", flex: 1 },
-
-        { field: "staffName", headerName: "Reported By", flex: 1 },  
+        { field: "habitat", headerName: "Habitat", flex: 1 },
         { field: "reportDescription", headerName: "Description", flex: 1 },
         { field: "dateReported", headerName: "Date Reported", flex: 1 },  
+        { field: "staffName", headerName: "Reported By", flex: 1 },  
          { 
           field: "actions",
            headerName: "Actions", 
