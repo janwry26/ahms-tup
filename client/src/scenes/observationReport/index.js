@@ -438,25 +438,26 @@ const ObservationReport = () => {
     <DialogContent>
       <Form onSubmit={handleEditReport}>
   
-        <Box marginBottom="10px">
-        <InputLabel >Animal</InputLabel>
-        <Select
-            id="editAnimalName"
-            defaultValue={editReport ? editReport.animalID : ""}
-            native
-            fullWidth
-            required
-            variant="filled"
+      <Form.Group className="mb-3" controlId="editReportDescription">
+          <Form.Label>Common Name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter report description"
+            defaultValue={editReport ? editReport.species : ""}
             disabled
-          >
-            <option value="" >Select Common Name Of Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.animalName}</option>
-                )
-            })}          
-          </Select>
-    </Box>
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="editReportDescription">
+          <Form.Label>Habitat</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter report description"
+            defaultValue={editReport ? editReport.habitat : ""}
+            disabled
+            required
+          />
+        </Form.Group>
     <Form.Group className="mb-3" controlId="editReportDescription">
          
         </Form.Group>

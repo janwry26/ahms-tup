@@ -594,26 +594,7 @@ const MedicalHistory = () => {
               />
             </Form.Group>
             </Box>
-          {/* <Box marginBottom="10px">
-            <InputLabel >Common name</InputLabel>
-            <Select
-            name="animalID"
-            native
-            fullWidth
-            required
-            disabled
-            variant="filled"
-            defaultValue={editReport ? editReport.species: ""}
 
-          >
-            <option value="" >Select an Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.species}</option>
-                )
-            })}          
-          </Select>
-            </Box> */}
 
      
           <Form.Group className="mb-3" controlId="editEnclosure">
@@ -629,7 +610,7 @@ const MedicalHistory = () => {
               <Form.Label>Date of Observation</Form.Label>
               <Form.Control
                 type="date"
-                defaultValue={editReport ? editReport.dateObserved : ""}
+                defaultValue={editReport ? formatDate(editReport.dateObserved) : ""}
                 required
               />
             </Form.Group>
