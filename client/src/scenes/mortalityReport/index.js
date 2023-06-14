@@ -23,6 +23,7 @@ const MortalityReport = () => {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   const [menuItemsMortality, setMenuItemsMortality] = useState([]);
@@ -282,7 +283,7 @@ const MortalityReport = () => {
       <Box sx={style}>
       <Form onSubmit={handleAddReport}>
       <Box marginBottom="10px">
-      <InputLabel >Animal</InputLabel>
+      <InputLabel >Animal Name</InputLabel>
       <Select
           name="animalID"
           native
@@ -331,7 +332,7 @@ const MortalityReport = () => {
         onChange={(e) => setNewOption(e.target.value)}
         fullWidth
       />
-      <Button onClick={handleAddOption} type="button" className="btn btn-success my-2">
+      <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
         Add Option
       </Button>
     </Box>

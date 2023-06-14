@@ -22,7 +22,9 @@ const MedicalHistory = () => {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedAnimalID, setSelectedAnimalID] = useState('');
+  const [staffSearchTerm, setStaffSearchTerm] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -266,23 +268,41 @@ const MedicalHistory = () => {
                 required
               />
         </Box>
-        <Box marginBottom="10px">
-          <InputLabel>Common Name</InputLabel>
-          <Select
-            name="animalID"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select an Animal</option>
-            {animalList.map((val) => {
-                return (
-                  <option value={val.animalID} key={val.animalID}>{val.species}</option>
-                )
-            })}          
-          </Select>
-        </Box>     
+    
+          <Box marginBottom="10px">
+            <InputLabel>Common Name</InputLabel>
+            <TextField
+              type="text"
+              fullWidth
+              variant='filled'
+              placeholder="Search by common name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <Select
+              name="animalID"
+              native
+              fullWidth
+              required
+              variant="filled"
+              value={selectedAnimalID}
+              onChange={(e) => setSelectedAnimalID(e.target.value)}
+            >
+              <option value="">Select an Animal</option>
+              {animalList
+                .filter((val) => {
+                  // Filter the animalList based on the search term
+                  if (searchTerm === '') return true;
+                  return val.species.toLowerCase().includes(searchTerm.toLowerCase());
+                })
+                .map((val) => (
+                  <option value={val.animalID} key={val.animalID}>
+                    {val.species}
+                  </option>
+                ))}
+            </Select>
+          </Box>
         <Box marginBottom="10px">
           <InputLabel >Enclosure</InputLabel>
             <TextField
@@ -375,22 +395,40 @@ const MedicalHistory = () => {
         </Box>
 
         <Box marginBottom="10px">
-          <InputLabel>Reported By</InputLabel>
-          <Select
-            name="staffID"
-            native
-            fullWidth
-            required
-            variant="filled"
-          >
-            <option value="" >Select a Staff</option>
-            {staffList.map((val) => {
-                return (
-                  <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
-                )
-            })}          
-          </Select>
-        </Box>
+  <InputLabel>Staff</InputLabel>
+  <TextField
+    type="text"
+    fullWidth
+    variant='filled'
+    placeholder="Search by staff name..."
+    value={staffSearchTerm}
+    onChange={(e) => setStaffSearchTerm(e.target.value)}
+  />
+
+  <Select
+    name="staffID"
+    native
+    fullWidth
+    required
+    variant="filled"
+  >
+    <option value="">Select a Staff</option>
+    {staffList
+      .filter((val) => {
+        // Filter the staffList based on the search term
+        if (staffSearchTerm === '') return true;
+        return (
+          val.lastName.toLowerCase().includes(staffSearchTerm.toLowerCase()) ||
+          val.firstName.toLowerCase().includes(staffSearchTerm.toLowerCase())
+        );
+      })
+      .map((val) => (
+        <option value={val.staffId} key={val.staffId}>
+          {val.lastName + ', ' + val.firstName}
+        </option>
+      ))}
+  </Select>
+</Box>
         <Box marginBottom="10px">
         <InputLabel >Veterinarian</InputLabel>
           <TextField

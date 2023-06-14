@@ -28,6 +28,7 @@ const Task = () => {
   const handleClose = () => setOpen(false);
   const [currentDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [staffSearchTerm, setStaffSearchTerm] = useState('');
 
   const [currentUser, setCurrentUser] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -395,30 +396,47 @@ const Task = () => {
         onChange={(e) => setNewOption(e.target.value)}
         fullWidth
       />
-      <Button onClick={handleAddOption} type="button" className="btn btn-success my-2">
+      <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
         Add Option
       </Button>
     </Box>
 
 
-        <Box marginBottom="10px">
-        <InputLabel>Staff</InputLabel>
-              <Select
-                name="staffId"
-                native
-                fullWidth
-                required
-                variant="filled"
-              >
-                <option value="" >Select a Staff</option>
-                {staffList.map((val) => {
-                    return (
-                      <option value={val.staffId} key={val.staffId}>{val.lastName + ', ' + val.firstName}</option>
-                    )
-                })}          
-              </Select>
-        </Box>
+    <Box marginBottom="10px">
+  <InputLabel>Staff</InputLabel>
+  <TextField
+    type="text"
+    fullWidth
+    variant='filled'
+    placeholder="Search by staff name..."
+    value={staffSearchTerm}
+    onChange={(e) => setStaffSearchTerm(e.target.value)}
+  />
 
+  <Select
+    name="staffID"
+    native
+    fullWidth
+    required
+    variant="filled"
+  >
+    <option value="">Select a Staff</option>
+    {staffList
+      .filter((val) => {
+        // Filter the staffList based on the search term
+        if (staffSearchTerm === '') return true;
+        return (
+          val.lastName.toLowerCase().includes(staffSearchTerm.toLowerCase()) ||
+          val.firstName.toLowerCase().includes(staffSearchTerm.toLowerCase())
+        );
+      })
+      .map((val) => (
+        <option value={val.staffId} key={val.staffId}>
+          {val.lastName + ', ' + val.firstName}
+        </option>
+      ))}
+  </Select>
+</Box>
         <Box marginBottom="10px">
             <InputLabel >Task Description</InputLabel>
               <TextField
