@@ -348,9 +348,10 @@ const ObservationReport = () => {
             <DialogContent>
              
             <p>Common Name : <span>{selectedRow.species}</span></p>
-            <p>Staff Name : <span>{selectedRow.staffName}</span></p>
+            <p>Habitat : <span>{selectedRow.habitat}</span></p>
             <p>Report Description: <span>{selectedRow.reportDescription}</span></p>
             <p>Date Reported: <span>{selectedRow.dateReported}</span></p>
+            <p>Staff Name : <span>{selectedRow.staffName}</span></p>
            
               
               {/* Render other fields as needed */}
