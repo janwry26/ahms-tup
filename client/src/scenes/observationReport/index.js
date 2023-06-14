@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { Form, Button } from "react-bootstrap";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField,InputLabel,Select} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { FaPlus, FaArchive, FaEdit } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useState,useEffect } from "react";
 import "../../styles/loader.css"
+import "../../styles/rows.css"
 import http from "../../utils/http";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
@@ -24,6 +25,8 @@ const ObservationReport = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
 
    const getObservationReport = () => {
     http.get('/observation-report/view')
@@ -243,7 +246,6 @@ const ObservationReport = () => {
           </Select>
     </Box>
 
-
     <Box marginBottom="10px">
     <InputLabel>Staff</InputLabel>
           <Select
@@ -326,8 +328,29 @@ const ObservationReport = () => {
       },
     }}
   >
+
+  {selectedRow && (
+          <Dialog open={Boolean(selectedRow)} onClose={() => setSelectedRow(null)}>
+            <DialogTitle><h4>Full Details</h4></DialogTitle>
+            <DialogContent>
+             
+            <p>Common Name : <span>{selectedRow.species}</span></p>
+            <p>Staff Name : <span>{selectedRow.staffName}</span></p>
+            <p>Report Description: <span>{selectedRow.reportDescription}</span></p>
+            <p>Date Reported: <span>{selectedRow.dateReported}</span></p>
+           
+              
+              {/* Render other fields as needed */}
+            </DialogContent>
+          </Dialog>
+        )}
     <DataGrid
       rows={reports}
+      onCellClick={(params, event) => {
+        if (event.target.classList.contains('MuiDataGrid-cell')) {
+          setSelectedRow(params.row);
+        }
+      }}
       columns={[ 
         { field: "species",headerName: "Common Name", flex: 1 },
 
