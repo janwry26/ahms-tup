@@ -51,7 +51,7 @@ const MedicalHistory = () => {
               enclosure : report.enclosure,
               nickname: report.nickname,
               age: report.age,
-              dateObserved: format(new Date(report.dateObserved), "MMMM d, yyyy"),
+              dateObserved: formatDate(report.dateObserved),
               healthDescription: report.healthDescription,
               nextCheckupDate: report.nextCheckupDate,
               medication: report.medication,
