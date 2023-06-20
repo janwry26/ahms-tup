@@ -25,7 +25,83 @@ const Inventory = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [category, setCategory] = useState("");
+  const [itemType, setItemType] = useState("");
+  const [categoryList, setCategoryList] = useState([]);
+  const [customCategory, setCustomCategory] = useState("");
+  const [customItemType, setCustomItemType] = useState("");
 
+  const [itemTypeList, setItemTypeList] = useState([]);//First
+
+  const clearCustomInputs = () => { //Second
+    setCustomCategory("");
+    setCustomItemType("");
+  }
+
+  const getCategoriesData = async () => {
+    await http.get('/categories/view')
+    .then((res) => {
+      console.log(res.data); //Third
+      setCategoryList(res.data[0].item);
+      setItemTypeList(res.data[1].item); 
+      
+    })
+  }
+
+  useEffect(() => {
+    getCategoriesData();
+  }, [])
+  
+
+  const handleCategoryChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setCategory(selectedCategory);
+    } else {
+      setCategory(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleItemTypeChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setItemType(selectedCategory);
+    } else {
+      setItemType(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  //Fourth add new handleChange
+
+  const handleCustomCategoryChange = (event) => {
+    setCustomCategory(event.target.value);
+    setCategory("Other");
+  };
+
+  //Fifth if on other module change module
+  const handleAddCustomCategory = async (_id,_type,value) => {
+    await http.post('/categories/add', {
+        "categoryId": _id,
+        "module": "Inventory",
+        "type": _type,
+        "item": [{
+            "itemName": value
+        }]
+    }).then((res) => {
+      if (res) {
+        alert("Option Added Successfully");
+        getCategoriesData();
+        // setCategory(customCategory);
+        clearCustomInputs();
+      }
+      
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  };
 
   const getProducts = () => {
     http.get('/inventory/view')
@@ -211,21 +287,41 @@ const Inventory = () => {
       <Box sx={style}>
       <Form onSubmit={handleAddProduct}>
 
-      <Box marginBottom="10px">
-               <InputLabel>Category of Inventory</InputLabel>
-                  <Select
-                    name="category"
-                    native
-                    fullWidth
-                    required
-                    variant="filled"
-                  >
-                    <option value="">Select Category</option>
-                    <option value="Medicine">Medicine</option>
-                    <option value="Supplies">Supplies</option>
-                    <option value="Food">Food</option>
-                  </Select>
-                </Box>
+            <Box marginBottom="10px">
+            <InputLabel>Category of Inventory</InputLabel>
+            <Select
+              name="category"
+              native
+              fullWidth
+              required
+              variant="filled"
+              value={category}
+              onChange={handleCategoryChange}
+            >
+              <option value="">Select Category</option>
+              {categoryList.map((val) => {
+                return (
+                  <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                )
+              })}
+              <option value="Other">Other</option>
+            </Select>
+            {category === "Other" && (
+              <TextField
+                label="Custom Category"
+                value={customCategory}
+                onChange={handleCustomCategoryChange}
+                fullWidth
+                required
+                variant="filled"
+              />
+            )}
+            {category === "Other" && (
+              <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(1,"Category", customCategory)}>
+                Add Category
+              </Button>
+            )}
+          </Box>
            <Box marginBottom="10px">
                <InputLabel >Item Name</InputLabel>
              <TextField
@@ -244,15 +340,38 @@ const Inventory = () => {
                     fullWidth
                     required
                     variant="filled"
+                    value={itemType} //Sixth
+                    onChange={handleItemTypeChange} //Seventh
                   >
                     <option value="">Select Item Type</option>
-                    <option value="Drops">Drops</option>
-                    <option value="Capsule">Capsule</option>
-                    <option value="Tablet">Tablet</option>
-                    <option value="Syrup">Syrup</option>
-                    <option value="Animal Food">Animal Food</option>
-                    <option value="Supply">Supply</option>
+                    {itemTypeList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
                   </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {itemType === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customItemType}
+                      onChange={(e) => {
+                        setCustomItemType(e.target.value);
+                        setItemType("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {itemType === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(6,"Item Type",customItemType)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
 
                 <Box marginBottom="10px">

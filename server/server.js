@@ -21,6 +21,7 @@ const reportRoutes = require("./routes/report");
 const mortalityReportRoutes = require("./routes/mortalityReport");
 const observationReportRoutes = require("./routes/observationReport");
 const pushNotificationRoutes = require("./routes/pushNotification");
+const categoriesRoutes = require("./routes/categories");
 
 app.use(express.json());
 app.use(cors());
@@ -45,6 +46,7 @@ app.use("/api/report", reportRoutes);
 app.use("/api/mortality-report", mortalityReportRoutes);
 app.use("/api/observation-report", observationReportRoutes);
 app.use("/api/push-notification", pushNotificationRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 
 Inventory.find({ $or: [{ isArchived: { $exists: false } }, { isArchived: false }] })
