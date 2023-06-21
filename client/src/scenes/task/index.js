@@ -30,47 +30,69 @@ const Task = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [staffSearchTerm, setStaffSearchTerm] = useState('');
 
+  const [task, setTask] = useState("");
+
+  const [taskList, setTaskList] = useState([]);
+
+  const [customTask, setCustomTask] = useState("");
+
+  const clearCustomInputs = () => { //Second for new page also
+    setCustomTask("");
+  }
+
+  const getCategoriesData = async () => {
+    await http.get('/categories/view')
+    .then((res) => {
+      console.log(res.data); //Third add as necessary
+      setTaskList(res.data[5].item);
+    })
+  }
+
+  useEffect(() => {
+    getCategoriesData();
+  }, []) //For other page
+
+  const handleTaskChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setTask(selectedCategory);
+    } else {
+      setTask(selectedCategory);
+      setCustomTask("");
+    }
+    
+  };
+
+  const handleAddCustomCategory = async (_id,_type,value) => {
+    await http.post('/categories/add', {
+        "categoryId": _id,
+        "module": "Task Name",
+        "type": _type,
+        "item": [{
+            "itemName": value
+        }]
+    }).then((res) => {
+      if (res) {
+        alert("Option Added Successfully");
+        getCategoriesData();
+        // setCategory(customCategory);
+        clearCustomInputs();
+      }
+      
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  };
+
+
   const [currentUser, setCurrentUser] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   let decoded;
   let admin;
   let stid;
   
-  const [menuItems, setMenuItems] = useState([]);
-  useEffect(() => {
-    const storedMenuItems = localStorage.getItem('menuItems');
-    if (storedMenuItems) {
-      setMenuItems(JSON.parse(storedMenuItems));
-    } else {
-      setMenuItems([
-        { value: '', label: 'Select task' },
-        { value: 'Clean comfortable cages', label: 'Clean comfortable cages' },
-        { value: 'Disinfect enclosures', label: 'Disinfect enclosures' },
-        { value: 'Transports food and water in their cages', label: 'Transports food and water in their cages' },
-        { value: 'Reports serious conditions', label: 'Reports serious conditions' },
-        { value: 'Answers visitor questions', label: 'Answers visitor questions' },
-        { value: 'Ensuring habitats are safe', label: 'Ensuring habitats are safe' },
-        { value: 'Train and exercise the animals', label: 'Train and exercise the animals' },
-      ]);
-    }
-  }, []);
-  
-  const [newOption, setNewOption] = useState('');
-  useEffect(() => {
-    localStorage.setItem('menuItems', JSON.stringify(menuItems));
-  }, [menuItems]);
-  
-  const handleAddOption = () => {
-    if (newOption.trim() !== '') {
-      const option = {
-        value: newOption,
-        label: newOption,
-      };
-  
-      setMenuItems([...menuItems, option]);
-      setNewOption('');
-    }
-  };
+ 
 
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
@@ -192,20 +214,24 @@ const Task = () => {
     fetchData();
   }, []);
 
-  const handleAddTask = async (event) => {
-    const {
-      taskName,
-      staffId,
-      taskDescription,
-      taskDueDate
-    } = event.target;
-  
+  const [inputValues, setInputValues] = useState({});
+
+  const handleAddTaskInputChange = (e) => {
+    const { name, value } = e.target;
+    setInputValues((prevInputValues) => ({
+      ...prevInputValues,
+      [name]: value,
+    }));
+  };
+
+  const handleAddTask = async () => {
+
     await http
       .post('/task/add', {
-        taskName: taskName.value,
-        staffID: staffId.value,
-        taskDescription: taskDescription.value,
-        taskDueDate: taskDueDate.value,
+        taskName: task,
+        staffID: inputValues.staffID,
+        taskDescription: inputValues.taskDescription,
+        taskDueDate: inputValues.taskDueDate,
         taskStatus: "Pending",
         taskAccomplishDate: ""
       })
@@ -220,8 +246,7 @@ const Task = () => {
         })
       })
       .catch((err) => console.log(err));
-
-      event.target.reset();
+      
   };
   
 
@@ -370,8 +395,9 @@ const Task = () => {
         aria-describedby="modal-modal-description"
       >
       <Box sx={style}>
-    <Form onSubmit={handleAddTask}>
-    <Box marginBottom="10px">
+    <Form>
+
+    {/* <Box marginBottom="10px">
       <InputLabel>Task Name</InputLabel>
       <Select
         name="taskName"
@@ -386,8 +412,8 @@ const Task = () => {
           </MenuItem>
         ))}
       </Select>
-    </Box>
-
+    </Box> */}
+{/* 
     <Box marginBottom="10px">
       <InputLabel>Add task name</InputLabel>
       <TextField
@@ -399,7 +425,49 @@ const Task = () => {
       <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
         Add Option
       </Button>
-    </Box>
+    </Box> */}
+
+          <Box marginBottom="10px">
+               <InputLabel>Task Name</InputLabel>
+                  <Select
+                    name="taskName"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={task} //Sixth
+                    onChange={handleTaskChange} //Seventh
+                  >
+                    <option value="">Select Task Name</option>
+                    {taskList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {task === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customTask}
+                      onChange={(e) => {
+                        setCustomTask(e.target.value);
+                        setTask("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {task === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(10,"Task Name",customTask)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                </Box>
 
 
     <Box marginBottom="10px">
@@ -419,6 +487,7 @@ const Task = () => {
     fullWidth
     required
     variant="filled"
+    onChange={handleAddTaskInputChange}
   >
     <option value="">Select a Staff</option>
     {staffList
@@ -445,6 +514,7 @@ const Task = () => {
                   variant="filled"
                   fullWidth
                   required
+                  onChange={handleAddTaskInputChange}
                 />
         </Box>
 
@@ -458,11 +528,12 @@ const Task = () => {
                   required
                   type="date" 
                   inputProps={{ min: currentDate }}
+                  onChange={handleAddTaskInputChange}
                 />
         </Box>
 
         <div className="d-grid gap-2" style={{marginTop:"-20px", marginBottom: "20px"}}>
-          <Button className="btnDashBoard"  type="submit"  >
+          <Button className="btnDashBoard"  type="button" onClick={handleAddTask} >
             <FaPlus /> Add Task
           </Button>
         </div>
