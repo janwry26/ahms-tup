@@ -23,43 +23,64 @@ const MortalityReport = () => {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [customCategory, setCustomCategory] = useState("");
 
 
-  const [menuItemsMortality, setMenuItemsMortality] = useState([]);
+  const [causeOfDeath, setCauseOfDeath] = useState("");
+  const [causeOfDeathList, setCauseOfDeathList] = useState("");
+  const [customCauseOfDeath, setCustomCauseOfDeath] = useState([]);
+  
+  const clearCustomInputs = () => { //Second for new page also
+    setCustomCauseOfDeath();
+  }
+
+  const getCategoriesData = async () => {
+    await http.get('/categories/view')
+    .then((res) => {
+      console.log(res.data); //Third add as necessary
+      setCauseOfDeathList(res.data[6].item);
+    })
+  }
+
   useEffect(() => {
-    const storedMenuItems = localStorage.getItem('menuItemsMortality');
-    if (storedMenuItems) {
-      setMenuItemsMortality(JSON.parse(storedMenuItems));
+    getCategoriesData();
+  }, []) //For other page
+
+  const handleCauseOfDeathChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setCauseOfDeath(selectedCategory);
     } else {
-      setMenuItemsMortality([
-        { value: '', label: 'Select cause of death' },
-        { value: 'Age related conditions', label: 'Age related conditions' },
-        { value: 'Disease', label: 'Disease' },
-        { value: 'Genetid Conditions', label: 'Genetid Conditions' },
-        { value: 'Trauma', label: 'Trauma' },
-        { value: 'Stress related factors', label: 'Stress related factors' },
-        { value: 'Reproductive problems', label: 'Reproductive problems' },
-        { value: 'Accidental Posioning', label: 'Accidental Posioning' },
-      ]);
+      setCauseOfDeath(selectedCategory);
+      setCustomCategory("");
     }
-  }, []);
-  
-  const [newOption, setNewOption] = useState('');
-  useEffect(() => {
-    localStorage.setItem('menuItemsMortality', JSON.stringify(menuItemsMortality));
-  }, [menuItemsMortality]);
-  
-  const handleAddOption = () => {
-    if (newOption.trim() !== '') {
-      const option = {
-        value: newOption,
-        label: newOption,
-      };
-  
-      setMenuItemsMortality([...menuItemsMortality, option]);
-      setNewOption('');
-    }
+  };
+  const handleCustomCategoryChange = (event) => {
+    setCustomCategory(event.target.value);
+    setCategory("Other");
+  };
+
+  const handleAddCustomCategory = async (_id,_type,value) => {
+    await http.post('/categories/add', {
+        "categoryId": _id,
+        "module": "Mortality",
+        "type": _type,
+        "item": [{
+            "itemName": value
+        }]
+    }).then((res) => {
+      if (res) {
+        alert("Option Added Successfully");
+        getCategoriesData();
+        // setCategory(customCategory);
+        clearCustomInputs();
+      }
+      
+    }).catch((err) => {
+      console.log(err);
+    })
+
   };
 
   const handleOpen = () => setOpen(true);
@@ -306,36 +327,49 @@ const MortalityReport = () => {
         </Select>
 
       </Box>
-     
+          
       <Box marginBottom="10px">
-      <InputLabel>Cause of death</InputLabel>
-      <Select
-        name="casueOfDeath"
-        variant="filled"
-        fullWidth
-        required
-        selectEmpty
-      >
-        {menuItemsMortality.map((item) => (
-          <MenuItem key={item.value} value={item.value}>
-            {item.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
+               <InputLabel>Cause Of Death</InputLabel>
+                  <Select
+                    name="casueOfDeath"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={causeOfDeath} //Sixth
+                    onChange={handleCauseOfDeathChange} //Seventh
+                  >
+                    <option value="">Select Cause Of Death</option>
+                    {causeOfDeathList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
 
-    <Box marginBottom="10px">
-      <InputLabel>Add cause of death</InputLabel>
-      <TextField
-        variant='filled'
-        value={newOption}
-        onChange={(e) => setNewOption(e.target.value)}
-        fullWidth
-      />
-      <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
-        Add Option
-      </Button>
-    </Box>
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {causeOfDeath === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customCauseOfDeath}
+                      onChange={(e) => {
+                        setCustomCauseOfDeath(e.target.value);
+                        setCauseOfDeath("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {causeOfDeath === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(12,"Cause Of Death",customCauseOfDeath)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                </Box>
+     
           <Box marginBottom="10px">
           <InputLabel >Date</InputLabel>
           <TextField
