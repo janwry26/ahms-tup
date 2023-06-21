@@ -27,57 +27,86 @@ const AnimalRecords = () => {
   const [selectedRow, setSelectedRow] = useState(null);
 
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const [customCategory, setCustomCategory] = useState("");
+
+
+  const [speciesOption, setSpeciesOption] = useState("");
+  const [habitatOption, setHabitatOption] = useState("");
+
+  const [speciesList, setSpeciesList] = useState("");
+  const [habitatList, setHabitatList] = useState("");
+
+  const [customSpecies, setCustomSpecies] = useState([]);
+  const [customHabitat, setCustomHabitat] = useState([]);
+  
+  const clearCustomInputs = () => { //Second for new page also
+    setCustomSpecies();
+    setCustomHabitat();
+  }
+
+  const getCategoriesData = async () => {
+    await http.get('/categories/view')
+    .then((res) => {
+      console.log(res.data); //Third add as necessary
+      setSpeciesList(res.data[7].item);
+      setHabitatList(res.data[8].item);
+    })
+  }
+
+  useEffect(() => {
+    getCategoriesData();
+  }, []) //For other page
 
   const handleSpeciesChange = (event) => {
-    setSpecies(event.target.value);
-  };  
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  }; 
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setSpeciesOption(selectedCategory);
+    } else {
+      setSpeciesOption(selectedCategory);
+      setCustomCategory("");
+    }
+  };
 
-  const [menuItemsAnimal, setMenuItemsAnimal] = useState([]);
-      useEffect(() => {
-        const storedMenuItems = localStorage.getItem('menuItemsAnimal');
-        if (storedMenuItems) {
-          setMenuItemsAnimal(JSON.parse(storedMenuItems));
-        } else {
-          setMenuItemsAnimal([
-            { value: '', label: 'Select habitat' },
-            { value: 'Habitat D - Apex Predator', label: 'Habitat D - Apex Predator' },
-            { value: 'Habitat A - Elephant Enclosure', label: 'Habitat A - Elephant Enclosure' },
-            { value: 'Habitat J - Primates', label: 'Habitat J - Primates' },
-            { value: 'Hyena Enclosure', label: 'Hyena Enclosure' },
-            { value: 'Temporary Small Enclosure', label: 'Temporary Small Enclosure' },
-            { value: 'Habitat C - Savanna', label: 'Habitat C - Savanna' },
-            { value: 'Habitat G - Philippine Endemic', label: 'Habitat G - Philippine Endemic' },
-            { value: 'Center Island', label: 'Center Island' },
-            { value: 'Outside Quarantine', label: 'Outside Quarantine' },
-            { value: "Habitat B - Int'l Free Flight", label: "Habitat B - Int'l Free Flight"},
-            { value: 'Indoor Reptile Terrarium', label: 'Indoor Reptile Terrarium' },
-            { value: 'Horse Bond Pond', label: 'Horse Bond Pond' },
-            { value: 'Habitat I - Indoor Reptile', label: 'Habitat I - Indoor Reptile' }
-          ]);
-        }
-      }, []);
+  const handleHabitatChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setHabitatOption(selectedCategory);
+    } else {
+      setHabitatOption(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleCustomCategoryChange = (event) => {
+    setCustomCategory(event.target.value);
+    setCategory("Other");
+  };
+
+  const handleAddCustomCategory = async (_id,_type,value) => {
+    await http.post('/categories/add', {
+        "categoryId": _id,
+        "module": "Animal Records",
+        "type": _type,
+        "item": [{
+            "itemName": value
+        }]
+    }).then((res) => {
+      if (res) {
+        alert("Option Added Successfully");
+        getCategoriesData();
+        // setCategory(customCategory);
+        clearCustomInputs();
+      }
       
-      const [newOption, setNewOption] = useState('');
-      useEffect(() => {
-        localStorage.setItem('menuItemsAnimal', JSON.stringify(menuItemsAnimal));
-      }, [menuItemsAnimal]);
-      
-      const handleAddOption = () => {
-        if (newOption.trim() !== '') {
-          const option = {
-            value: newOption,
-            label: newOption,
-          };
-      
-          setMenuItemsAnimal([...menuItemsAnimal, option]);
-          setNewOption('');
-        }
-      };
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  };
+  
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const getAnimalRecord = () => {
     http.get('/animal/view')
@@ -102,35 +131,6 @@ const AnimalRecords = () => {
     getAnimalRecord();
   },[])
 
-  // const handleAddRecord = (event) => {
-  //   event.preventDefault();
-  //   http
-  //     .post('/animal/add', {
-  //       animalName: event.target.animalName.value,
-  //       species: event.target.species.value,
-  //       age: event.target.age.value,
-  //       gender: event.target.gender.value,
-  //       breedType: event.target.breedType.value,
-  //       weight: event.target.weight.value,
-  //       birthDate: event.target.birthDate.value,
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       Swal.fire({
-  //         title: 'Success',
-  //         text: 'Animal recorded successfully',
-  //         icon: 'success',
-  //         timer: 700, // Show the alert for 2 seconds
-  //         showConfirmButton: false
-  //       });
-  //       getAnimalRecord(); // Refresh the products list
-  //       handleClose()
-  //       setGender('');
-  //       setSpecies('');
-  //     })
-  //     .catch((err) => console.log(err));
-  //   event.target.reset();
-  // };
   
   const handleAddRecord = (event) => {
     event.preventDefault();
@@ -308,7 +308,9 @@ const AnimalRecords = () => {
             />
       </Box>
 
-      <Box marginBottom="10px">
+ 
+
+          <Box marginBottom="10px">
                <InputLabel>Species</InputLabel>
                   <Select
                     name="species1"
@@ -316,13 +318,80 @@ const AnimalRecords = () => {
                     fullWidth
                     required
                     variant="filled"
+                    value={speciesOption} //Sixth
+                    onChange={handleSpeciesChange} //Seventh
                   >
                     <option value="">Select Species</option>
-                    <option value="Mammal">Mammal</option>
-                    <option value="Avian">Avian</option>
-                    <option value="Reptile">Reptile</option>
-                    <option value="Aquatic">Aquatic</option>
+                    {speciesList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
                   </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {speciesOption === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customSpecies}
+                      onChange={(e) => {
+                        setCustomSpecies(e.target.value);
+                        setSpecies("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {speciesOption === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(13,"Species",customSpecies)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                </Box>
+
+                <Box marginBottom="10px">
+               <InputLabel>Habitat</InputLabel>
+                  <Select
+                    name="habitat"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={habitatOption} //Sixth
+                    onChange={handleHabitatChange} //Seventh
+                  >
+                    <option value="">Select Habitat</option>
+                    {habitatList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {habitatOption === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customHabitat}
+                      onChange={(e) => {
+                        setCustomHabitat(e.target.value);
+                        setHabitat("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {habitatOption === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(14,"Habitat",customHabitat)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
   
             <Box marginBottom="10px">
@@ -336,46 +405,9 @@ const AnimalRecords = () => {
                     variant="filled"
                  />
                 </Box>
-                <Box marginBottom="10px">
-            <InputLabel>Habitat</InputLabel>
-            <Select
-              name="habitat"
-              variant="filled"
-              fullWidth
-              required
-              selectEmpty
-            >
-              {menuItemsAnimal.map((item) => (
-                <MenuItem key={item.value} value={item.value}>
-                  {item.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
+             
 
-          <Box marginBottom="10px">
-            <InputLabel>Add habitat</InputLabel>
-            <TextField
-              variant='filled'
-              value={newOption}
-              onChange={(e) => setNewOption(e.target.value)}
-              fullWidth
-            />
-            <Button onClick={handleAddOption} type="button" className="btnDashBoard btn-success my-2">
-              Add Option
-            </Button>
-          </Box>
-                <Box marginBottom="10px">
-                <InputLabel >Date</InputLabel>
-                <TextField
-                    placeholder="Input death date..."
-                    name="deathDate"
-                    variant="filled"
-                    fullWidth
-                    required
-                    type="date"
-                  />
-                </Box>
+        
 
             
                   <Box marginBottom="10px">
@@ -521,14 +553,13 @@ const AnimalRecords = () => {
           </Form.Group>
         
         <Form.Group className="mb-3" controlId="editSpecies1">
-            <Form.Label>Animal Health</Form.Label>
-            <Form.Select defaultValue={editRecord ? editRecord.species1 : ""} required>
-            <option value="">Select Species</option>
-                    <option value="Mammal">Mammal</option>
-                    <option value="Avian">Avian</option>
-                    <option value="Reptile">Reptile</option>
-                    <option value="Aquatic">Aquatic</option>
-            </Form.Select>
+            <Form.Label>Species</Form.Label>
+            <Form.Control
+                type="text"
+                placeholder="Enter quantity"
+                defaultValue={editRecord ? editRecord.species1 : ""}
+                required
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="editQuantity">
               <Form.Label>Quantity</Form.Label>
