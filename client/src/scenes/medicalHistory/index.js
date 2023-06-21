@@ -26,6 +26,85 @@ const MedicalHistory = () => {
   const [selectedAnimalID, setSelectedAnimalID] = useState('');
   const [staffSearchTerm, setStaffSearchTerm] = useState('');
 
+  const [customCategory, setCustomCategory] = useState("");
+
+
+  const [animalAge, setAnimalAge] = useState("");
+  const [animalHealth, setAnimalHealth] = useState("");
+
+  const [animalAgeList, setAnimalAgeList] = useState("");
+  const [animalHealthList, setAnimalHealthList] = useState("");
+
+  const [customAnimalAge, setCustomAnimalAge] = useState([]);
+  const [customAnimalHealth, setCustomAnimalHealth] = useState([]);
+  
+  const clearCustomInputs = () => { //Second for new page also
+    setCustomAnimalAge("");
+    setCustomAnimalHealth("");
+  }
+
+  const getCategoriesData = async () => {
+    await http.get('/categories/view')
+    .then((res) => {
+      console.log(res.data); //Third add as necessary
+      setAnimalAgeList(res.data[9].item);
+      setAnimalHealthList(res.data[10].item);
+    })
+  }
+
+  useEffect(() => {
+    getCategoriesData();
+  }, []) //For other page
+
+  const handleAnimalAgeChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setAnimalAge(selectedCategory);
+    } else {
+      setAnimalAge(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleAnimalHealthChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setAnimalHealth(selectedCategory);
+    } else {
+      setAnimalHealth(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleCustomCategoryChange = (event) => {
+    setCustomCategory(event.target.value);
+    setCategory("Other");
+  };
+
+  const handleAddCustomCategory = async (_id,_type,value) => {
+    await http.post('/categories/add', {
+        "categoryId": _id,
+        "module": "Medical Records",
+        "type": _type,
+        "item": [{
+            "itemName": value
+        }]
+    }).then((res) => {
+      if (res) {
+        alert("Option Added Successfully");
+        getCategoriesData();
+        // setCategory(customCategory);
+        clearCustomInputs();
+      }
+      
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  };
+  
+  
+  
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -324,7 +403,7 @@ const MedicalHistory = () => {
               type="date"
             />
         </Box>
-        <Box marginBottom="10px">
+        {/* <Box marginBottom="10px">
             <InputLabel>Animal Age</InputLabel>
             <Select
               name="age"
@@ -340,8 +419,51 @@ const MedicalHistory = () => {
               <MenuItem value="adult">Adult</MenuItem>
               <MenuItem value="elderly">Elderly</MenuItem>
             </Select>
-        </Box>
-        <Box marginBottom="10px">
+        </Box> */}
+
+
+            <Box marginBottom="10px">
+               <InputLabel>Animal Age</InputLabel>
+                  <Select
+                    name="age"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={animalAge} //Sixth
+                    onChange={handleAnimalAgeChange} //Seventh
+                  >
+                    <option value="">Select Animal Age</option>
+                    {animalAgeList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {animalAge === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customAnimalAge}
+                      onChange={(e) => {
+                        setCustomAnimalAge(e.target.value);
+                        setAnimalAge("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {animalAge === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(15,"Animal Age",customAnimalAge)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                </Box>
+        {/* <Box marginBottom="10px">
             <InputLabel>Animal Health</InputLabel>
             <Select
               name="animalHealth"
@@ -357,7 +479,48 @@ const MedicalHistory = () => {
               <MenuItem value="Critical">Critical</MenuItem>
               <MenuItem value="Deceased">Deceased</MenuItem>
             </Select>
-        </Box>
+        </Box> */}
+         <Box marginBottom="10px">
+               <InputLabel>Animal Health</InputLabel>
+                  <Select
+                    name="animalHealth"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={animalHealth} //Sixth
+                    onChange={handleAnimalHealthChange} //Seventh
+                  >
+                    <option value="">Select Animal Health</option>
+                    {animalHealthList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {animalHealth === "Other" && (
+                    <TextField
+                      label="Custom Category"
+                      value={customAnimalHealth}
+                      onChange={(e) => {
+                        setCustomAnimalHealth(e.target.value);
+                        setAnimalHealth("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {animalHealth === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(16,"Animal Health",customAnimalHealth)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                </Box>
 
         
         <Box marginBottom="10px">

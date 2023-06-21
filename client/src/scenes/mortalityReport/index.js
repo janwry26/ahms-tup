@@ -32,7 +32,7 @@ const MortalityReport = () => {
   const [customCauseOfDeath, setCustomCauseOfDeath] = useState([]);
   
   const clearCustomInputs = () => { //Second for new page also
-    setCustomCauseOfDeath();
+    setCustomCauseOfDeath("");
   }
 
   const getCategoriesData = async () => {

@@ -41,8 +41,8 @@ const AnimalRecords = () => {
   const [customHabitat, setCustomHabitat] = useState([]);
   
   const clearCustomInputs = () => { //Second for new page also
-    setCustomSpecies();
-    setCustomHabitat();
+    setCustomSpecies("");
+    setCustomHabitat("");
   }
 
   const getCategoriesData = async () => {
