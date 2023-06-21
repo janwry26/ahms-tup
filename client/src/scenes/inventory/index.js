@@ -25,32 +25,51 @@ const Inventory = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [selectedRow, setSelectedRow] = useState(null);
+
   const [category, setCategory] = useState("");
   const [itemType, setItemType] = useState("");
+  const [measure, setMeasure] = useState("")
+  const [manufacturer, setManufacturer] = useState("")
+  const [supplier, setSupplier] = useState("")
+
+
   const [categoryList, setCategoryList] = useState([]);
+  const [itemTypeList, setItemTypeList] = useState([]);//First
+  const [measureList, setMeasureList] = useState([]);
+  const [manufacturerList, setManufacturerList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
+
+
   const [customCategory, setCustomCategory] = useState("");
   const [customItemType, setCustomItemType] = useState("");
+  const [customMeasure, setCustomMeasure] = useState("");
+  const [customManufacturer, setCustomManufacturer] = useState("");
+  const [customSupplier, setCustomSupplier] = useState("");
 
-  const [itemTypeList, setItemTypeList] = useState([]);//First
 
-  const clearCustomInputs = () => { //Second
+  const clearCustomInputs = () => { //Second for new page also
     setCustomCategory("");
     setCustomItemType("");
+    setCustomMeasure("");  
+    setCustomManufacturer("");
+    setCustomSupplier("");
   }
 
   const getCategoriesData = async () => {
     await http.get('/categories/view')
     .then((res) => {
-      console.log(res.data); //Third
+      console.log(res.data); //Third add as necessary
       setCategoryList(res.data[0].item);
       setItemTypeList(res.data[1].item); 
-      
+      setMeasureList(res.data[2].item);
+      setManufacturerList(res.data[3].item);
+      setSupplierList(res.data[4].item);
     })
   }
 
   useEffect(() => {
     getCategoriesData();
-  }, [])
+  }, []) //For other page
   
 
   const handleCategoryChange = (event) => {
@@ -69,6 +88,36 @@ const Inventory = () => {
       setItemType(selectedCategory);
     } else {
       setItemType(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleMeasureChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setMeasure(selectedCategory);
+    } else {
+      setMeasure(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+
+  const handleManufacturerChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setManufacturer(selectedCategory);
+    } else {
+      setManufacturer(selectedCategory);
+      setCustomCategory("");
+    }
+  };
+  
+  const handleSupplierChange = (event) => {
+    const selectedCategory = event.target.value;
+    if (selectedCategory === "Other") {
+      setSupplier(selectedCategory);
+    } else {
+      setSupplier(selectedCategory);
       setCustomCategory("");
     }
   };
@@ -374,42 +423,93 @@ const Inventory = () => {
                   {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
 
+          
                 <Box marginBottom="10px">
-               <InputLabel>Unit Of Measure</InputLabel>
+               <InputLabel>Unit of measure</InputLabel>
                   <Select
                     name="unitOfMeasure"
                     native
                     fullWidth
                     required
                     variant="filled"
+                    value={measure} //Sixth
+                    onChange={handleMeasureChange} //Seventh
                   >
-                    <option value="">Select Item Type</option>
-                    <option value="pcs">pcs</option>
-                    <option value="box">box</option>
-                    <option value="rolls">rolls</option>
-                    <option value="ampule">ampule</option>
-                    <option value="set">set</option>
-                    <option value="bot">bot</option>
-                    <option value="vial">vial</option>
-                    <option value="vials">vials</option>
-                    <option value="can">can</option>
-                   
+                    <option value="">Select Unit of Measure</option>
+                    {measureList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
                   </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {measure === "Other" && (
+                    <TextField
+                      label="Custom Unit Of Measure"
+                      value={customMeasure}
+                      onChange={(e) => {
+                        setCustomMeasure(e.target.value);
+                        setMeasure("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {measure === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(7,"Measure",customMeasure)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
-                <Box marginBottom="10px">
-                <InputLabel>Manufacturer</InputLabel>
+
+                 <Box marginBottom="10px">
+               <InputLabel>Manufacturer</InputLabel>
                   <Select
                     name="manufacturer"
                     native
                     fullWidth
                     required
                     variant="filled"
+                    value={manufacturer} //Sixth
+                    onChange={handleManufacturerChange} //Seventh
                   >
                     <option value="">Select Manufacturer</option>
-                    <option value="Trenchant Trading Incorporated">Trenchant Trading Incorporated</option>
+                    {manufacturerList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
                   </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {manufacturer === "Other" && (
+                    <TextField
+                      label="Custom Manufacturer"
+                      value={customManufacturer}
+                      onChange={(e) => {
+                        setCustomManufacturer(e.target.value);
+                        setManufacturer("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {manufacturer === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(8,"Manufacturer",customManufacturer)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
-                <Box marginBottom="10px">
+
+
+                {/* <Box marginBottom="10px">
                 <InputLabel>Supplier</InputLabel>
                   <Select
                     name="supplier"
@@ -421,7 +521,50 @@ const Inventory = () => {
                     <option value="">Select Supplier</option>
                     <option value="City General Services Office">City General Services Office</option>
                   </Select>
+                </Box> */}
+
+              <Box marginBottom="10px">
+               <InputLabel>Supplier</InputLabel>
+                  <Select
+                    name="supplier"
+                    native
+                    fullWidth
+                    required
+                    variant="filled"
+                    value={supplier} //Sixth
+                    onChange={handleSupplierChange} //Seventh
+                  >
+                    <option value="">Select Supplier</option>
+                    {supplierList.map((val) => { //Eigth mapping for the list
+                      return (
+                        <option key={val.itemId} value={val.itemName}>{val.itemName}</option>
+                      )
+                    })}
+                    <option value="Other">Other</option>                    
+                  </Select>
+
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
+                  {supplier === "Other" && (
+                    <TextField
+                      label="Custom Unit Of Measure"
+                      value={customSupplier}
+                      onChange={(e) => {
+                        setCustomSupplier(e.target.value);
+                        setSupplier("Other");
+                      }}
+                      fullWidth
+                      required
+                      variant="filled"
+                    />
+                  )}
+                  {supplier === "Other" && (
+                    <Button className='btnDashBoard' onClick={()=>handleAddCustomCategory(9,"Supplier",customSupplier)}>
+                      Add Category
+                    </Button>
+                  )}
+                  {/* Nineth Copy paste and change value, onchange, onClick */}
                 </Box>
+
                 <Box marginBottom="10px">
                   <InputLabel>Description</InputLabel>
                   <TextField
