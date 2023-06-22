@@ -1,5 +1,5 @@
 # animal-healtcare-management-system
-# https://github.com/janwry26/ahms-tup
+# https://ahms-tup.vercel.app/
 # Frontend deployed at Vercel
 # Backend deployed at Render
 # admin account: janwryd@gmail.com pass: janwry26
